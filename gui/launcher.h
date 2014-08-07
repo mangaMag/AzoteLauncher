@@ -20,6 +20,9 @@ public:
 private:
     Ui::Launcher* ui;
     Updater* updater;
+    Logger* log;
+
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // LAUNCHER_H

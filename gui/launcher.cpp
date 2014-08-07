@@ -8,7 +8,7 @@ Launcher::Launcher(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    Logger* log = &Singleton<Logger>::getInstance();
+    log = &Singleton<Logger>::getInstance();
     log->showConsole();
 
     updater = new Updater();
@@ -18,7 +18,14 @@ Launcher::Launcher(QWidget *parent) :
 
 Launcher::~Launcher()
 {
-    updater->exit(0);
     delete updater;
     delete ui;
+}
+
+void Launcher::closeEvent(QCloseEvent* event)
+{
+    log->closeConsole();
+    updater->exit(0);
+    close();
+    //QCoreApplication::exit();
 }

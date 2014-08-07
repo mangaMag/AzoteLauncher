@@ -15,12 +15,15 @@ SOURCES += main.cpp\
         gui/launcher.cpp \
     updater/updater.cpp \
     logger/logger.cpp \
-    http/http.cpp
+    http/http.cpp \
+    gui/console.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
     logger/logger.h \
     serialization/singleton.h \
-    http/http.h
+    http/http.h \
+    gui/console.h
 
-FORMS    += gui/launcher.ui
+FORMS    += gui/launcher.ui \
+    gui/console.ui

@@ -1,6 +1,9 @@
 #include "logger.h"
-#include <Windows.h>
 #include <iostream>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 Logger::Logger()
 {
@@ -8,6 +11,7 @@ Logger::Logger()
 
 void Logger::showConsole()
 {
+#ifdef _WIN32
     AllocConsole();
     FILE *pFileCon = NULL;
     pFileCon = freopen("CONOUT$", "w", stdout);
@@ -18,6 +22,7 @@ void Logger::showConsole()
 
     SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coordInfo);
     SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),ENABLE_QUICK_EDIT_MODE| ENABLE_EXTENDED_FLAGS);
+#endif
 }
 
 void Logger::debug(QString text)

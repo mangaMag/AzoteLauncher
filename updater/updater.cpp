@@ -5,7 +5,8 @@
 #include <QJsonObject>
 
 Updater::Updater(QThread* parent) :
-    QThread(parent)
+    QThread(parent),
+    flagRun(true)
 {
 }
 
@@ -32,8 +33,16 @@ void Updater::run()
 
     for(int i = 1; i <= 100; i++)
     {
-        log->debug(QString("%1%").arg(i));
-        emit updateProgressBar(i);
-        msleep(100);
+        if(flagRun)
+        {
+            log->debug(QString("%1%").arg(i));
+            emit updateProgressBar(i);
+            msleep(100);
+        }
     }
+}
+
+void Updater::stopProcess()
+{
+    flagRun = false;
 }

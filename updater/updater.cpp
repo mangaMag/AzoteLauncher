@@ -5,8 +5,8 @@
 #include <QFile>
 #include <QDataStream>
 #include <QCryptographicHash>
-
-#include <QDebug>
+#include <QFileInfo>
+#include <QDir>
 
 Updater::Updater(QThread* parent) :
     QThread(parent),
@@ -53,8 +53,6 @@ void Updater::run()
         QString name = obj.value("name").toString();
         QString md5 = obj.value("md5").toString();
 
-        //log->debug(QString("File: %1 (%2)").arg(name).arg(md5));
-
         if(isNeedUpdate(name, md5))
             updateFile(name);
 
@@ -95,6 +93,10 @@ void Updater::updateFile(QString name)
 
     QByteArray data = http.data();
     QFile file(name);
+    QFileInfo fileInfo(name);
+
+    if(!fileInfo.dir().exists())
+        fileInfo.dir().mkpath(".");
 
     if(!file.open(QIODevice::WriteOnly))
     {

@@ -4,6 +4,9 @@
 #include <QJsonArray>
 #include <QFile>
 #include <QDataStream>
+#include <QCryptographicHash>
+
+#include <QDebug>
 
 Updater::Updater(QThread* parent) :
     QThread(parent),
@@ -51,7 +54,9 @@ void Updater::run()
         QString md5 = obj.value("md5").toString();
 
         //log->debug(QString("File: %1 (%2)").arg(name).arg(md5));
-        updateFile(name);
+
+        if(isNeedUpdate(name, md5))
+            updateFile(name);
 
         emit updateProgressBar(i * 100 / filesCount);
         i++;
@@ -63,20 +68,37 @@ void Updater::stopProcess()
     flagRun = false;
 }
 
-void Updater::updateFile(QString fileName)
+bool Updater::isNeedUpdate(QString name, QString md5)
 {
-    if(!http.get(QString(URL"%2").arg(fileName)))
+    QCryptographicHash hash(QCryptographicHash::Md5);
+    QFile file(name);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return true;
+
+    hash.addData(file.readAll());
+    file.close();
+
+    if(md5.compare(hash.result().toHex().data(), Qt::CaseInsensitive) == 0)
+        return false;
+
+    return true;
+}
+
+void Updater::updateFile(QString name)
+{
+    if(!http.get(QString(URL"%2").arg(name)))
     {
-        log->error(QString("unable to download file %1<br />%2").arg(fileName).arg(http.error()));
+        log->error(QString("unable to download file %1<br />%2").arg(name).arg(http.error()));
         return;
     }
 
     QByteArray data = http.data();
-    QFile file(fileName);
+    QFile file(name);
 
     if(!file.open(QIODevice::WriteOnly))
     {
-        log->error(QString("unable to write file %1<br />%2").arg(fileName).arg(file.errorString()));
+        log->error(QString("unable to write file %1<br />%2").arg(name).arg(file.errorString()));
         return;
     }
 
@@ -84,5 +106,5 @@ void Updater::updateFile(QString fileName)
     out.writeRawData(data.data(), data.length());
     file.close();
 
-    log->success(QString("File %1 has been updated").arg(fileName));
+    log->success(QString("File %1 has been updated").arg(name));
 }

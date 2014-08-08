@@ -17,7 +17,8 @@ private:
     Http http;
 
     void run();
-    void updateFile(QString file);
+    bool isNeedUpdate(QString name, QString md5);
+    void updateFile(QString name);
 
 public:
     explicit Updater(QThread* parent = 0);

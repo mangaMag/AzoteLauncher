@@ -3,6 +3,7 @@
 #include "../http/http.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 Updater::Updater(QThread* parent) :
     QThread(parent),
@@ -23,7 +24,21 @@ void Updater::run()
         if(!updateJson.isNull())
         {
             QJsonObject update = updateJson.object();
-            log->debug(QString::number(update.value("build").toInt()));
+
+            int build = update.value("build").toInt();
+            QJsonArray files = update.value("files").toArray();
+
+            log->debug(QString("Build version: %1").arg(build));
+
+            foreach(const QJsonValue& file, files)
+            {
+                QJsonObject obj = file.toObject();
+
+                QString name = obj.value("name").toString();
+                QString md5 = obj.value("md5").toString();
+
+                log->debug(QString("File: %1 (%2)").arg(name).arg(md5));
+            }
         }
         else
             log->error("update file is empty");

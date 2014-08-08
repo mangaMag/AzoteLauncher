@@ -14,45 +14,47 @@ Updater::Updater(QThread* parent) :
 
 void Updater::run()
 {
-    if(http.get(QString("%1%2").arg(URL).arg("update.json")))
+    if(!http.get(URL"update.json"))
     {
-        QByteArray file = http.data();
-        QJsonDocument updateJson = QJsonDocument::fromJson(file);
-
-        if(!updateJson.isNull())
-        {
-            QJsonObject update = updateJson.object();
-
-            int build = update.value("build").toInt();
-            QJsonArray files = update.value("files").toArray();
-
-            log->debug(QString("Build version: %1").arg(build));
-
-            foreach(const QJsonValue& file, files)
-            {
-                QJsonObject obj = file.toObject();
-
-                QString name = obj.value("name").toString();
-                QString md5 = obj.value("md5").toString();
-
-                log->debug(QString("File: %1 (%2)").arg(name).arg(md5));
-                updateFile(name);
-            }
-        }
-        else
-            log->error("update file is empty");
-    }
-    else
         log->error(http.error());
+        return;
+    }
 
-    for(int i = 1; i <= 100; i++)
+    QByteArray file = http.data();
+    QJsonDocument updateJson = QJsonDocument::fromJson(file);
+
+    if(updateJson.isNull())
     {
-        if(flagRun)
-        {
-            log->debug(QString("%1%").arg(i));
-            emit updateProgressBar(i);
-            msleep(100);
-        }
+        log->error("update file is empty");
+        return;
+    }
+
+    QJsonObject update = updateJson.object();
+
+    int build = update.value("build").toInt();
+    QJsonArray files = update.value("files").toArray();
+    int filesCount = files.count();
+
+    log->info(QString("Build version: %1").arg(build));
+    log->info(QString("Number of files: %1").arg(filesCount));
+
+    int i = 1;
+
+    foreach(const QJsonValue& file, files)
+    {
+        if(!flagRun)
+            break;
+
+        QJsonObject obj = file.toObject();
+
+        QString name = obj.value("name").toString();
+        QString md5 = obj.value("md5").toString();
+
+        //log->debug(QString("File: %1 (%2)").arg(name).arg(md5));
+        updateFile(name);
+
+        emit updateProgressBar(i * 100 / filesCount);
+        i++;
     }
 }
 
@@ -63,7 +65,7 @@ void Updater::stopProcess()
 
 void Updater::updateFile(QString fileName)
 {
-    if(!http.get(QString("%1%2").arg(URL).arg(fileName)))
+    if(!http.get(QString(URL"%2").arg(fileName)))
     {
         log->error(QString("unable to download file %1<br />%2").arg(fileName).arg(http.error()));
         return;

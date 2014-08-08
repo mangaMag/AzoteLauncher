@@ -8,6 +8,8 @@ Launcher::Launcher(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setFixedSize(width(), height());
+
     log = &Singleton<Logger>::getInstance();
     log->showConsole();
 

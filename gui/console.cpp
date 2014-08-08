@@ -7,7 +7,9 @@ Console::Console(QWidget* parent, QObject* logger) :
     ui(new Ui::Console)
 {
     ui->setupUi(this);
+
     setGeometry(100, 100, width(), height());
+    setFixedSize(width(), height());
 
     connect(logger, SIGNAL(message(QString)), this, SLOT(onMessage(QString)));
 }

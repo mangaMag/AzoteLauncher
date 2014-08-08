@@ -18,6 +18,8 @@ public:
     void closeConsole();
     void debug(QString text);
     void error(QString text);
+    void success(QString text);
+    void info(QString text);
 
 private:
     Console* console;

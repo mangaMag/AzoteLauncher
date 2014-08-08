@@ -63,22 +63,24 @@ void Updater::stopProcess()
 
 void Updater::updateFile(QString fileName)
 {
-    if(http.get(QString("%1%2").arg(URL).arg(fileName)))
+    if(!http.get(QString("%1%2").arg(URL).arg(fileName)))
     {
-        QByteArray data = http.data();
-
-        QFile file(fileName);
-        if(file.open(QIODevice::WriteOnly))
-        {
-            QDataStream out(&file);
-            out.writeRawData(data.data(), data.length());
-            file.close();
-
-            log->success(QString("File %1 has been updated").arg(fileName));
-        }
-        else
-            log->error(QString("unable to write file %1<br />%2").arg(fileName).arg(file.errorString()));
-    }
-    else
         log->error(QString("unable to download file %1<br />%2").arg(fileName).arg(http.error()));
+        return;
+    }
+
+    QByteArray data = http.data();
+    QFile file(fileName);
+
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        log->error(QString("unable to write file %1<br />%2").arg(fileName).arg(file.errorString()));
+        return;
+    }
+
+    QDataStream out(&file);
+    out.writeRawData(data.data(), data.length());
+    file.close();
+
+    log->success(QString("File %1 has been updated").arg(fileName));
 }

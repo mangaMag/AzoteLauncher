@@ -67,6 +67,9 @@ void Updater::run()
         i++;
     }
 
+    log->info("Client is up to date");
+    emit updateDownloadSpeed("Terminée");
+
     delete http;
 }
 

@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
@@ -26,7 +27,9 @@ class Ui_Launcher
 public:
     QWidget *centralWidget;
     QPushButton *pushButton;
-    QProgressBar *progressBar;
+    QLabel *label;
+    QProgressBar *progressBarTotal;
+    QProgressBar *progressBarFile;
 
     void setupUi(QMainWindow *Launcher)
     {
@@ -38,10 +41,17 @@ public:
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
         pushButton->setGeometry(QRect(320, 250, 75, 23));
-        progressBar = new QProgressBar(centralWidget);
-        progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(20, 130, 641, 23));
-        progressBar->setValue(0);
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(620, 240, 46, 13));
+        progressBarTotal = new QProgressBar(centralWidget);
+        progressBarTotal->setObjectName(QStringLiteral("progressBarTotal"));
+        progressBarTotal->setGeometry(QRect(10, 160, 681, 23));
+        progressBarTotal->setValue(0);
+        progressBarFile = new QProgressBar(centralWidget);
+        progressBarFile->setObjectName(QStringLiteral("progressBarFile"));
+        progressBarFile->setGeometry(QRect(10, 190, 681, 23));
+        progressBarFile->setValue(0);
         Launcher->setCentralWidget(centralWidget);
 
         retranslateUi(Launcher);
@@ -53,6 +63,7 @@ public:
     {
         Launcher->setWindowTitle(QApplication::translate("Launcher", "Launcher", 0));
         pushButton->setText(QApplication::translate("Launcher", "PushButton", 0));
+        label->setText(QApplication::translate("Launcher", "TextLabel", 0));
     } // retranslateUi
 
 };

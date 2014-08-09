@@ -1,5 +1,5 @@
 #include "launcher.h"
-#include "../gui/ui_launcher.h"
+#include "ui_launcher.h"
 #include "../logger/logger.h"
 
 Launcher::Launcher(QWidget *parent) :
@@ -14,7 +14,8 @@ Launcher::Launcher(QWidget *parent) :
     log->showConsole();
 
     updater = new Updater();
-    connect(updater, SIGNAL(updateProgressBar(int)), ui->progressBar, SLOT(setValue(int)));
+    connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
+    connect(updater, SIGNAL(updateProgressBarFile(int)), ui->progressBarFile, SLOT(setValue(int)));
     updater->start();
 }
 

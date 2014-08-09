@@ -14,7 +14,7 @@ class Updater : public QThread
 private:
     Logger* log;
     bool flagRun;
-    Http http;
+    Http* http;
 
     void run();
     bool isNeedUpdate(QString name, QString md5);
@@ -22,10 +22,15 @@ private:
 
 public:
     explicit Updater(QThread* parent = 0);
+    ~Updater();
     void stopProcess();
 
+private slots:
+    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+
 signals:
-    void updateProgressBar(const int value);
+    void updateProgressBarTotal(const int value);
+    void updateProgressBarFile(const int value);
 
 };
 

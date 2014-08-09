@@ -5,6 +5,11 @@ Http::Http(QObject* parent) :
 {
 }
 
+Http::~Http()
+{
+    delete m_pReply;
+}
+
 bool Http::get(const QString& url)
 {
     m_Data.clear();
@@ -13,6 +18,7 @@ bool Http::get(const QString& url)
 
     QEventLoop loop;
     connect(m_pReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(m_pReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
     loop.exec();
 
     m_Data.append(m_pReply->readAll());
@@ -31,3 +37,9 @@ QString Http::error()
 {
     return QString("%1: %2").arg(m_Error).arg(m_Message);
 }
+
+void Http::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    emit downloadProgress(bytesReceived, bytesTotal);
+}
+

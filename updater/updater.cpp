@@ -15,15 +15,22 @@ Updater::Updater(QThread* parent) :
     log = &Singleton<Logger>::getInstance();
 }
 
+Updater::~Updater()
+{
+}
+
 void Updater::run()
 {
-    if(!http.get(URL"update.json"))
+    http = new Http();
+    connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
+
+    if(!http->get(URL"update.json"))
     {
-        log->error(http.error());
+        log->error(http->error());
         return;
     }
 
-    QByteArray file = http.data();
+    QByteArray file = http->data();
     QJsonDocument updateJson = QJsonDocument::fromJson(file);
 
     if(updateJson.isNull())
@@ -56,9 +63,11 @@ void Updater::run()
         if(isNeedUpdate(name, md5))
             updateFile(name);
 
-        emit updateProgressBar(i * 100 / filesCount);
+        emit updateProgressBarTotal(i * 100 / filesCount);
         i++;
     }
+
+    delete http;
 }
 
 void Updater::stopProcess()
@@ -85,13 +94,13 @@ bool Updater::isNeedUpdate(QString name, QString md5)
 
 void Updater::updateFile(QString name)
 {
-    if(!http.get(QString(URL"%2").arg(name)))
+    if(!http->get(QString(URL"%2").arg(name)))
     {
-        log->error(QString("unable to download file %1<br />%2").arg(name).arg(http.error()));
+        log->error(QString("unable to download file %1<br />%2").arg(name).arg(http->error()));
         return;
     }
 
-    QByteArray data = http.data();
+    QByteArray data = http->data();
     QFile file(name);
     QFileInfo fileInfo(name);
 
@@ -109,4 +118,32 @@ void Updater::updateFile(QString name)
     file.close();
 
     log->success(QString("File %1 has been updated").arg(name));
+}
+
+void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    /*progressBar.setStatus(bytesReceived, bytesTotal);
+
+    double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
+    QString unit;
+
+    if (speed < 1024)
+    {
+        unit = "bytes/sec";
+    }
+    else if (speed < 1024*1024)
+    {
+        speed /= 1024;
+        unit = "kB/s";
+    }
+    else
+    {
+        speed /= 1024*1024;
+        unit = "MB/s";
+    }
+
+    progressBar.setMessage(QString::fromLatin1("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
+    progressBar.update();*/
+
+    emit updateProgressBarFile(bytesReceived * 100 / bytesTotal);
 }

@@ -4,6 +4,7 @@
 #define URL "http://127.0.0.1/client/"
 
 #include <QThread>
+#include <QElapsedTimer>
 #include "../http/http.h"
 #include "../logger/logger.h"
 
@@ -15,6 +16,7 @@ private:
     Logger* log;
     bool flagRun;
     Http* http;
+    QElapsedTimer downloadTime;
 
     void run();
     bool isNeedUpdate(QString name, QString md5);
@@ -31,6 +33,7 @@ private slots:
 signals:
     void updateProgressBarTotal(const int value);
     void updateProgressBarFile(const int value);
+    void updateDownloadSpeed(const QString speed);
 
 };
 

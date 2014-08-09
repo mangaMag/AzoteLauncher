@@ -24,20 +24,23 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Jouer</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="labelDownloadSpeed">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>240</y>
-      <width>46</width>
-      <height>13</height>
+      <x>630</x>
+      <y>212</y>
+      <width>61</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>0 o/s</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QProgressBar" name="progressBarTotal">
@@ -52,6 +55,9 @@
     <property name="value">
      <number>0</number>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QProgressBar" name="progressBarFile">
     <property name="geometry">
@@ -64,6 +70,9 @@
     </property>
     <property name="value">
      <number>0</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

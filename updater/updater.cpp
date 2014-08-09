@@ -94,6 +94,8 @@ bool Updater::isNeedUpdate(QString name, QString md5)
 
 void Updater::updateFile(QString name)
 {
+    downloadTime.start();
+
     if(!http->get(QString(URL"%2").arg(name)))
     {
         log->error(QString("unable to download file %1<br />%2").arg(name).arg(http->error()));
@@ -122,28 +124,27 @@ void Updater::updateFile(QString name)
 
 void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    /*progressBar.setStatus(bytesReceived, bytesTotal);
+    if(bytesTotal <= 0)
+        return;
 
     double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
     QString unit;
 
     if (speed < 1024)
     {
-        unit = "bytes/sec";
+        unit = "o/s";
     }
     else if (speed < 1024*1024)
     {
         speed /= 1024;
-        unit = "kB/s";
+        unit = "Ko/s";
     }
     else
     {
         speed /= 1024*1024;
-        unit = "MB/s";
+        unit = "Mo/s";
     }
 
-    progressBar.setMessage(QString::fromLatin1("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
-    progressBar.update();*/
-
+    emit updateDownloadSpeed(QString("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
     emit updateProgressBarFile(bytesReceived * 100 / bytesTotal);
 }

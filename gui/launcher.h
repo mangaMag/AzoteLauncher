@@ -2,7 +2,7 @@
 #define LAUNCHER_H
 
 #include <QMainWindow>
-#include "../updater/updater.h"
+#include "../updater/updaterv2.h"
 #include "../logger/logger.h"
 
 namespace Ui {
@@ -19,7 +19,7 @@ public:
 
 private:
     Ui::Launcher* ui;
-    Updater* updater;
+    UpdaterV2* updater;
     Logger* log;
 
     void closeEvent(QCloseEvent* event);

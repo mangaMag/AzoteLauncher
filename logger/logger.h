@@ -20,6 +20,7 @@ public:
     void error(QString text);
     void success(QString text);
     void info(QString text);
+    void warning(QString text);
 
 private:
     Console* console;

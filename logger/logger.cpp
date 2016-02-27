@@ -40,3 +40,8 @@ void Logger::info(QString text)
 {
     emit message(QString("<b>[<font color='cyan'>INFO</font>] %1</b>").arg(text));
 }
+
+void Logger::warning(QString text)
+{
+    emit message(QString("<b>[<font color='orange'>WARNING</font>] %1</b>").arg(text));
+}

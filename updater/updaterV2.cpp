@@ -1,6 +1,5 @@
 #include "updaterV2.h"
 #include <QJsonDocument>
-#include <QJsonObject>
 #include <QJsonArray>
 #include <QFile>
 #include <QDataStream>
@@ -21,61 +20,9 @@ UpdaterV2::~UpdaterV2()
 
 void UpdaterV2::run()
 {
-    http = new Http();
-    connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
+    processUpdate();
 
-    if(!http->get(URL"/update.json"))
-    {
-        log->error(http->error());
-        return;
-    }
-
-    QByteArray file = http->data();
-    QJsonDocument json = QJsonDocument::fromJson(file);
-
-    if(json.isNull())
-    {
-        log->error("update file is empty");
-        return;
-    }
-
-    QJsonObject update = json.object();
-
-    int lastBuild = update.value("build").toInt();
-    QString url   = update.value("url").toString();
-
-    url = QString("http://%1/%2").arg(url).arg(QString::number(lastBuild));
-
-    log->info(QString("Last build version: %1").arg(lastBuild));
-    log->info(QString("URL: %1").arg(url));
-
-    if(!http->get(url + QString("/data.json")))
-    {
-        log->error(http->error());
-        return;
-    }
-
-    file = http->data();
-    json = QJsonDocument::fromJson(file);
-
-    if(json.isNull())
-    {
-        log->error("update file is empty");
-        return;
-    }
-
-    QJsonObject data = json.object();
-
-    int currentBuild = data.value("build").toInt();
-    QJsonArray files = data.value("files").toArray();
-    int filesCount = files.count();
-
-    log->info(QString("Current build version: %1").arg(currentBuild));
-    log->info(QString("Number of files: %1").arg(filesCount));
-
-    int i = 1;
-
-    foreach(const QJsonValue& file, files)
+    /*foreach(const QJsonValue& file, files)
     {
         if(!flagRun)
             break;
@@ -94,10 +41,7 @@ void UpdaterV2::run()
         i++;
     }
 
-    log->info("Client is up to date");
-    emit updateDownloadSpeed("Terminée");
-
-    delete http;
+    delete http;*/
 }
 
 void UpdaterV2::stopProcess()
@@ -105,7 +49,137 @@ void UpdaterV2::stopProcess()
     flagRun = false;
 }
 
-bool UpdaterV2::isNeedUpdate(QString name, QString md5)
+void UpdaterV2::processUpdate()
+{
+    Http* http = new Http();
+    connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
+
+    QJsonObject infoFile = getInfoFile(http);
+
+    if (infoFile.isEmpty())
+    {
+        log->error("Impossible de récupérer le fichier d'information des mises à jour");
+        delete http;
+        return;
+    }
+
+    int lastVersion = infoFile.value("version").toInt();
+    int currentVersion = getCurrentVersion();
+
+    if (currentVersion < lastVersion)
+    {
+        QString cdn = infoFile.value("cdn").toString();
+
+        for (int tempVersion = lastVersion; tempVersion > currentVersion; tempVersion--)
+        {
+            if(!flagRun)
+            {
+                break;
+            }
+
+            QString url = QString("http://%1/%2").arg(cdn).arg(tempVersion);
+
+            QJsonObject updateFile = getUpdateFile(http, url);
+
+            if (updateFile.isEmpty())
+            {
+                log->warning(QString("Impossible de récupérer le fichier de mise à jour version %1").arg(tempVersion));
+                continue;
+            }
+
+            int updateFileVersion = updateFile.value("version").toInt();
+
+            if (tempVersion != updateFileVersion)
+            {
+                log->warning(QString("Le numéro de version de la mise à jour %1 ne correspond pas au numéro attendu %2").arg(updateFileVersion).arg(tempVersion));
+                continue;
+            }
+
+            QJsonArray files = updateFile.value("files").toArray();
+            int filesCount = files.count();
+            log->info(QString("La mise à jour comporte %1 fichier(s)").arg(filesCount));
+
+            foreach(const QJsonValue& file, files)
+            {
+                if(!flagRun)
+                {
+                    break;
+                }
+
+                QJsonObject fileObject = file.toObject();
+
+                QString name = fileObject.value("name").toString();
+                QString md5 = fileObject.value("md5").toString();
+
+                log->debug(QString("%1 %2").arg(name).arg(md5));
+
+                // TODO: check if file need update, download it, store it in vector
+            }
+        }
+    }
+
+    log->info("Le client est à jour");
+    emit updateDownloadSpeed("Terminée");
+
+    delete http;
+}
+
+QJsonObject UpdaterV2::getInfoFile(Http *http)
+{
+    if(!http->get(URL))
+    {
+        log->debug(http->error());
+        return QJsonObject();
+    }
+
+    QByteArray file = http->data();
+    QJsonDocument json = QJsonDocument::fromJson(file);
+
+    if(json.isNull())
+    {
+        log->debug("info file json is null");
+        return QJsonObject();
+    }
+
+    return json.object();
+}
+
+int UpdaterV2::getCurrentVersion()
+{
+    return 0;
+}
+
+QJsonObject UpdaterV2::getUpdateFile(Http *http, QString url)
+{
+    if(!http->get(url + "/update.json"))
+    {
+        log->debug(http->error());
+        return QJsonObject();
+    }
+
+    QByteArray file = http->data();
+    QJsonDocument json = QJsonDocument::fromJson(file);
+
+    if(json.isNull())
+    {
+        log->debug("update file json is null");
+        return QJsonObject();
+    }
+
+    return json.object();
+}
+
+bool UpdaterV2::checkIfFileRequireUpdate(QString path, QString md5)
+{
+    return false;
+}
+
+bool UpdaterV2::updateFile(QString path, QString url)
+{
+    return false;
+}
+
+/*bool UpdaterV2::isNeedUpdate(QString name, QString md5)
 {
     QCryptographicHash hash(QCryptographicHash::Md5);
     QFile file(name);
@@ -142,7 +216,9 @@ void UpdaterV2::updateFile(QString name, QString url)
     QFileInfo fileInfo(name);
 
     if(!fileInfo.dir().exists())
+    {
         fileInfo.dir().mkpath(".");
+    }
 
     if(!file.open(QIODevice::WriteOnly))
     {
@@ -155,7 +231,7 @@ void UpdaterV2::updateFile(QString name, QString url)
     file.close();
 
     log->success(QString("File %1 has been updated").arg(name));
-}
+}*/
 
 void UpdaterV2::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {

@@ -1,10 +1,11 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "http://127.0.0.1/client"
+#define URL "http://127.0.0.1/client/info.json"
 
 #include <QThread>
 #include <QElapsedTimer>
+#include <QJsonObject>
 #include "../http/http.h"
 #include "../logger/logger.h"
 
@@ -15,12 +16,21 @@ class UpdaterV2 : public QThread
 private:
     Logger* log;
     bool flagRun;
-    Http* http;
+    //Http* http;
     QElapsedTimer downloadTime;
 
     void run();
-    bool isNeedUpdate(QString name, QString md5);
-    void updateFile(QString name, QString url);
+    /*bool isNeedUpdate(QString name, QString md5);
+    void updateFile(QString name, QString url);*/
+
+    ///////////////////////////////////
+
+    void processUpdate();
+    QJsonObject getInfoFile(Http* http);
+    int getCurrentVersion();
+    QJsonObject getUpdateFile(Http* http, QString url);
+    bool checkIfFileRequireUpdate(QString path, QString md5);
+    bool updateFile(QString path, QString url);
 
 public:
     explicit UpdaterV2(QThread* parent = 0);

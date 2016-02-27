@@ -44,12 +44,12 @@ void UpdaterV2::run()
     int lastBuild = update.value("build").toInt();
     QString url   = update.value("url").toString();
 
-    url = QString("http://%1/patches/%2").arg(url).arg(QString::number(lastBuild));
+    url = QString("http://%1/%2").arg(url).arg(QString::number(lastBuild));
 
     log->info(QString("Last build version: %1").arg(lastBuild));
     log->info(QString("URL: %1").arg(url));
 
-    if(!http->get(url.append("/data.json")))
+    if(!http->get(url + QString("/data.json")))
     {
         log->error(http->error());
         return;
@@ -86,7 +86,9 @@ void UpdaterV2::run()
         QString md5 = obj.value("md5").toString();
 
         if(isNeedUpdate(name, md5))
-            updateFile(name);
+        {
+            updateFile(name, url + QString("/files/") + name);
+        }
 
         emit updateProgressBarTotal(i * 100 / filesCount);
         i++;
@@ -109,22 +111,27 @@ bool UpdaterV2::isNeedUpdate(QString name, QString md5)
     QFile file(name);
 
     if(!file.open(QIODevice::ReadOnly))
+    {
         return true;
+    }
 
     hash.addData(file.readAll());
     file.close();
 
     if(md5.compare(hash.result().toHex().data(), Qt::CaseInsensitive) == 0)
+    {
+        log->debug(QString("%1 OK").arg(name));
         return false;
+    }
 
     return true;
 }
 
-void UpdaterV2::updateFile(QString name)
+void UpdaterV2::updateFile(QString name, QString url)
 {
     downloadTime.start();
 
-    if(!http->get(QString(URL"%2").arg(name)))
+    if(!http->get(url))
     {
         log->error(QString("unable to download file %1<br />%2").arg(name).arg(http->error()));
         return;

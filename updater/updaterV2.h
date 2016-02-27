@@ -20,7 +20,7 @@ private:
 
     void run();
     bool isNeedUpdate(QString name, QString md5);
-    void updateFile(QString name);
+    void updateFile(QString name, QString url);
 
 public:
     explicit UpdaterV2(QThread* parent = 0);

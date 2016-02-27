@@ -26,10 +26,7 @@ Launcher::~Launcher()
     delete ui;
 }
 
-void Launcher::closeEvent(QCloseEvent* event)
+void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
     log->closeConsole();
-    updater->exit(0);
-    close();
-    //QCoreApplication::exit();
 }

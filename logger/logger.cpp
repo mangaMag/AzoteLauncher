@@ -8,7 +8,7 @@ Logger::Logger()
 
 Logger::~Logger()
 {
-    closeConsole();
+    delete console;
 }
 
 void Logger::showConsole()
@@ -18,7 +18,7 @@ void Logger::showConsole()
 
 void Logger::closeConsole()
 {
-    console->hide();
+    console->close();
 }
 
 void Logger::debug(QString text)

@@ -6,6 +6,8 @@
 #include <QThread>
 #include <QElapsedTimer>
 #include <QJsonObject>
+#include <QVector>
+
 #include "../http/http.h"
 #include "../logger/logger.h"
 
@@ -16,15 +18,10 @@ class UpdaterV2 : public QThread
 private:
     Logger* log;
     volatile bool continueUpgrading;
-    //Http* http;
     QElapsedTimer downloadTime;
+    QVector<QString> updatedFiles;
 
     void run();
-    /*bool isNeedUpdate(QString name, QString md5);
-    void updateFile(QString name, QString url);*/
-
-    ///////////////////////////////////
-
     void processUpdate();
     QJsonObject getInfoFile(Http* http);
     int getCurrentVersion();
@@ -44,7 +41,6 @@ signals:
     void updateProgressBarTotal(const int value);
     void updateProgressBarFile(const int value);
     void updateDownloadSpeed(const QString speed);
-
 };
 
 #endif // UPDATER_H

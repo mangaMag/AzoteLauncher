@@ -68,6 +68,7 @@ void UpdaterV2::processUpdate()
             if (updateFile.isEmpty())
             {
                 log->warning(QString("Impossible de récupérer le fichier de mise à jour version %1").arg(tempVersion));
+                updateCounter++;
                 continue;
             }
 
@@ -76,6 +77,7 @@ void UpdaterV2::processUpdate()
             if (tempVersion != updateFileVersion)
             {
                 log->warning(QString("Le numéro de version de la mise à jour %1 ne correspond pas au numéro attendu %2").arg(updateFileVersion).arg(tempVersion));
+                updateCounter++;
                 continue;
             }
 
@@ -101,7 +103,14 @@ void UpdaterV2::processUpdate()
 
                 if (checkIfFileRequireUpdate(name, md5))
                 {
-                    updateGameFile(http, name, url);
+                    if (updateGameFile(http, name, url))
+                    {
+                        log->success(QString("Le fichier %1 a était mis à jour").arg(name));
+                    }
+                    else
+                    {
+                        log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(name));
+                    }
                 }
 
                 emit updateProgressBarTotal(fileCounter * (progressStep * updateCounter) / filesCount);
@@ -166,28 +175,14 @@ QJsonObject UpdaterV2::getUpdateFile(Http *http, QString url)
 
 bool UpdaterV2::checkIfFileRequireUpdate(QString path, QString md5)
 {
-    // TODO: check if file need update, download it, store it in vector
-
-    return true;
-}
-
-bool UpdaterV2::updateGameFile(Http* http, QString path, QString url)
-{
-    if(!http->get(url + "/files/" + path))
+    if (updatedFiles.contains(path))
     {
-        log->debug(http->error());
+        //log->debug(QString("File %1 are already updated in previous update").arg(path));
         return false;
     }
 
-    QByteArray file = http->data();
-
-    return true;
-}
-
-/*bool UpdaterV2::isNeedUpdate(QString name, QString md5)
-{
     QCryptographicHash hash(QCryptographicHash::Md5);
-    QFile file(name);
+    QFile file(path);
 
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -199,26 +194,27 @@ bool UpdaterV2::updateGameFile(Http* http, QString path, QString url)
 
     if(md5.compare(hash.result().toHex().data(), Qt::CaseInsensitive) == 0)
     {
-        log->debug(QString("%1 OK").arg(name));
+        // log->debug(QString("%1 OK").arg(name));
+        updatedFiles.append(path);
         return false;
     }
 
     return true;
 }
 
-void UpdaterV2::updateFile(QString name, QString url)
+bool UpdaterV2::updateGameFile(Http* http, QString path, QString url)
 {
     downloadTime.start();
 
-    if(!http->get(url))
+    if(!http->get(url + "/files/" + path))
     {
-        log->error(QString("unable to download file %1<br />%2").arg(name).arg(http->error()));
-        return;
+        log->debug(http->error());
+        return false;
     }
 
     QByteArray data = http->data();
-    QFile file(name);
-    QFileInfo fileInfo(name);
+    QFile file(path);
+    QFileInfo fileInfo(path);
 
     if(!fileInfo.dir().exists())
     {
@@ -227,16 +223,18 @@ void UpdaterV2::updateFile(QString name, QString url)
 
     if(!file.open(QIODevice::WriteOnly))
     {
-        log->error(QString("unable to write file %1<br />%2").arg(name).arg(file.errorString()));
-        return;
+        log->debug(file.errorString());
+        return false;
     }
 
     QDataStream out(&file);
     out.writeRawData(data.data(), data.length());
     file.close();
 
-    log->success(QString("File %1 has been updated").arg(name));
-}*/
+    updatedFiles.append(path);
+
+    return true;
+}
 
 void UpdaterV2::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {

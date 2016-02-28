@@ -28,5 +28,6 @@ Launcher::~Launcher()
 
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
+    updater->stopProcess();
     log->closeConsole();
 }

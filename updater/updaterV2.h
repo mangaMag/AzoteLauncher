@@ -15,7 +15,7 @@ class UpdaterV2 : public QThread
 
 private:
     Logger* log;
-    bool flagRun;
+    bool continueUpgrading;
     //Http* http;
     QElapsedTimer downloadTime;
 
@@ -30,7 +30,7 @@ private:
     int getCurrentVersion();
     QJsonObject getUpdateFile(Http* http, QString url);
     bool checkIfFileRequireUpdate(QString path, QString md5);
-    bool updateFile(QString path, QString url);
+    bool updateGameFile(Http* http, QString path, QString url);
 
 public:
     explicit UpdaterV2(QThread* parent = 0);

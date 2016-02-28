@@ -9,7 +9,7 @@
 
 UpdaterV2::UpdaterV2(QThread* parent) :
     QThread(parent),
-    flagRun(true)
+    continueUpgrading(true)
 {
     log = &Singleton<Logger>::getInstance();
 }
@@ -21,32 +21,12 @@ UpdaterV2::~UpdaterV2()
 void UpdaterV2::run()
 {
     processUpdate();
-
-    /*foreach(const QJsonValue& file, files)
-    {
-        if(!flagRun)
-            break;
-
-        QJsonObject obj = file.toObject();
-
-        QString name = obj.value("name").toString();
-        QString md5 = obj.value("md5").toString();
-
-        if(isNeedUpdate(name, md5))
-        {
-            updateFile(name, url + QString("/files/") + name);
-        }
-
-        emit updateProgressBarTotal(i * 100 / filesCount);
-        i++;
-    }
-
-    delete http;*/
 }
 
 void UpdaterV2::stopProcess()
 {
-    flagRun = false;
+    // TODO: mutex
+    continueUpgrading = false;
 }
 
 void UpdaterV2::processUpdate()
@@ -66,13 +46,18 @@ void UpdaterV2::processUpdate()
     int lastVersion = infoFile.value("version").toInt();
     int currentVersion = getCurrentVersion();
 
+    int numberOfUpdates = lastVersion - currentVersion;
+    int progressStep = 100 / numberOfUpdates;
+
     if (currentVersion < lastVersion)
     {
         QString cdn = infoFile.value("cdn").toString();
 
+        int updateCounter = 1;
+
         for (int tempVersion = lastVersion; tempVersion > currentVersion; tempVersion--)
         {
-            if(!flagRun)
+            if(!continueUpgrading)
             {
                 break;
             }
@@ -97,11 +82,13 @@ void UpdaterV2::processUpdate()
 
             QJsonArray files = updateFile.value("files").toArray();
             int filesCount = files.count();
-            log->info(QString("La mise à jour comporte %1 fichier(s)").arg(filesCount));
+            log->info(QString("La mise à jour %1 comporte %2 fichier(s)").arg(tempVersion).arg(filesCount));
+
+            int fileCounter = 1;
 
             foreach(const QJsonValue& file, files)
             {
-                if(!flagRun)
+                if(!continueUpgrading)
                 {
                     break;
                 }
@@ -111,10 +98,19 @@ void UpdaterV2::processUpdate()
                 QString name = fileObject.value("name").toString();
                 QString md5 = fileObject.value("md5").toString();
 
-                log->debug(QString("%1 %2").arg(name).arg(md5));
+                //log->debug(QString("%1 %2").arg(name).arg(md5));
 
-                // TODO: check if file need update, download it, store it in vector
+                if (checkIfFileRequireUpdate(name, md5))
+                {
+                    updateGameFile(http, name, url);
+                }
+
+                emit updateProgressBarTotal(fileCounter * (progressStep * updateCounter) / filesCount);
+
+                fileCounter++;
             }
+
+            updateCounter++;
         }
     }
 
@@ -171,12 +167,22 @@ QJsonObject UpdaterV2::getUpdateFile(Http *http, QString url)
 
 bool UpdaterV2::checkIfFileRequireUpdate(QString path, QString md5)
 {
-    return false;
+    // TODO: check if file need update, download it, store it in vector
+
+    return true;
 }
 
-bool UpdaterV2::updateFile(QString path, QString url)
+bool UpdaterV2::updateGameFile(Http* http, QString path, QString url)
 {
-    return false;
+    if(!http->get(url + "/files/" + path))
+    {
+        log->debug(http->error());
+        return false;
+    }
+
+    QByteArray file = http->data();
+
+    return true;
 }
 
 /*bool UpdaterV2::isNeedUpdate(QString name, QString md5)

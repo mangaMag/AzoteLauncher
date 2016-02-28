@@ -15,7 +15,7 @@ class UpdaterV2 : public QThread
 
 private:
     Logger* log;
-    bool continueUpgrading;
+    volatile bool continueUpgrading;
     //Http* http;
     QElapsedTimer downloadTime;
 

@@ -25,7 +25,6 @@ void UpdaterV2::run()
 
 void UpdaterV2::stopProcess()
 {
-    // TODO: mutex
     continueUpgrading = false;
 }
 

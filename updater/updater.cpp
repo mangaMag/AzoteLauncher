@@ -50,8 +50,8 @@ void Updater::getCurrentVersion()
 {
     settings = new QSettings("config.ini", QSettings::IniFormat);
 
-    currentClientVersion   = settings->value("client/version", QVariant(0)).toInt();
-    currentLauncherVersion = settings->value("launcher/version", QVariant(1)).toInt();
+    currentClientVersion   = settings->value("client/version", 0).toInt();
+    currentLauncherVersion = settings->value("launcher/version", 1).toInt();
 }
 
 void Updater::selfUpdate(Http* http)
@@ -185,6 +185,7 @@ void Updater::processUpdate(Http* http)
     }
 
     settings->setValue("client/version", lastVersion);
+    settings->sync();
 }
 
 QJsonObject Updater::getInfoFile(Http *http)
@@ -272,7 +273,12 @@ bool Updater::updateGameFile(Http* http, QString path, QString url)
 
     if(!fileInfo.dir().exists())
     {
-        fileInfo.dir().mkpath(".");
+        if (!fileInfo.dir().mkpath("."))
+        {
+            stopProcess();
+            log->error("Vous ne disposez pas des droits d'écriture, relancez en Administrateur ou déplacez le dossier du jeu");
+            return false;
+        }
     }
 
     if(!file.open(QIODevice::WriteOnly))

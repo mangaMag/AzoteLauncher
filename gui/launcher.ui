@@ -21,7 +21,7 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="playButton">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>

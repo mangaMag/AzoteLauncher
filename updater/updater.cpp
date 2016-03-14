@@ -117,7 +117,7 @@ void Updater::processUpdate(Http* http)
         {
             if(!continueUpgrading)
             {
-                break;
+                return;
             }
 
             QString url = QString("%1/%2").arg(URL).arg(tempVersion);
@@ -150,7 +150,7 @@ void Updater::processUpdate(Http* http)
             {
                 if(!continueUpgrading)
                 {
-                    break;
+                    return;
                 }
 
                 QJsonObject fileObject = file.toObject();

@@ -9,8 +9,6 @@
 #include <QCoreApplication>
 #include <QProcess>
 
-#include <QDebug>
-
 Updater::Updater(QThread* parent) :
     QThread(parent),
     continueUpgrading(true)
@@ -24,6 +22,8 @@ Updater::~Updater()
 
 void Updater::run()
 {
+    QFile::remove("update.exe");
+
     getCurrentVersion();
 
     Http* http = new Http();
@@ -68,10 +68,24 @@ void Updater::selfUpdate(Http* http)
     {
         if (launcherVersion > currentLauncherVersion)
         {
-            settings->setValue("launcher/version", launcherVersion);
-            settings->sync();
+            if(!http->get(URL "/launcher.exe"))
+            {
+                log->debug(http->error());
+                return;
+            }
 
-            // TODO: download new bin in temp
+            QByteArray data = http->data();
+            QFile file("update.exe");
+
+            if(!file.open(QIODevice::WriteOnly))
+            {
+                log->debug(file.errorString());
+                return;
+            }
+
+            QDataStream out(&file);
+            out.writeRawData(data.data(), data.length());
+            file.close();
 
             QStringList params;
 
@@ -79,10 +93,18 @@ void Updater::selfUpdate(Http* http)
             params << QString("--path=%1").arg(QCoreApplication::applicationDirPath());
 
             QProcess* process = new QProcess(this);
-            // TODO: change bin path to temp bin path
-            process->startDetached(QCoreApplication::applicationFilePath(), params);
+            if (process->startDetached(file.fileName(), params))
+            {
+                settings->setValue("launcher/version", launcherVersion);
+                settings->sync();
 
-            QCoreApplication::quit();
+                QCoreApplication::quit();
+            }
+            else
+            {
+                log->error(process->errorString());
+                log->error("Impossible de mettre à jour le launcher");
+            }
         }
     }
     else
@@ -164,7 +186,7 @@ void Updater::processUpdate(Http* http)
                 {
                     if (updateGameFile(http, name, url))
                     {
-                        log->success(QString("Le fichier %1 a était mis à jour").arg(name));
+                        log->success(QString("Le fichier %1 a été mis à jour").arg(name));
                     }
                     else
                     {

@@ -84,9 +84,9 @@ background-color: rgba(255, 255, 255, 0);</string>
     <property name="geometry">
      <rect>
       <x>71</x>
-      <y>485</y>
+      <y>484</y>
       <width>631</width>
-      <height>13</height>
+      <height>15</height>
      </rect>
     </property>
     <property name="font">
@@ -98,21 +98,19 @@ background-color: rgba(255, 255, 255, 0);</string>
      <string notr="true">QProgressBar {
 	border: 1px solid black;
 	border-radius: 4px;
-	background-color: white;
-	padding: 1px;
+	background-color: rgba(255, 255, 255, 180);
+	padding: 0px;
 }
 QProgressBar::chunk {
-	background-color: #1b78b1;
+	border-radius: 4px;
+	background-image: url(:/ressources/chunk.png);
  }</string>
     </property>
     <property name="value">
-     <number>0</number>
+     <number>50</number>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
-    </property>
-    <property name="textVisible">
-     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="closeButton">

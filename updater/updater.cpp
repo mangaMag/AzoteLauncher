@@ -217,7 +217,7 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
     }
 
     QCryptographicHash hash(QCryptographicHash::Md5);
-    QFile file(path);
+    QFile file("../" + path);
 
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -248,8 +248,8 @@ bool Updater::updateGameFile(Http* http, QString path, QString url)
     }
 
     QByteArray data = http->data();
-    QFile file(path);
-    QFileInfo fileInfo(path);
+    QFile file("../" + path);
+    QFileInfo fileInfo("../" + path);
 
     if(!fileInfo.dir().exists())
     {
@@ -274,7 +274,9 @@ bool Updater::updateGameFile(Http* http, QString path, QString url)
 void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
     if(bytesTotal <= 0)
+    {
         return;
+    }
 
     double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
     QString unit;

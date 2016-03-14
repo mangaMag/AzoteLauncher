@@ -23,6 +23,9 @@ private:
     Logger* log;
 
     void closeEvent(QCloseEvent* event);
+
+private slots:
+    void onClickPlayButton();
 };
 
 #endif // LAUNCHER_H

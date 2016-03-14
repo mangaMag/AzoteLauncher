@@ -3,6 +3,7 @@
 #include "../logger/logger.h"
 
 #include <QProcess>
+#include <QMessageBox>
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +29,8 @@ Launcher::Launcher(QWidget *parent) :
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
+    connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
+    connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
 }
 
 Launcher::~Launcher()
@@ -68,6 +71,20 @@ void Launcher::onClickPlayButton()
 void Launcher::onClickCloseButton()
 {
     close();
+}
+
+void Launcher::onClickMinimizeButton()
+{
+    setWindowState(Qt::WindowMinimized);
+}
+
+void Launcher::onClickSettingsButton()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Coming Soon");
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
 
 void Launcher::mousePressEvent(QMouseEvent* event)

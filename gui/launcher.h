@@ -32,6 +32,8 @@ private:
 private slots:
     void onClickPlayButton();
     void onClickCloseButton();
+    void onClickMinimizeButton();
+    void onClickSettingsButton();
 };
 
 #endif // LAUNCHER_H

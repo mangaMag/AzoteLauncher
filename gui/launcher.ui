@@ -79,15 +79,17 @@ background-color: rgba(255, 255, 255, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">QProgressBar {
-	border-image: url(:/ressources/barre.png);
-	padding: 2px;
+	border: 1px solid black;
+	border-radius: 4px;
+	background-color: white;
+	padding: 1px;
 }
 QProgressBar::chunk {
-     background-color: #337ab7;
+	background-color: #1b78b1;
  }</string>
     </property>
     <property name="value">
-     <number>0</number>
+     <number>50</number>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -99,7 +101,7 @@ QProgressBar::chunk {
    <widget class="QPushButton" name="closeButton">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>815</x>
       <y>90</y>
       <width>13</width>
       <height>13</height>
@@ -127,6 +129,40 @@ QProgressBar::chunk {
     </property>
     <property name="text">
      <string>100 %</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="minimizeButton">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>90</y>
+      <width>13</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="icon">
+     <iconset resource="../ressources.qrc">
+      <normaloff>:/ressources/topbouton_reduce.png</normaloff>:/ressources/topbouton_reduce.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>13</width>
+      <height>13</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="settingsButton">
+    <property name="geometry">
+     <rect>
+      <x>785</x>
+      <y>90</y>
+      <width>13</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="icon">
+     <iconset resource="../ressources.qrc">
+      <normaloff>:/ressources/topbouton_repair.png</normaloff>:/ressources/topbouton_repair.png</iconset>
     </property>
    </widget>
   </widget>

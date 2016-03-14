@@ -34,6 +34,8 @@ void Updater::run()
     log->info("Le client est à jour");
     emit updateDownloadSpeed("Terminée");
     emit enablePlayButton(true);
+    emit updateProgressBarTotal(100);
+    emit updateProgressPercent("100 %");
 
     delete http;
     delete settings;

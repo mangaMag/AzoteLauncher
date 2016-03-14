@@ -28,6 +28,9 @@ Launcher::Launcher(QWidget *parent) :
     updater->start();
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
+    connect(ui->playButton, SIGNAL(pressed()), this, SLOT(onPressedPlayButton()));
+    connect(ui->playButton, SIGNAL(released()), this, SLOT(onReleasedPlayButton()));
+
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
@@ -66,6 +69,16 @@ void Launcher::onClickPlayButton()
 
     dofus->start("../app/Dofus.exe", paramsDofus);
     reg->start("../app/reg/Reg.exe", paramsReg);
+}
+
+void Launcher::onPressedPlayButton()
+{
+    ui->playButton->setIcon(QIcon(":/ressources/bouton_enable_pushed.png"));
+}
+
+void Launcher::onReleasedPlayButton()
+{
+    ui->playButton->setIcon(QIcon(":/ressources/bouton_enable.png"));
 }
 
 void Launcher::onClickCloseButton()

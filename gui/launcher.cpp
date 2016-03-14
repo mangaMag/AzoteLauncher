@@ -40,6 +40,9 @@ void Launcher::closeEvent(QCloseEvent* /*event*/)
 
 void Launcher::onClickPlayButton()
 {
+    // TODO: choose random port
+    // TODO: start sound server
+
     QProcess* dofus = new QProcess(this);
     QProcess* reg = new QProcess(this);
 

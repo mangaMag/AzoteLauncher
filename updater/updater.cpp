@@ -6,6 +6,8 @@
 #include <QCryptographicHash>
 #include <QFileInfo>
 #include <QDir>
+#include <QCoreApplication>
+#include <QProcess>
 
 #include <QDebug>
 
@@ -64,9 +66,21 @@ void Updater::selfUpdate(Http* http)
     {
         if (launcherVersion > currentLauncherVersion)
         {
-            // TODO: download new bin
-
             settings->setValue("launcher/version", launcherVersion);
+            settings->sync();
+
+            // TODO: download new bin in temp
+
+            QStringList params;
+
+            params << "--selfupdate";
+            params << QString("--path=%1").arg(QCoreApplication::applicationDirPath());
+
+            QProcess* process = new QProcess(this);
+            // TODO: change bin path to temp bin path
+            process->startDetached(QCoreApplication::applicationFilePath(), params);
+
+            QCoreApplication::quit();
         }
     }
     else

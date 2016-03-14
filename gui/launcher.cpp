@@ -69,3 +69,19 @@ void Launcher::onClickCloseButton()
 {
     close();
 }
+
+void Launcher::mousePressEvent(QMouseEvent* event)
+{
+    mpos = event->pos();
+}
+
+void Launcher::mouseMoveEvent(QMouseEvent* event)
+{
+    if (event->buttons() && Qt::LeftButton)
+    {
+        QPoint diff = event->pos() - mpos;
+        QPoint newpos = this->pos() + diff;
+
+        this->move(newpos);
+    }
+}

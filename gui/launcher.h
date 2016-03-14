@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "../updater/updater.h"
 #include "../logger/logger.h"
+#include <QPoint>
+#include <QMouseEvent>
 
 namespace Ui {
 class Launcher;
@@ -21,8 +23,11 @@ private:
     Ui::Launcher* ui;
     Updater* updater;
     Logger* log;
+    QPoint mpos;
 
     void closeEvent(QCloseEvent *event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
 
 private slots:
     void onClickPlayButton();

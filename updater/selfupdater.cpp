@@ -8,7 +8,6 @@
 
 SelfUpdater::SelfUpdater(QObject *parent) : QObject(parent)
 {
-
 }
 
 bool SelfUpdater::update(int argc, char *argv[])

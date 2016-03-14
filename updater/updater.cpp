@@ -32,10 +32,10 @@ void Updater::run()
     processUpdate(http);
 
     log->info("Le client est à jour");
-    emit updateDownloadSpeed("Terminée");
+    emit updateDownloadSpeed("0 o/s");
+    emit updateStatus("Le client est à jour");
     emit enablePlayButton(true);
     emit updateProgressBarTotal(100);
-    emit updateProgressPercent("100 %");
 
     delete http;
     delete settings;
@@ -164,7 +164,8 @@ void Updater::processUpdate(Http* http)
                 {
                     if (updateGameFile(http, name, url))
                     {
-                        log->success(QString("Le fichier %1 a était mis à jour").arg(name));
+                        emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));
+                        log->success(QString("Le fichier %1 a été mis à jour").arg(name));
                     }
                     else
                     {
@@ -172,10 +173,7 @@ void Updater::processUpdate(Http* http)
                     }
                 }
 
-                int progressPercent = fileCounter * (progressStep * updateCounter) / filesCount;
-
-                emit updateProgressBarTotal(progressPercent);
-                emit updateProgressPercent(QString::number(progressPercent) + " %");
+                emit updateProgressBarTotal(fileCounter * (progressStep * updateCounter) / filesCount);
 
                 fileCounter++;
             }

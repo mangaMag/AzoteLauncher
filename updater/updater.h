@@ -1,7 +1,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "https://cdn.arkalys.com"
+#define URL "http://cdn.arkalys.com"
 
 #include <QThread>
 #include <QElapsedTimer>
@@ -44,7 +44,7 @@ private slots:
 
 signals:
     void updateProgressBarTotal(const int value);
-    void updateProgressBarFile(const int value);
+    void updateProgressPercent(const QString value);
     void updateDownloadSpeed(const QString speed);
     void enablePlayButton(bool state);
 };

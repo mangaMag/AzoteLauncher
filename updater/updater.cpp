@@ -32,6 +32,8 @@ void Updater::run()
     log->info("Le client est à jour");
     emit updateDownloadSpeed("Terminée");
     emit enablePlayButton(true);
+    emit updateProgressBarTotal(100);
+    emit updateProgressPercent("100 %");
 
     delete http;
     delete settings;
@@ -156,7 +158,10 @@ void Updater::processUpdate(Http* http)
                     }
                 }
 
-                emit updateProgressBarTotal(fileCounter * (progressStep * updateCounter) / filesCount);
+                int progressPercent = fileCounter * (progressStep * updateCounter) / filesCount;
+
+                emit updateProgressBarTotal(progressPercent);
+                emit updateProgressPercent(progressPercent + " %");
 
                 fileCounter++;
             }
@@ -297,5 +302,4 @@ void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     }
 
     emit updateDownloadSpeed(QString("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
-    emit updateProgressBarFile(bytesReceived * 100 / bytesTotal);
 }

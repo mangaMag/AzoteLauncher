@@ -22,10 +22,11 @@ private:
     Updater* updater;
     Logger* log;
 
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void onClickPlayButton();
+    void onClickCloseButton();
 };
 
 #endif // LAUNCHER_H

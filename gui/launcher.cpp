@@ -10,6 +10,9 @@ Launcher::Launcher(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_TranslucentBackground);
+    setWindowFlags(Qt::FramelessWindowHint);
+
     setFixedSize(width(), height());
     ui->labelDownloadSpeed->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -18,12 +21,13 @@ Launcher::Launcher(QWidget *parent) :
 
     updater = new Updater();
     connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
-    connect(updater, SIGNAL(updateProgressBarFile(int)), ui->progressBarFile, SLOT(setValue(int)));
+    connect(updater, SIGNAL(updateProgressPercent(int)), ui->labelProgressPercent, SLOT(setText(QString)));
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
     connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(setEnabled(bool)));
     updater->start();
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
+    connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
 }
 
 Launcher::~Launcher()
@@ -56,4 +60,9 @@ void Launcher::onClickPlayButton()
 
     dofus->start("../app/Dofus.exe", paramsDofus);
     reg->start("../app/reg/Reg.exe", paramsReg);
+}
+
+void Launcher::onClickCloseButton()
+{
+    close();
 }

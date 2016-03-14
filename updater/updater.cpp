@@ -34,6 +34,8 @@ void Updater::run()
     log->info("Le client est à jour");
     emit updateDownloadSpeed("Terminée");
     emit enablePlayButton(true);
+    emit updateProgressBarTotal(100);
+    emit updateProgressPercent("100 %");
 
     delete http;
     delete settings;
@@ -49,7 +51,7 @@ void Updater::getCurrentVersion()
     settings = new QSettings("config.ini", QSettings::IniFormat);
 
     currentClientVersion   = settings->value("client/version", QVariant(0)).toInt();
-    currentLauncherVersion = settings->value("launcher/version", QVariant(0)).toInt();
+    currentLauncherVersion = settings->value("launcher/version", QVariant(1)).toInt();
 }
 
 void Updater::selfUpdate(Http* http)

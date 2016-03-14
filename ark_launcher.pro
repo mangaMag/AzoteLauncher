@@ -14,14 +14,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         gui/launcher.cpp \
     updater/updater.cpp \
-    updater/updaterV2.cpp \
     logger/logger.cpp \
     http/http.cpp \
     gui/console.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
-    updater/updaterV2.h \
     logger/logger.h \
     serialization/singleton.h \
     http/http.h \

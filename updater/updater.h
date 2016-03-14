@@ -1,10 +1,13 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "http://127.0.0.1/client/"
+#define URL "https://cdn.arkalys.com"
 
 #include <QThread>
 #include <QElapsedTimer>
+#include <QJsonObject>
+#include <QVector>
+
 #include "../http/http.h"
 #include "../logger/logger.h"
 
@@ -14,13 +17,17 @@ class Updater : public QThread
 
 private:
     Logger* log;
-    bool flagRun;
-    Http* http;
+    volatile bool continueUpgrading;
     QElapsedTimer downloadTime;
+    QVector<QString> updatedFiles;
 
     void run();
-    bool isNeedUpdate(QString name, QString md5);
-    void updateFile(QString name);
+    void processUpdate();
+    QJsonObject getInfoFile(Http* http);
+    int getCurrentVersion();
+    QJsonObject getUpdateFile(Http* http, QString url);
+    bool checkIfFileRequireUpdate(QString path, QString md5);
+    bool updateGameFile(Http* http, QString path, QString url);
 
 public:
     explicit Updater(QThread* parent = 0);
@@ -34,7 +41,6 @@ signals:
     void updateProgressBarTotal(const int value);
     void updateProgressBarFile(const int value);
     void updateDownloadSpeed(const QString speed);
-
 };
 
 #endif // UPDATER_H

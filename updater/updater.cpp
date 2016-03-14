@@ -9,8 +9,6 @@
 #include <QCoreApplication>
 #include <QProcess>
 
-#include <QDebug>
-
 Updater::Updater(QThread* parent) :
     QThread(parent),
     continueUpgrading(true)
@@ -24,6 +22,8 @@ Updater::~Updater()
 
 void Updater::run()
 {
+    QFile::remove("update.exe");
+
     getCurrentVersion();
 
     Http* http = new Http();
@@ -50,8 +50,8 @@ void Updater::getCurrentVersion()
 {
     settings = new QSettings("config.ini", QSettings::IniFormat);
 
-    currentClientVersion   = settings->value("client/version", QVariant(0)).toInt();
-    currentLauncherVersion = settings->value("launcher/version", QVariant(0)).toInt();
+    currentClientVersion   = settings->value("client/version", 0).toInt();
+    currentLauncherVersion = settings->value("launcher/version", 1).toInt();
 }
 
 void Updater::selfUpdate(Http* http)
@@ -68,10 +68,24 @@ void Updater::selfUpdate(Http* http)
     {
         if (launcherVersion > currentLauncherVersion)
         {
-            settings->setValue("launcher/version", launcherVersion);
-            settings->sync();
+            if(!http->get(URL "/launcher.exe"))
+            {
+                log->debug(http->error());
+                return;
+            }
 
-            // TODO: download new bin in temp
+            QByteArray data = http->data();
+            QFile file("update.exe");
+
+            if(!file.open(QIODevice::WriteOnly))
+            {
+                log->debug(file.errorString());
+                return;
+            }
+
+            QDataStream out(&file);
+            out.writeRawData(data.data(), data.length());
+            file.close();
 
             QStringList params;
 
@@ -79,10 +93,18 @@ void Updater::selfUpdate(Http* http)
             params << QString("--path=%1").arg(QCoreApplication::applicationDirPath());
 
             QProcess* process = new QProcess(this);
-            // TODO: change bin path to temp bin path
-            process->startDetached(QCoreApplication::applicationFilePath(), params);
+            if (process->startDetached(file.fileName(), params))
+            {
+                settings->setValue("launcher/version", launcherVersion);
+                settings->sync();
 
-            QCoreApplication::quit();
+                QCoreApplication::quit();
+            }
+            else
+            {
+                log->error(process->errorString());
+                log->error("Impossible de mettre à jour le launcher");
+            }
         }
     }
     else
@@ -117,7 +139,7 @@ void Updater::processUpdate(Http* http)
         {
             if(!continueUpgrading)
             {
-                break;
+                return;
             }
 
             QString url = QString("%1/%2").arg(URL).arg(tempVersion);
@@ -150,7 +172,7 @@ void Updater::processUpdate(Http* http)
             {
                 if(!continueUpgrading)
                 {
-                    break;
+                    return;
                 }
 
                 QJsonObject fileObject = file.toObject();
@@ -164,9 +186,7 @@ void Updater::processUpdate(Http* http)
                 {
                     if (updateGameFile(http, name, url))
                     {
-                        emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));
-                        log->success(QString("Le fichier %1 a été mis à jour").arg(name));
-                    }
+                        emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));                    }
                     else
                     {
                         log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(name));
@@ -183,6 +203,7 @@ void Updater::processUpdate(Http* http)
     }
 
     settings->setValue("client/version", lastVersion);
+    settings->sync();
 }
 
 QJsonObject Updater::getInfoFile(Http *http)
@@ -270,7 +291,12 @@ bool Updater::updateGameFile(Http* http, QString path, QString url)
 
     if(!fileInfo.dir().exists())
     {
-        fileInfo.dir().mkpath(".");
+        if (!fileInfo.dir().mkpath("."))
+        {
+            stopProcess();
+            log->error("Vous ne disposez pas des droits d'écriture, relancez en Administrateur ou déplacez le dossier du jeu");
+            return false;
+        }
     }
 
     if(!file.open(QIODevice::WriteOnly))

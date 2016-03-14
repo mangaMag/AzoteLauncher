@@ -27,3 +27,6 @@ HEADERS  += gui/launcher.h \
 
 FORMS    += gui/launcher.ui \
     gui/console.ui
+
+RESOURCES += \
+    ressources.qrc

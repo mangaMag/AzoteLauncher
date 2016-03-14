@@ -7,6 +7,7 @@
 #include <QElapsedTimer>
 #include <QJsonObject>
 #include <QVector>
+#include <QSettings>
 
 #include "../http/http.h"
 #include "../logger/logger.h"
@@ -20,11 +21,15 @@ private:
     volatile bool continueUpgrading;
     QElapsedTimer downloadTime;
     QVector<QString> updatedFiles;
+    int currentClientVersion;
+    int currentLauncherVersion;
+    QSettings* settings;
 
     void run();
-    void processUpdate();
+    void selfUpdate(Http* http);
+    void processUpdate(Http* http);
+    void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);
-    int getCurrentVersion();
     QJsonObject getUpdateFile(Http* http, QString url);
     bool checkIfFileRequireUpdate(QString path, QString md5);
     bool updateGameFile(Http* http, QString path, QString url);
@@ -41,6 +46,7 @@ signals:
     void updateProgressBarTotal(const int value);
     void updateProgressBarFile(const int value);
     void updateDownloadSpeed(const QString speed);
+    void enablePlayButton(bool state);
 };
 
 #endif // UPDATER_H

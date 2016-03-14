@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ressources/ArkalysLauncherMinimal.png</file>
+    </qresource>
+</RCC>

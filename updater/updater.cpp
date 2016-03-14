@@ -7,7 +7,6 @@
 #include <QFileInfo>
 #include <QDir>
 
-#include <QDirIterator>
 #include <QDebug>
 
 Updater::Updater(QThread* parent) :
@@ -23,7 +22,19 @@ Updater::~Updater()
 
 void Updater::run()
 {
-    processUpdate();
+    getCurrentVersion();
+
+    Http* http = new Http();
+
+    selfUpdate(http);
+    processUpdate(http);
+
+    log->info("Le client est à jour");
+    emit updateDownloadSpeed("Terminée");
+    emit enablePlayButton(true);
+
+    delete http;
+    delete settings;
 }
 
 void Updater::stopProcess()
@@ -31,9 +42,41 @@ void Updater::stopProcess()
     continueUpgrading = false;
 }
 
-void Updater::processUpdate()
+void Updater::getCurrentVersion()
 {
-    Http* http = new Http();
+    settings = new QSettings("config.ini", QSettings::IniFormat);
+
+    currentClientVersion   = settings->value("client/version", QVariant(0)).toInt();
+    currentLauncherVersion = settings->value("launcher/version", QVariant(0)).toInt();
+}
+
+void Updater::selfUpdate(Http* http)
+{
+    if(!http->get(URL "/updater"))
+    {
+        log->debug(http->error());
+    }
+
+    bool ok;
+    int launcherVersion = http->data().toInt(&ok);
+
+    if (ok)
+    {
+        if (launcherVersion > currentLauncherVersion)
+        {
+            // TODO: download new bin
+
+            settings->setValue("launcher/version", launcherVersion);
+        }
+    }
+    else
+    {
+        log->error("Impossible de récupérer le fichier d'information de la version du launcher");
+    }
+}
+
+void Updater::processUpdate(Http* http)
+{
     connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
 
     QJsonObject infoFile = getInfoFile(http);
@@ -46,16 +89,15 @@ void Updater::processUpdate()
     }
 
     int lastVersion = infoFile.value("version").toInt();
-    int currentVersion = getCurrentVersion();
 
-    int numberOfUpdates = lastVersion - currentVersion;
-    int progressStep = 100 / numberOfUpdates;
+    int numberOfUpdates = lastVersion - currentClientVersion;
 
-    if (currentVersion < lastVersion)
+    if (currentClientVersion < lastVersion)
     {
+        int progressStep = 100 / numberOfUpdates;
         int updateCounter = 1;
 
-        for (int tempVersion = lastVersion; tempVersion > currentVersion; tempVersion--)
+        for (int tempVersion = lastVersion; tempVersion > currentClientVersion; tempVersion--)
         {
             if(!continueUpgrading)
             {
@@ -123,10 +165,7 @@ void Updater::processUpdate()
         }
     }
 
-    log->info("Le client est à jour");
-    emit updateDownloadSpeed("Terminée");
-
-    delete http;
+    settings->setValue("client/version", lastVersion);
 }
 
 QJsonObject Updater::getInfoFile(Http *http)
@@ -147,11 +186,6 @@ QJsonObject Updater::getInfoFile(Http *http)
     }
 
     return json.object();
-}
-
-int Updater::getCurrentVersion()
-{
-    return 0;
 }
 
 QJsonObject Updater::getUpdateFile(Http *http, QString url)

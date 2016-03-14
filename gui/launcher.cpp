@@ -9,6 +9,7 @@ Launcher::Launcher(QWidget *parent) :
     ui->setupUi(this);
 
     setFixedSize(width(), height());
+    ui->labelDownloadSpeed->setAttribute(Qt::WA_TranslucentBackground);
 
     log = &Singleton<Logger>::getInstance();
     log->showConsole();
@@ -17,6 +18,7 @@ Launcher::Launcher(QWidget *parent) :
     connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
     connect(updater, SIGNAL(updateProgressBarFile(int)), ui->progressBarFile, SLOT(setValue(int)));
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
+    connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(setEnabled(bool)));
     updater->start();
 }
 

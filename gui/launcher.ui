@@ -128,7 +128,7 @@ QProgressBar::chunk {
      </rect>
     </property>
     <property name="text">
-     <string>100 %</string>
+     <string>0 %</string>
     </property>
    </widget>
    <widget class="QPushButton" name="minimizeButton">

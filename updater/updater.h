@@ -28,7 +28,7 @@ private:
     QSettings* settings;
 
     void run();
-    void selfUpdate(Http* http);
+    bool selfUpdate(Http* http);
     void processUpdate(Http* http);
     void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);

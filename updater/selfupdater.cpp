@@ -37,8 +37,17 @@ bool SelfUpdater::update(int argc, char *argv[])
                 QString newPath = path;
                 newPath.append("/" + launcherName);
 
+
                 QFile::remove(newPath);
                 QFile::copy(tempPath, newPath);
+
+                QFile(newPath).setPermissions(QFile::ReadOwner |
+                                    QFile::WriteOwner |
+                                    QFile::ExeOwner |
+                                    QFile::ReadGroup |
+                                    QFile::ExeGroup |
+                                    QFile::ReadOther |
+                                    QFile::ExeOther);
 
                 QProcess* process = new QProcess(this);
                 process->startDetached(newPath, QStringList(), path);

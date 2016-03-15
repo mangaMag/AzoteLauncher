@@ -63,7 +63,7 @@ void Launcher::onClickPlayButton()
     paramsDofus << "--updater_version=v2";
     paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
-    dofus->start("../app/Dofus.exe", paramsDofus);
+    dofus->startDetached("../app/Dofus.exe", paramsDofus);
 
     if (!isRegStarted)
     {

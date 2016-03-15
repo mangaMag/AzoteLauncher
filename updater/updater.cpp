@@ -68,6 +68,8 @@ void Updater::selfUpdate(Http* http)
     {
         if (launcherVersion > currentLauncherVersion)
         {
+            stopProcess();
+
             if(!http->get(URL "/launcher.exe"))
             {
                 log->debug(http->error());
@@ -75,7 +77,7 @@ void Updater::selfUpdate(Http* http)
             }
 
             QByteArray data = http->data();
-            QFile file("update.exe");
+            QFile file(QCoreApplication::applicationDirPath() + "/update.exe");
 
             if(!file.open(QIODevice::WriteOnly))
             {
@@ -255,7 +257,7 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
     }
 
     QCryptographicHash hash(QCryptographicHash::Md5);
-    QFile file("../" + path);
+    QFile file(QCoreApplication::applicationDirPath() + "/../" + path);
 
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -286,8 +288,8 @@ bool Updater::updateGameFile(Http* http, QString path, QString url)
     }
 
     QByteArray data = http->data();
-    QFile file("../" + path);
-    QFileInfo fileInfo("../" + path);
+    QFile file(QCoreApplication::applicationDirPath() + "/../" + path);
+    QFileInfo fileInfo(QCoreApplication::applicationDirPath() + "/../" + path);
 
     if(!fileInfo.dir().exists())
     {

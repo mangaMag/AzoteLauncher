@@ -29,7 +29,7 @@ bool SelfUpdater::update(int argc, char *argv[])
                 path.remove("--path=");
 
                 QString newPath = path;
-                newPath.append("\\launcher.exe");
+                newPath.append("/launcher.exe");
 
                 QFile::remove(newPath);
                 QFile::copy(tempPath, newPath);

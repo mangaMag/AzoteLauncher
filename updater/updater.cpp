@@ -64,7 +64,7 @@ void Updater::getCurrentVersion()
 
 bool Updater::selfUpdate(Http* http)
 {
-    if(!http->get(URL "/updater"))
+    if(!http->get(URL "/updater.dat"))
     {
         log->debug(http->error());
     }

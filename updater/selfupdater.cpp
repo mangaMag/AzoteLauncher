@@ -15,6 +15,12 @@ bool SelfUpdater::update(int argc, char *argv[])
     //Logger* log = &Singleton<Logger>::getInstance();
     //log->showConsole();
 
+    QString launcherName = "launcher";
+
+    #ifdef _WIN32
+        launcherName = "launcher.exe";
+    #endif
+
     for (int i = 1; i < argc; i++)
     {
         if (QString::compare("--selfupdate", argv[i]) == 0)
@@ -29,7 +35,7 @@ bool SelfUpdater::update(int argc, char *argv[])
                 path.remove("--path=");
 
                 QString newPath = path;
-                newPath.append("/launcher.exe");
+                newPath.append("/" + launcherName);
 
                 QFile::remove(newPath);
                 QFile::copy(tempPath, newPath);

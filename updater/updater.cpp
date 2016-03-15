@@ -14,6 +14,12 @@ Updater::Updater(QThread* parent) :
     continueUpgrading(true)
 {
     log = &Singleton<Logger>::getInstance();
+
+    #ifdef _WIN32
+        updateFileName = "update.exe";
+    #else
+        updateFileName = "update";
+    #endif
 }
 
 Updater::~Updater()
@@ -22,7 +28,7 @@ Updater::~Updater()
 
 void Updater::run()
 {
-    QFile::remove("update.exe");
+    QFile::remove(updateFileName);
 
     getCurrentVersion();
 
@@ -70,14 +76,14 @@ void Updater::selfUpdate(Http* http)
         {
             stopProcess();
 
-            if(!http->get(URL "/launcher.exe"))
+            if(!http->get(URL "/" + updateFileName))
             {
                 log->debug(http->error());
                 return;
             }
 
             QByteArray data = http->data();
-            QFile file(QCoreApplication::applicationDirPath() + "/update.exe");
+            QFile file(QCoreApplication::applicationDirPath() + "/" + updateFileName);
 
             if(!file.open(QIODevice::WriteOnly))
             {
@@ -117,6 +123,9 @@ void Updater::selfUpdate(Http* http)
 
 void Updater::processUpdate(Http* http)
 {
+    if (!continueUpgrading)
+        return;
+
     connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
 
     QJsonObject infoFile = getInfoFile(http);

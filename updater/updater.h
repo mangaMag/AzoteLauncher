@@ -24,6 +24,7 @@ private:
     QVector<QString> updatedFiles;
     int currentClientVersion;
     int currentLauncherVersion;
+    QString updateFileName;
     QSettings* settings;
 
     void run();

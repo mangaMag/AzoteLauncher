@@ -35,7 +35,9 @@ void Updater::run()
     Http* http = new Http();
 
     if (selfUpdate(http))
+    {
         processUpdate(http);
+    }
 
     log->info("Le client est à jour");
     emit updateDownloadSpeed("0 o/s");
@@ -93,13 +95,13 @@ bool Updater::selfUpdate(Http* http)
             out.writeRawData(data.data(), data.length());
             file.close();
 
-            if (!file.setPermissions(QFile::ReadOwner |
-                                QFile::WriteOwner |
-                                QFile::ExeOwner |
-                                QFile::ReadGroup |
-                                QFile::ExeGroup |
-                                QFile::ReadOther |
-                                QFile::ExeOther))
+            if (!file.setPermissions(QFile::ReadOwner  |
+                                     QFile::WriteOwner |
+                                     QFile::ExeOwner   |
+                                     QFile::ReadGroup  |
+                                     QFile::ExeGroup   |
+                                     QFile::ReadOther  |
+                                     QFile::ExeOther))
             {
                 log->error("Impossible de mettre à jour le launcher (Permissions)");
                 return false;
@@ -140,7 +142,9 @@ bool Updater::selfUpdate(Http* http)
 void Updater::processUpdate(Http* http)
 {
     if (!continueUpgrading)
+    {
         return;
+    }
 
     connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
 
@@ -154,13 +158,21 @@ void Updater::processUpdate(Http* http)
     }
 
     int lastVersion = infoFile.value("version").toInt();
-
     int numberOfUpdates = lastVersion - currentClientVersion;
 
     if (currentClientVersion < lastVersion)
     {
         int progressStep = 100 / numberOfUpdates;
         int updateCounter = 1;
+
+        QFileInfo parentDir(QCoreApplication::applicationDirPath() + "/../");
+
+        if (!parentDir.isWritable())
+        {
+            stopProcess();
+            log->error("Vous ne disposez pas des droits d'écriture, relancez en Administrateur ou déplacez le dossier du jeu");
+            return;
+        }
 
         for (int tempVersion = lastVersion; tempVersion > currentClientVersion; tempVersion--)
         {
@@ -170,7 +182,6 @@ void Updater::processUpdate(Http* http)
             }
 
             QString url = QString("%1/%2").arg(URL).arg(tempVersion);
-
             QJsonObject updateFile = getUpdateFile(http, url);
 
             if (updateFile.isEmpty())
@@ -213,7 +224,8 @@ void Updater::processUpdate(Http* http)
                 {
                     if (updateGameFile(http, name, url))
                     {
-                        emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));                    }
+                        emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));
+                    }
                     else
                     {
                         log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(name));

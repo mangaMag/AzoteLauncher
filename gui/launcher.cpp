@@ -63,7 +63,11 @@ void Launcher::onClickPlayButton()
     paramsDofus << "--updater_version=v2";
     paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
+#ifdef _WIN32
     dofus->startDetached("../app/Dofus.exe", paramsDofus);
+#else
+    dofus->startDetached(QString("open %1").arg(QCoreApplication::applicationDirPath() + "../Dofus.app"), paramsDofus);
+#endif
 
     if (!isRegStarted)
     {
@@ -72,7 +76,11 @@ void Launcher::onClickPlayButton()
 
         paramsReg << "--reg-engine-port=" + QString::number(port + 2);
 
+#ifdef _WIN32
         reg->start("../app/reg/Reg.exe", paramsReg);
+#else
+        reg->start(QString("open %1").arg(QCoreApplication::applicationDirPath() + "../Dofus.app/Contents/Resources/Reg.app"), paramsReg);
+#endif
 
         isRegStarted = true;
     }

@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     logger/logger.cpp \
     http/http.cpp \
     gui/console.cpp \
-    updater/selfupdater.cpp
+    updater/selfupdater.cpp \
+    others/sound.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
@@ -25,7 +26,8 @@ HEADERS  += gui/launcher.h \
     serialization/singleton.h \
     http/http.h \
     gui/console.h \
-    updater/selfupdater.h
+    updater/selfupdater.h \
+    others/sound.h
 
 FORMS    += gui/launcher.ui \
     gui/console.ui

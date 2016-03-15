@@ -48,7 +48,7 @@ void Updater::stopProcess()
 
 void Updater::getCurrentVersion()
 {
-    settings = new QSettings("config.ini", QSettings::IniFormat);
+    settings = new QSettings("./config.ini", QSettings::IniFormat);
 
     currentClientVersion   = settings->value("client/version", 0).toInt();
     currentLauncherVersion = settings->value("launcher/version", 1).toInt();

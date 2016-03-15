@@ -24,6 +24,8 @@ private:
     Updater* updater;
     Logger* log;
     QPoint mpos;
+    int port;
+    bool isRegStarted;
 
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent* event);

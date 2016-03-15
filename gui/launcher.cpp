@@ -1,13 +1,15 @@
 #include "launcher.h"
 #include "ui_launcher.h"
 #include "../logger/logger.h"
+#include "../others/sound.h"
 
 #include <QProcess>
 #include <QMessageBox>
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Launcher)
+    ui(new Ui::Launcher),
+    isRegStarted(false)
 {
     ui->setupUi(this);
 
@@ -34,6 +36,9 @@ Launcher::Launcher(QWidget *parent) :
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
+
+    Sound* sound = new Sound();
+    port = sound->start();
 }
 
 Launcher::~Launcher()
@@ -50,25 +55,27 @@ void Launcher::closeEvent(QCloseEvent* /*event*/)
 
 void Launcher::onClickPlayButton()
 {
-    // TODO: choose random port
-    // TODO: start sound server
-
     QProcess* dofus = new QProcess(this);
-    QProcess* reg = new QProcess(this);
-
     QStringList paramsDofus;
 
     paramsDofus << "--lang=fr";
-    paramsDofus << "--update-server-port=4444";
+    paramsDofus << "--update-server-port=" + QString::number(port);
     paramsDofus << "--updater_version=v2";
-    paramsDofus << "--reg-client-port=5555";
-
-    QStringList paramsReg;
-
-    paramsReg << "--reg-engine-port=5556";
+    paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
     dofus->start("../app/Dofus.exe", paramsDofus);
-    reg->start("../app/reg/Reg.exe", paramsReg);
+
+    if (!isRegStarted)
+    {
+        QProcess* reg = new QProcess(this);
+        QStringList paramsReg;
+
+        paramsReg << "--reg-engine-port=" + QString::number(port + 2);
+
+        reg->start("../app/reg/Reg.exe", paramsReg);
+
+        isRegStarted = true;
+    }
 }
 
 void Launcher::onPressedPlayButton()

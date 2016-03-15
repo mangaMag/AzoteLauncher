@@ -24,8 +24,8 @@ Launcher::Launcher(QWidget *parent) :
 
     updater = new Updater();
     connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
-    connect(updater, SIGNAL(updateProgressPercent(QString)), ui->labelProgressPercent, SLOT(setText(QString)));
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
+    connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
     connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(setEnabled(bool)));
     updater->start();
 

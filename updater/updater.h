@@ -47,6 +47,7 @@ signals:
     void updateProgressBarTotal(const int value);
     void updateProgressPercent(const QString value);
     void updateDownloadSpeed(const QString speed);
+    void updateStatus(const QString status);
     void enablePlayButton(bool state);
 };
 

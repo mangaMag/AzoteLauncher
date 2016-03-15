@@ -9,5 +9,6 @@
         <file>ressources/topbouton_close.png</file>
         <file>ressources/topbouton_reduce.png</file>
         <file>ressources/topbouton_repair.png</file>
+        <file>ressources/chunk.png</file>
     </qresource>
 </RCC>

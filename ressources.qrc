@@ -10,5 +10,6 @@
         <file>ressources/topbouton_reduce.png</file>
         <file>ressources/topbouton_repair.png</file>
         <file>ressources/chunk.png</file>
+        <file>ressources/Launcher.ico</file>
     </qresource>
 </RCC>

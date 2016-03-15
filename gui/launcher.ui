@@ -18,6 +18,10 @@
   <property name="windowTitle">
    <string>ARKALYS Prime</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../ressources.qrc">
+    <normaloff>:/ressources/Launcher.ico</normaloff>:/ressources/Launcher.ico</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/ressources/background.png);
 background-repeat: no-repeat;
@@ -180,7 +184,7 @@ QProgressBar::chunk {
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>495</y>
+      <y>497</y>
       <width>631</width>
       <height>20</height>
      </rect>

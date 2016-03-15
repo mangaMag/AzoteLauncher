@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Console</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../ressources.qrc">
+    <normaloff>:/ressources/Launcher.ico</normaloff>:/ressources/Launcher.ico</iconset>
+  </property>
   <widget class="QTextEdit" name="console">
    <property name="geometry">
     <rect>
@@ -31,6 +35,8 @@ color: rgb(255, 255, 255);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>

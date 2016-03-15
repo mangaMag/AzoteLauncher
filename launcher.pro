@@ -13,6 +13,7 @@ TEMPLATE = app
 
 ICON = ressources/Launcher.icns
 RC_FILE = ressources/Launcher.rc
+RC_ICONS = ressources/Launcher.ico
 
 SOURCES += main.cpp\
         gui/launcher.cpp \

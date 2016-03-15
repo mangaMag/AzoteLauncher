@@ -4,18 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = launcher
 TEMPLATE = app
 
-ICON =
+ICON = ressources/Launcher.icns
 RC_ICONS = ressources/Launcher.ico
 
 SOURCES += main.cpp\
-        gui/launcher.cpp \
+    gui/launcher.cpp \
     updater/updater.cpp \
     logger/logger.cpp \
     http/http.cpp \

@@ -11,8 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = launcher
 TEMPLATE = app
 
-ICON = ressources/Launcher.icns
-RC_FILE = ressources/Launcher.rc
+ICON =
 RC_ICONS = ressources/Launcher.ico
 
 SOURCES += main.cpp\

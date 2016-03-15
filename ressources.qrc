@@ -1,9 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>ressources/ArkalysLauncherMinimal.png</file>
         <file>ressources/background.png</file>
         <file>ressources/barre.png</file>
-        <file>ressources/bouton_disable.png</file>
         <file>ressources/bouton_enable.png</file>
         <file>ressources/bouton_enable_pushed.png</file>
         <file>ressources/topbouton_close.png</file>
@@ -11,5 +9,6 @@
         <file>ressources/topbouton_repair.png</file>
         <file>ressources/chunk.png</file>
         <file>ressources/Launcher.ico</file>
+        <file>ressources/Launcher.icns</file>
     </qresource>
 </RCC>

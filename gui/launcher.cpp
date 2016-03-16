@@ -66,6 +66,15 @@ void Launcher::onClickPlayButton()
 #ifdef _WIN32
     dofus->startDetached("../app/Dofus.exe", paramsDofus);
 #else
+    QFile::setPermissions(QCoreApplication::applicationDirPath() + "../Dofus.app/Contents/MacOS/Dofus",
+                            QFile::ReadOwner  |
+                            QFile::WriteOwner |
+                            QFile::ExeOwner   |
+                            QFile::ReadGroup  |
+                            QFile::ExeGroup   |
+                            QFile::ReadOther  |
+                            QFile::ExeOther);
+
     dofus->startDetached(QString("open %1").arg(QCoreApplication::applicationDirPath() + "../Dofus.app"), paramsDofus);
 #endif
 
@@ -79,6 +88,15 @@ void Launcher::onClickPlayButton()
 #ifdef _WIN32
         reg->start("../app/reg/Reg.exe", paramsReg);
 #else
+        QFile::setPermissions(QCoreApplication::applicationDirPath() + "../Dofus.app/Contents/Resources/Reg.app/Contents/MacOS/Reg",
+                                QFile::ReadOwner  |
+                                QFile::WriteOwner |
+                                QFile::ExeOwner   |
+                                QFile::ReadGroup  |
+                                QFile::ExeGroup   |
+                                QFile::ReadOther  |
+                                QFile::ExeOther);
+
         reg->start(QString("open %1").arg(QCoreApplication::applicationDirPath() + "../Dofus.app/Contents/Resources/Reg.app"), paramsReg);
 #endif
 

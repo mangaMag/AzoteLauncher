@@ -39,7 +39,7 @@ void Updater::run()
         processUpdate(http);
     }
 
-    log->info("Le client est à jour");
+    log->info("Le client est à jour (0.0.2)");
     emit updateDownloadSpeed("0 o/s");
     emit updateStatus("Le client est à jour");
     emit enablePlayButton(true);

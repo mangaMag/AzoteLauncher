@@ -15,10 +15,10 @@ bool SelfUpdater::update(int argc, char *argv[])
     //Logger* log = &Singleton<Logger>::getInstance();
     //log->showConsole();
 
-    QString launcherName = "launcher";
+    QString launcherName = "ArkalysUpdater";
 
     #ifdef _WIN32
-        launcherName = "launcher.exe";
+        launcherName = "ArkalysUpdater.exe";
     #endif
 
     for (int i = 1; i < argc; i++)

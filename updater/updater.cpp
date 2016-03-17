@@ -20,6 +20,8 @@ Updater::Updater(QThread* parent) :
     #else
         updateFileName = "update";
     #endif
+
+    currentLauncherVersion = 3;
 }
 
 Updater::~Updater()
@@ -39,7 +41,7 @@ void Updater::run()
         processUpdate(http);
     }
 
-    log->info("Le client est à jour (0.0.2)");
+    log->info("Le client est à jour (" + QString::number(currentLauncherVersion) + ")");
     emit updateDownloadSpeed("0 o/s");
     emit updateStatus("Le client est à jour");
     emit enablePlayButton(true);
@@ -59,7 +61,6 @@ void Updater::getCurrentVersion()
     settings = new QSettings("./config.ini", QSettings::IniFormat);
 
     currentClientVersion   = settings->value("client/version", 0).toInt();
-    currentLauncherVersion = settings->value("launcher/version", 1).toInt();
 }
 
 bool Updater::selfUpdate(Http* http)
@@ -116,9 +117,6 @@ bool Updater::selfUpdate(Http* http)
             QProcess* process = new QProcess(this);
             if (process->startDetached(file.fileName(), params, QCoreApplication::applicationDirPath()))
             {
-                settings->setValue("launcher/version", launcherVersion);
-                settings->sync();
-
                 QCoreApplication::quit();
             }
             else

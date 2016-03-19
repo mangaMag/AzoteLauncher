@@ -37,7 +37,6 @@ bool SelfUpdater::update(int argc, char *argv[])
                 QString newPath = path;
                 newPath.append("/" + launcherName);
 
-
                 QFile::remove(newPath);
                 QFile::copy(tempPath, newPath);
 

@@ -60,7 +60,7 @@ void Updater::getCurrentVersion()
     settings = new QSettings("./config.ini", QSettings::IniFormat);
 
     currentClientVersion   = settings->value("client/version", 0).toInt();
-    currentLauncherVersion = LAUNCHER_VERSION; // settings->value("launcher/version", 1).toInt();
+    currentLauncherVersion = LAUNCHER_VERSION;
 }
 
 bool Updater::selfUpdate(Http* http)
@@ -123,9 +123,6 @@ bool Updater::selfUpdate(Http* http)
             QProcess* process = new QProcess(this);
             if (process->startDetached(file.fileName(), params, QCoreApplication::applicationDirPath()))
             {
-                settings->setValue("launcher/version", launcherVersion);
-                settings->sync();
-
                 QCoreApplication::quit();
             }
             else

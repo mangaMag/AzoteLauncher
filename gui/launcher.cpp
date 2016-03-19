@@ -3,7 +3,6 @@
 #include "../logger/logger.h"
 #include "../others/sound.h"
 
-#include <QProcess>
 #include <QMessageBox>
 
 Launcher::Launcher(QWidget *parent) :
@@ -82,7 +81,7 @@ void Launcher::onClickPlayButton()
 
     if (!isRegStarted)
     {
-        QProcess* reg = new QProcess(this);
+        reg = new QProcess(this);
 
 #ifdef _WIN32
         QStringList paramsReg;

@@ -6,6 +6,7 @@
 #include "../logger/logger.h"
 #include <QPoint>
 #include <QMouseEvent>
+#include <QProcess>
 
 namespace Ui {
 class Launcher;
@@ -26,6 +27,7 @@ private:
     QPoint mpos;
     int port;
     bool isRegStarted;
+    QProcess* reg;
 
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent* event);

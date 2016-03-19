@@ -8,7 +8,7 @@ QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = launcher
+TARGET = ArkalysUpdater
 TEMPLATE = app
 
 DEFINES += LAUNCHER_VERSION=4

@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QElapsedTimer>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QVector>
 #include <QSettings>
 
@@ -33,6 +34,7 @@ private:
     void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);
     QJsonObject getUpdateFile(Http* http, QString url);
+    void updateGameFiles(Http* http, QJsonArray files, QString url, int& filesCount, int& progressStep, int& updateCounter, int& fileCounter);
     bool checkIfFileRequireUpdate(QString path, QString md5);
     bool updateGameFile(Http* http, QString path, QString url);
 

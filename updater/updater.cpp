@@ -1,6 +1,5 @@
 #include "updater.h"
 #include <QJsonDocument>
-#include <QJsonArray>
 #include <QFile>
 #include <QDataStream>
 #include <QCryptographicHash>
@@ -204,49 +203,65 @@ void Updater::processUpdate(Http* http)
                 continue;
             }
 
-            QJsonArray files = updateFile.value("files").toArray();
-            int filesCount = files.count();
+            QJsonArray commonFiles = updateFile.value("files").toArray();
+#ifdef _WIN32
+            QJsonArray osFiles = updateFile.value("win").toArray();
+#else
+            QJsonArray osFiles = updateFile.value("mac").toArray();
+#endif
+
+            int filesCount  = commonFiles.count();
+                filesCount += osFiles.count();
+
             log->info(QString("La mise à jour %1 comporte %2 fichier(s)").arg(tempVersion).arg(filesCount));
 
             int fileCounter = 1;
 
-            foreach(const QJsonValue& file, files)
-            {
-                if(!continueUpgrading)
-                {
-                    return;
-                }
-
-                QJsonObject fileObject = file.toObject();
-
-                QString name = fileObject.value("name").toString();
-                QString md5 = fileObject.value("md5").toString();
-
-                //log->debug(QString("%1 %2").arg(name).arg(md5));
-
-                if (checkIfFileRequireUpdate(name, md5))
-                {
-                    if (updateGameFile(http, name, url))
-                    {
-                        emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));
-                    }
-                    else
-                    {
-                        log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(name));
-                    }
-                }
-
-                emit updateProgressBarTotal(fileCounter * (progressStep * updateCounter) / filesCount);
-
-                fileCounter++;
-            }
+            updateGameFiles(http, commonFiles, url, filesCount, progressStep, updateCounter, fileCounter);
+            updateGameFiles(http, osFiles,     url, filesCount, progressStep, updateCounter, fileCounter);
 
             updateCounter++;
         }
     }
 
+    currentClientVersion = lastVersion;
+
     settings->setValue("client/version", lastVersion);
     settings->sync();
+}
+
+void Updater::updateGameFiles(Http* http, QJsonArray files, QString url, int& filesCount, int& progressStep, int& updateCounter, int& fileCounter)
+{
+    foreach(const QJsonValue& file, files)
+    {
+        if(!continueUpgrading)
+        {
+            return;
+        }
+
+        QJsonObject fileObject = file.toObject();
+
+        QString name = fileObject.value("name").toString();
+        QString md5 = fileObject.value("md5").toString();
+
+        //log->debug(QString("%1 %2").arg(name).arg(md5));
+
+        if (checkIfFileRequireUpdate(name, md5))
+        {
+            if (updateGameFile(http, name, url))
+            {
+                emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));
+            }
+            else
+            {
+                log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(name));
+            }
+        }
+
+        emit updateProgressBarTotal(fileCounter * (progressStep * updateCounter) / filesCount);
+
+        fileCounter++;
+    }
 }
 
 QJsonObject Updater::getInfoFile(Http *http)
@@ -310,7 +325,7 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
 
     if(md5.compare(hash.result().toHex().data(), Qt::CaseInsensitive) == 0)
     {
-        // log->debug(QString("%1 OK").arg(name));
+        //log->debug(QString("%1 OK").arg(path));
         updatedFiles.append(path);
         return false;
     }

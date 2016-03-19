@@ -2,12 +2,7 @@
 #define UPDATER_H
 
 //#define URL "http://cdn.arkalys.com"
-
-#ifdef _WIN32
-#define URL "http://arkalys.s3.amazonaws.com/updater/win"
-#else
-#define URL "http://arkalys.s3.amazonaws.com/updater/mac"
-#endif
+#define URL "http://arkalys.s3.amazonaws.com/updater"
 
 #include <QThread>
 #include <QElapsedTimer>

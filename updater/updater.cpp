@@ -15,11 +15,12 @@ Updater::Updater(QThread* parent) :
 {
     log = &Singleton<Logger>::getInstance();
 
-    #ifdef _WIN32
-        updateFileName = "update.exe";
-    #else
-        updateFileName = "update";
-    #endif
+    updateFileName = "update";
+
+#ifdef _WIN32
+    updateFileName.append(".exe");
+#endif
+
 }
 
 Updater::~Updater()
@@ -39,7 +40,7 @@ void Updater::run()
         processUpdate(http);
     }
 
-    log->info("Le client est à jour (0.0.2)");
+    log->info(QString("Le client est à jour (client: %1 launcher: %2)").arg(currentClientVersion).arg(currentLauncherVersion));
     emit updateDownloadSpeed("0 o/s");
     emit updateStatus("Le client est à jour");
     emit enablePlayButton(true);
@@ -59,12 +60,18 @@ void Updater::getCurrentVersion()
     settings = new QSettings("./config.ini", QSettings::IniFormat);
 
     currentClientVersion   = settings->value("client/version", 0).toInt();
-    currentLauncherVersion = settings->value("launcher/version", 1).toInt();
+    currentLauncherVersion = LAUNCHER_VERSION; // settings->value("launcher/version", 1).toInt();
 }
 
 bool Updater::selfUpdate(Http* http)
 {
-    if(!http->get(URL "/updater.dat"))
+#ifdef _WIN32
+    QString url = URL "/win";
+#else
+    QString url = URL "/mac";
+#endif
+
+    if(!http->get(url + "/updater.dat"))
     {
         log->debug(http->error());
     }
@@ -76,7 +83,7 @@ bool Updater::selfUpdate(Http* http)
     {
         if (launcherVersion > currentLauncherVersion)
         {
-            if(!http->get(URL "/" + updateFileName))
+            if(!http->get(url + "/" + updateFileName))
             {
                 log->debug(http->error());
                 return false;
@@ -181,7 +188,7 @@ void Updater::processUpdate(Http* http)
                 return;
             }
 
-            QString url = QString("%1/%2").arg(URL).arg(tempVersion);
+            QString url = QString("%1/game/%2").arg(URL).arg(tempVersion);
             QJsonObject updateFile = getUpdateFile(http, url);
 
             if (updateFile.isEmpty())
@@ -247,7 +254,7 @@ void Updater::processUpdate(Http* http)
 
 QJsonObject Updater::getInfoFile(Http *http)
 {
-    if(!http->get(URL "/info.json"))
+    if(!http->get(URL "/game/info.json"))
     {
         log->debug(http->error());
         return QJsonObject();

@@ -47,6 +47,7 @@ void Sound::onClientSoundConnected()
 void Sound::onRegSoundConnected()
 {
     regSoundSocket = regSoundServer->nextPendingConnection();
+    connect(regSoundSocket, SIGNAL(readyRead()), this, SLOT(onRegSoundData()));
 }
 
 void Sound::onClientInfoData()
@@ -75,4 +76,10 @@ void Sound::onClientSoundData()
     QByteArray data = client->readAll();
 
     regSoundSocket->write(data);
+}
+
+void Sound::onRegSoundData()
+{
+    QByteArray data = regSoundSocket->readAll();
+    regSoundSocket->write("0=>pong()");
 }

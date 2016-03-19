@@ -30,6 +30,7 @@ private slots:
 
     void onClientInfoData();
     void onClientSoundData();
+    void onRegSoundData();
 };
 
 #endif // SOUND_H

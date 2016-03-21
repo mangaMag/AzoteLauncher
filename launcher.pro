@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ArkalysUpdater
 TEMPLATE = app
 
-DEFINES += LAUNCHER_VERSION=4
+DEFINES += LAUNCHER_VERSION=5
 
 ICON = ressources/Launcher.icns
 RC_ICONS = ressources/Launcher.ico

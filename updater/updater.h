@@ -2,7 +2,8 @@
 #define UPDATER_H
 
 //#define URL "http://cdn.arkalys.com"
-#define URL "http://arkalys.s3.amazonaws.com/updater"
+//#define URL "http://arkalys.s3.amazonaws.com/updater"
+#define URL "https://vodka.voidmx.net/Arkalys"
 
 #include <QThread>
 #include <QElapsedTimer>
@@ -28,15 +29,20 @@ private:
     QString updateFileName;
     QSettings* settings;
 
+    int filesCount;
+    int progressStep;
+    int updateCounter;
+    int fileCounter;
+
     void run();
     bool selfUpdate(Http* http);
     void processUpdate(Http* http);
     void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);
     QJsonObject getUpdateFile(Http* http, QString url);
-    void updateGameFiles(Http* http, QJsonArray files, QString url, int& filesCount, int& progressStep, int& updateCounter, int& fileCounter);
+    void updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix);
     bool checkIfFileRequireUpdate(QString path, QString md5);
-    bool updateGameFile(Http* http, QString path, QString url);
+    bool updateGameFile(Http* http, QString url, QString name, QString urlName);
 
 public:
     explicit Updater(QThread* parent = 0);

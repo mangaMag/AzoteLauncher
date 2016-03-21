@@ -165,8 +165,8 @@ void Updater::processUpdate(Http* http)
 
     if (currentClientVersion < lastVersion)
     {
-        int progressStep = 100 / numberOfUpdates;
-        int updateCounter = 1;
+        progressStep = 100 / numberOfUpdates;
+        updateCounter = 1;
 
         QFileInfo parentDir(QCoreApplication::applicationDirPath() + "/../");
 
@@ -184,7 +184,7 @@ void Updater::processUpdate(Http* http)
                 return;
             }
 
-            QString url = QString("%1/game/%2").arg(URL).arg(tempVersion);
+            QString url = QString("%1/%2").arg(URL).arg(tempVersion);
             QJsonObject updateFile = getUpdateFile(http, url);
 
             if (updateFile.isEmpty())
@@ -203,22 +203,26 @@ void Updater::processUpdate(Http* http)
                 continue;
             }
 
-            QJsonArray commonFiles = updateFile.value("files").toArray();
 #ifdef _WIN32
-            QJsonArray osFiles = updateFile.value("win").toArray();
+            QString os = "win";
 #else
-            QJsonArray osFiles = updateFile.value("mac").toArray();
+            QString os = "mac";
 #endif
 
-            int filesCount  = commonFiles.count();
-                filesCount += osFiles.count();
+            QString prefix = updateFile.value("prefix").toObject().value(os).toString();
+
+            QJsonArray commonFiles = updateFile.value("common").toArray();
+            QJsonArray osFiles     = updateFile.value(os).toArray();
+
+            filesCount  = commonFiles.count();
+            filesCount += osFiles.count();
 
             log->info(QString("La mise à jour %1 comporte %2 fichier(s)").arg(tempVersion).arg(filesCount));
 
-            int fileCounter = 1;
+            fileCounter = 1;
 
-            updateGameFiles(http, commonFiles, url, filesCount, progressStep, updateCounter, fileCounter);
-            updateGameFiles(http, osFiles,     url, filesCount, progressStep, updateCounter, fileCounter);
+            updateGameFiles(http, url, commonFiles, prefix, "common");
+            updateGameFiles(http, url, osFiles,     "",     os);
 
             updateCounter++;
         }
@@ -230,7 +234,7 @@ void Updater::processUpdate(Http* http)
     settings->sync();
 }
 
-void Updater::updateGameFiles(Http* http, QJsonArray files, QString url, int& filesCount, int& progressStep, int& updateCounter, int& fileCounter)
+void Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix)
 {
     foreach(const QJsonValue& file, files)
     {
@@ -242,19 +246,20 @@ void Updater::updateGameFiles(Http* http, QJsonArray files, QString url, int& fi
         QJsonObject fileObject = file.toObject();
 
         QString name = fileObject.value("name").toString();
-        QString md5 = fileObject.value("md5").toString();
+        QString md5  = fileObject.value("md5").toString();
+        QString nameWithPrefix = pathPrefix + name;
 
-        //log->debug(QString("%1 %2").arg(name).arg(md5));
+        log->debug(QString("%1 %2").arg(nameWithPrefix).arg(md5));
 
-        if (checkIfFileRequireUpdate(name, md5))
+        if (checkIfFileRequireUpdate(nameWithPrefix, md5))
         {
-            if (updateGameFile(http, name, url))
+            if (updateGameFile(http, url, nameWithPrefix, urlPrefix + "/" + name))
             {
-                emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(name));
+                emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(nameWithPrefix));
             }
             else
             {
-                log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(name));
+                log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(nameWithPrefix));
             }
         }
 
@@ -266,7 +271,7 @@ void Updater::updateGameFiles(Http* http, QJsonArray files, QString url, int& fi
 
 QJsonObject Updater::getInfoFile(Http *http)
 {
-    if(!http->get(URL "/game/info.json"))
+    if(!http->get(URL "/info.json"))
     {
         log->debug(http->error());
         return QJsonObject();
@@ -333,19 +338,19 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
     return true;
 }
 
-bool Updater::updateGameFile(Http* http, QString path, QString url)
+bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlName)
 {
     downloadTime.start();
 
-    if(!http->get(url + "/files/" + path))
+    if(!http->get(url + "/files/" + urlName))
     {
         log->debug(http->error());
         return false;
     }
 
     QByteArray data = http->data();
-    QFile file(QCoreApplication::applicationDirPath() + "/../" + path);
-    QFileInfo fileInfo(QCoreApplication::applicationDirPath() + "/../" + path);
+    QFile file(QCoreApplication::applicationDirPath() + "/../" + name);
+    QFileInfo fileInfo(QCoreApplication::applicationDirPath() + "/../" + name);
 
     if(!fileInfo.dir().exists())
     {
@@ -367,7 +372,7 @@ bool Updater::updateGameFile(Http* http, QString path, QString url)
     out.writeRawData(data.data(), data.length());
     file.close();
 
-    updatedFiles.append(path);
+    updatedFiles.append(name);
 
     return true;
 }

@@ -249,7 +249,7 @@ void Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
         QString md5  = fileObject.value("md5").toString();
         QString nameWithPrefix = pathPrefix + name;
 
-        log->debug(QString("%1 %2").arg(nameWithPrefix).arg(md5));
+        //log->debug(QString("%1 %2").arg(nameWithPrefix).arg(md5));
 
         if (checkIfFileRequireUpdate(nameWithPrefix, md5))
         {

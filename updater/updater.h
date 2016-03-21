@@ -1,9 +1,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-//#define URL "http://cdn.arkalys.com"
-//#define URL "http://arkalys.s3.amazonaws.com/updater"
-#define URL "https://vodka.voidmx.net/Arkalys"
+#define URL "http://cdn.arkalys.com"
 
 #include <QThread>
 #include <QElapsedTimer>

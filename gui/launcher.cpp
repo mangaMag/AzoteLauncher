@@ -27,7 +27,7 @@ Launcher::Launcher(QWidget *parent) :
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
     connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
     connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(setEnabled(bool)));
-    updater->start();
+    updater->start(QThread::HighestPriority);
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->playButton, SIGNAL(pressed()), this, SLOT(onPressedPlayButton()));

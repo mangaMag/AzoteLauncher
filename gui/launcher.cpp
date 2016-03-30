@@ -1,7 +1,6 @@
 #include "launcher.h"
 #include "ui_launcher.h"
 #include "../logger/logger.h"
-
 #include "../utils/system.h"
 
 #include <QMessageBox>
@@ -42,6 +41,10 @@ Launcher::Launcher(QWidget *parent) :
 
     sound = new Sound();
     port = sound->start();
+
+    sti = new QSystemTrayIcon(this);
+    sti->setIcon(QIcon(":/ressources/Launcher.ico"));
+    connect(sti, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason)));
 }
 
 Launcher::~Launcher()
@@ -73,14 +76,7 @@ void Launcher::onClickPlayButton()
 
     if (os == WINDOWS)
     {
-        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe");
-
-        if (!dofusBin.isExecutable())
-        {
-            QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-        }
-
-        dofus->startDetached(dofusBin.absoluteFilePath(), paramsDofus);
+        dofus->startDetached(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe", paramsDofus);
     }
 
     if (os == MAC)
@@ -104,14 +100,7 @@ void Launcher::onClickPlayButton()
 
         if (os == WINDOWS)
         {
-            QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../app/reg/Reg.exe");
-
-            if (!regBin.isExecutable())
-            {
-                QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-            }
-
-            reg->start(regBin.absoluteFilePath(), paramsReg);
+            reg->start(QCoreApplication::applicationDirPath() + "/../app/reg/Reg.exe", paramsReg);
         }
 
         if (os == MAC)
@@ -148,6 +137,8 @@ void Launcher::onClickCloseButton()
 void Launcher::onClickMinimizeButton()
 {
     setWindowState(Qt::WindowMinimized);
+    log->closeConsole();
+    sti->show();
 }
 
 void Launcher::onClickSettingsButton()
@@ -173,4 +164,11 @@ void Launcher::mouseMoveEvent(QMouseEvent* event)
 
         this->move(newpos);
     }
+}
+
+void Launcher::onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason /*reason*/)
+{
+    sti->hide();
+    setWindowState(Qt::WindowActive);
+    log->showConsole();
 }

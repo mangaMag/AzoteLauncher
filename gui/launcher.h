@@ -9,6 +9,7 @@
 #include <QPoint>
 #include <QMouseEvent>
 #include <QProcess>
+#include <QSystemTrayIcon>
 
 namespace Ui {
 class Launcher;
@@ -31,6 +32,7 @@ private:
     bool isRegStarted;
     QProcess* reg;
     Sound* sound;
+    QSystemTrayIcon* sti;
 
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent* event);
@@ -43,6 +45,7 @@ private slots:
     void onClickCloseButton();
     void onClickMinimizeButton();
     void onClickSettingsButton();
+    void onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif // LAUNCHER_H

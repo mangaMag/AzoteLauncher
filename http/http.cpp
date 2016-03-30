@@ -7,7 +7,8 @@ Http::Http(QObject* parent) :
 
 Http::~Http()
 {
-    delete m_pReply;
+    m_pReply->deleteLater();
+    //delete m_pReply;
 }
 
 bool Http::get(const QString& url)

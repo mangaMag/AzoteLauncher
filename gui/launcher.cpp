@@ -19,6 +19,8 @@ Launcher::Launcher(QWidget *parent) :
 
     ui->labelDownloadSpeed->setAttribute(Qt::WA_TranslucentBackground);
 
+    qRegisterMetaType<LogLevel>("LogLevel");
+
     log = &Singleton<Logger>::getInstance();
     log->showConsole();
 

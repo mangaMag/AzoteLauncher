@@ -48,7 +48,7 @@ void Updater::run()
     emit enablePlayButton(true);
     emit updateProgressBarTotal(100);
 
-    delete http;
+    //delete http;
     delete settings;
 }
 

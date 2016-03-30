@@ -1,7 +1,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "http://cache.arkalys.com"
+#define URL "http://cache.arkalys.com/updater"
 
 #include <QThread>
 #include <QElapsedTimer>

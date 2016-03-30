@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QObject>
 
+#include "../logger/loglevel.h"
+
 namespace Ui {
 class Console;
 }
@@ -20,7 +22,7 @@ private:
     Ui::Console *ui;
 
 private slots:
-    void onMessage(QString text);
+    void onMessage(LogLevel level, QString text);
 };
 
 #endif // CONSOLE_H

@@ -1,5 +1,4 @@
 #include "logger.h"
-#include <iostream>
 
 Logger::Logger()
 {
@@ -23,25 +22,25 @@ void Logger::closeConsole()
 
 void Logger::debug(QString text)
 {
-    emit message(QString("<b>[<font color='blue'>DEBUG</font>] %1</b>").arg(text));
+    emit message(DEBUG, text);
 }
 
 void Logger::error(QString text)
 {
-    emit message(QString("<b>[<font color='red'>ERROR</font>] %1</b>").arg(text));
+    emit message(ERROR, text);
 }
 
 void Logger::success(QString text)
 {
-    emit message(QString("<b>[<font color='green'>SUCCESS</font>] %1</b>").arg(text));
+    emit message(SUCCESS, text);
 }
 
 void Logger::info(QString text)
 {
-    emit message(QString("<b>[<font color='cyan'>INFO</font>] %1</b>").arg(text));
+    emit message(INFO, text);
 }
 
 void Logger::warning(QString text)
 {
-    emit message(QString("<b>[<font color='orange'>WARNING</font>] %1</b>").arg(text));
+    emit message(WARNING, text);
 }

@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ArkalysUpdater
 TEMPLATE = app
 
-DEFINES += LAUNCHER_VERSION=5
+DEFINES += LAUNCHER_VERSION=6
 
 ICON = ressources/Launcher.icns
 RC_ICONS = ressources/Launcher.ico
@@ -34,7 +34,8 @@ HEADERS  += gui/launcher.h \
     gui/console.h \
     updater/selfupdater.h \
     others/sound.h \
-    utils/system.h
+    utils/system.h \
+    logger/loglevel.h
 
 FORMS    += gui/launcher.ui \
     gui/console.ui

@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QString>
+
 #include "../serialization/singleton.h"
 #include "../gui/console.h"
+#include "loglevel.h"
 
 class Logger : public QObject
 {
@@ -27,7 +29,7 @@ private:
 
 signals:
     void close();
-    void message(QString text);
+    void message(LogLevel, QString text);
 };
 
 #endif // LOGGER_H

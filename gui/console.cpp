@@ -11,7 +11,7 @@ Console::Console(QWidget* parent, QObject* logger) :
     setGeometry(100, 100, width(), height());
     setFixedSize(width(), height());
 
-    connect(logger, SIGNAL(message(QString)), this, SLOT(onMessage(QString)));
+    connect(logger, SIGNAL(message(LogLevel, QString)), this, SLOT(onMessage(LogLevel, QString)));
 }
 
 Console::~Console()
@@ -19,7 +19,40 @@ Console::~Console()
     delete ui;
 }
 
-void Console::onMessage(QString text)
+void Console::onMessage(LogLevel level, QString text)
 {
-    ui->console->append(text);
+    QString levelText;
+    QString levelColor;
+
+    switch (level)
+    {
+        case DEBUG:
+            levelText = "DEBUG";
+            levelColor = "blue";
+            break;
+        case ERROR:
+            levelText = "ERROR";
+            levelColor = "red";
+            break;
+        case SUCCESS:
+            levelText = "SUCCESS";
+            levelColor = "green";
+            break;
+        case INFO:
+            levelText = "INFO";
+            levelColor = "cyan";
+            break;
+        case WARNING:
+            levelText = "WARNING";
+            levelColor = "orange";
+            break;
+        default:
+            levelText = "UNKNOWN";
+            levelColor = "yellow";
+            break;
+    }
+
+    QString logText = QString("<b>[<font color='%1'>%2</font>] %3 </b>").arg(levelColor).arg(levelText).arg(text);
+
+    ui->console->append(logText);
 }

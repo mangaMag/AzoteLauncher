@@ -66,13 +66,15 @@ void Updater::getCurrentVersion()
 
 bool Updater::selfUpdate(Http* http)
 {
+    QString url;
+
     if (os == WINDOWS)
     {
-        QString url = URL "/win";
+        url = URL "/win";
     }
     else if (os == MAC)
     {
-        QString url = URL "/mac";
+        url = URL "/mac";
     }
     else
     {
@@ -227,7 +229,7 @@ void Updater::processUpdate(Http* http)
                 // TODO: error stop
             }
 
-            QString prefix = updateFile.value("prefix").toObject().value(os).toString();
+            QString prefix = updateFile.value("prefix").toObject().value(osString).toString();
 
             QJsonArray commonFiles = updateFile.value("common").toArray();
             QJsonArray osFiles     = updateFile.value(osString).toArray();

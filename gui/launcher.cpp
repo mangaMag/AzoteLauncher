@@ -5,6 +5,7 @@
 #include "../utils/system.h"
 
 #include <QMessageBox>
+#include <QFileInfo>
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
@@ -63,60 +64,66 @@ void Launcher::onClickPlayButton()
 {
     QProcess* dofus = new QProcess(this);
     OperatingSystem os = System::get();
+    QStringList paramsDofus;
+
+    paramsDofus << "--lang=fr";
+    paramsDofus << "--update-server-port=" + QString::number(port);
+    paramsDofus << "--updater_version=v2";
+    paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
     if (os == WINDOWS)
     {
-        QStringList paramsDofus;
+        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe");
 
-        paramsDofus << "--lang=fr";
-        paramsDofus << "--update-server-port=" + QString::number(port);
-        paramsDofus << "--updater_version=v2";
-        paramsDofus << "--reg-client-port=" + QString::number(port + 1);
+        if (!dofusBin.isExecutable())
+        {
+            QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+        }
 
-        dofus->startDetached(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe", paramsDofus);
+        dofus->startDetached(dofusBin.absoluteFilePath(), paramsDofus);
     }
 
     if (os == MAC)
     {
-        QFile::setPermissions(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/MacOs/Dofus",
-                                QFile::ReadOwner  |
-                                QFile::WriteOwner |
-                                QFile::ExeOwner   |
-                                QFile::ReadGroup  |
-                                QFile::ExeGroup   |
-                                QFile::ReadOther  |
-                                QFile::ExeOther);
+        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/MacOs/Dofus");
 
-        dofus->startDetached(QString("open -a %1 -n --args --lang=fr --update-server-port=%2 --updater_version=v2 --reg-client-port=%3")
-                             .arg(QCoreApplication::applicationDirPath() + "/../Dofus.app", QString::number(port), QString::number(port + 1)));
+        if (!dofusBin.isExecutable())
+        {
+            QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+        }
+
+        dofus->startDetached(QString("open -a %1 -n --args %2").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app").arg(paramsDofus.join(" ")));
     }
 
     if (!isRegStarted)
     {
         reg = new QProcess(this);
+        QStringList paramsReg;
+
+        paramsReg << "--reg-engine-port=" + QString::number(port + 2);
 
         if (os == WINDOWS)
         {
-            QStringList paramsReg;
+            QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../app/reg/Reg.exe");
 
-            paramsReg << "--reg-engine-port=" + QString::number(port + 2);
+            if (!regBin.isExecutable())
+            {
+                QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+            }
 
-            reg->start("../app/reg/Reg.exe", paramsReg);
+            reg->start(regBin.absoluteFilePath(), paramsReg);
         }
 
         if (os == MAC)
         {
-            QFile::setPermissions(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app/Contents/MacOs/Reg",
-                                    QFile::ReadOwner  |
-                                    QFile::WriteOwner |
-                                    QFile::ExeOwner   |
-                                    QFile::ReadGroup  |
-                                    QFile::ExeGroup   |
-                                    QFile::ReadOther  |
-                                    QFile::ExeOther);
+            QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app/Contents/MacOs/Reg");
 
-            reg->start(QString("open -a %1 --args --reg-engine-port=%2").arg(QCoreApplication::applicationDirPath()
-                                                       + "/../Dofus.app/Contents/Resources/Reg.app", QString::number(port + 2)));
+            if (!regBin.isExecutable())
+            {
+                QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+            }
+
+            reg->start(QString("open -a %1 --args %2").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app").arg(paramsReg.join(" ")));
         }
 
         isRegStarted = true;

@@ -58,9 +58,11 @@ Launcher::~Launcher()
 
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
+    hide();
+    log->closeConsole();
+
     updater->stopProcess();
     updater->wait();
-    log->closeConsole();
 }
 
 void Launcher::onClickPlayButton()

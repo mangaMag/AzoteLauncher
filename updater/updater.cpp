@@ -30,7 +30,6 @@ Updater::~Updater()
 
 void Updater::run()
 {
-    log->debug("DEBUG");
     QFile::remove(updateFileName);
 
     getCurrentVersion();

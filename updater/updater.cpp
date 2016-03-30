@@ -49,7 +49,10 @@ void Updater::run()
     emit updateProgressBarTotal(100);
 
     //delete http;
-    delete settings;
+    //delete settings;
+
+    http->deleteLater();
+    settings->deleteLater();
 }
 
 void Updater::stopProcess()

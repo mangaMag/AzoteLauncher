@@ -1,9 +1,11 @@
 #ifndef LAUNCHER_H
 #define LAUNCHER_H
 
-#include <QMainWindow>
 #include "../updater/updater.h"
 #include "../logger/logger.h"
+#include "../others/sound.h"
+
+#include <QMainWindow>
 #include <QPoint>
 #include <QMouseEvent>
 #include <QProcess>
@@ -28,6 +30,7 @@ private:
     int port;
     bool isRegStarted;
     QProcess* reg;
+    Sound* sound;
 
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent* event);

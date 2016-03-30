@@ -48,9 +48,6 @@ void Updater::run()
     emit enablePlayButton(true);
     emit updateProgressBarTotal(100);
 
-    //delete http;
-    //delete settings;
-
     http->deleteLater();
     settings->deleteLater();
 }
@@ -187,7 +184,6 @@ void Updater::processUpdate(Http* http)
 
         if (!parentDir.isWritable())
         {
-            stopProcess();
             log->error("Vous ne disposez pas des droits d'écriture, relancez en Administrateur ou déplacez le dossier du jeu");
             return;
         }
@@ -252,10 +248,13 @@ void Updater::processUpdate(Http* http)
         }
     }
 
-    currentClientVersion = lastVersion;
+    if (continueUpgrading)
+    {
+        currentClientVersion = lastVersion;
 
-    settings->setValue("client/version", lastVersion);
-    settings->sync();
+        settings->setValue("client/version", lastVersion);
+        settings->sync();
+    }
 }
 
 void Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix)

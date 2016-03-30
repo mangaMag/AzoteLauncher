@@ -1,7 +1,7 @@
 #include "launcher.h"
 #include "ui_launcher.h"
 #include "../logger/logger.h"
-#include "../others/sound.h"
+
 #include "../utils/system.h"
 
 #include <QMessageBox>
@@ -39,19 +39,23 @@ Launcher::Launcher(QWidget *parent) :
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
 
-    Sound* sound = new Sound();
+    sound = new Sound();
     port = sound->start();
 }
 
 Launcher::~Launcher()
 {
-    delete updater;
+    updater->deleteLater();
+    sound->deleteLater();
+    log->deleteLater();
+
     delete ui;
 }
 
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
     updater->stopProcess();
+    updater->wait();
     log->closeConsole();
 }
 
@@ -69,7 +73,7 @@ void Launcher::onClickPlayButton()
         paramsDofus << "--updater_version=v2";
         paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
-        dofus->startDetached(QCoreApplication::applicationDirPath() + "../app/Dofus.exe", paramsDofus);
+        dofus->startDetached(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe", paramsDofus);
     }
 
     if (os == MAC)

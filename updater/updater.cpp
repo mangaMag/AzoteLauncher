@@ -13,12 +13,14 @@ Updater::Updater(QThread* parent) :
     continueUpgrading(true)
 {
     log = &Singleton<Logger>::getInstance();
+    os  = System::get();
 
     updateFileName = "update";
 
-#ifdef _WIN32
-    updateFileName.append(".exe");
-#endif
+    if (os == WINDOWS)
+    {
+        updateFileName.append(".exe");
+    }
 
 }
 
@@ -64,11 +66,18 @@ void Updater::getCurrentVersion()
 
 bool Updater::selfUpdate(Http* http)
 {
-#ifdef _WIN32
-    QString url = URL "/win";
-#else
-    QString url = URL "/mac";
-#endif
+    if (os == WINDOWS)
+    {
+        QString url = URL "/win";
+    }
+    else if (os == MAC)
+    {
+        QString url = URL "/mac";
+    }
+    else
+    {
+        // TODO: error stop
+    }
 
     if(!http->get(url + "/updater.dat"))
     {
@@ -203,16 +212,25 @@ void Updater::processUpdate(Http* http)
                 continue;
             }
 
-#ifdef _WIN32
-            QString os = "win";
-#else
-            QString os = "mac";
-#endif
+            QString osString;
+
+            if (os == WINDOWS)
+            {
+                osString = "win";
+            }
+            else if (os == MAC)
+            {
+                osString = "mac";
+            }
+            else
+            {
+                // TODO: error stop
+            }
 
             QString prefix = updateFile.value("prefix").toObject().value(os).toString();
 
             QJsonArray commonFiles = updateFile.value("common").toArray();
-            QJsonArray osFiles     = updateFile.value(os).toArray();
+            QJsonArray osFiles     = updateFile.value(osString).toArray();
 
             filesCount  = commonFiles.count();
             filesCount += osFiles.count();
@@ -222,7 +240,7 @@ void Updater::processUpdate(Http* http)
             fileCounter = 1;
 
             updateGameFiles(http, url, commonFiles, prefix, "common");
-            updateGameFiles(http, url, osFiles,     "",     os);
+            updateGameFiles(http, url, osFiles,     "",     osString);
 
             updateCounter++;
         }

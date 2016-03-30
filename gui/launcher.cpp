@@ -2,6 +2,7 @@
 #include "ui_launcher.h"
 #include "../logger/logger.h"
 #include "../others/sound.h"
+#include "../utils/system.h"
 
 #include <QMessageBox>
 
@@ -55,42 +56,23 @@ void Launcher::closeEvent(QCloseEvent* /*event*/)
 void Launcher::onClickPlayButton()
 {
     QProcess* dofus = new QProcess(this);
+    OperatingSystem os = System::get();
 
-#ifdef _WIN32
-    QStringList paramsDofus;
-
-    paramsDofus << "--lang=fr";
-    paramsDofus << "--update-server-port=" + QString::number(port);
-    paramsDofus << "--updater_version=v2";
-    paramsDofus << "--reg-client-port=" + QString::number(port + 1);
-
-    dofus->startDetached("../app/Dofus.exe", paramsDofus);
-#else
-    QFile::setPermissions(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/MacOs/Dofus",
-                            QFile::ReadOwner  |
-                            QFile::WriteOwner |
-                            QFile::ExeOwner   |
-                            QFile::ReadGroup  |
-                            QFile::ExeGroup   |
-                            QFile::ReadOther  |
-                            QFile::ExeOther);
-
-    dofus->startDetached(QString("open -a %1 -n --args --lang=fr --update-server-port=%2 --updater_version=v2 --reg-client-port=%3")
-                         .arg(QCoreApplication::applicationDirPath() + "/../Dofus.app", QString::number(port), QString::number(port + 1)));
-#endif
-
-    if (!isRegStarted)
+    if (os == WINDOWS)
     {
-        reg = new QProcess(this);
+        QStringList paramsDofus;
 
-#ifdef _WIN32
-        QStringList paramsReg;
+        paramsDofus << "--lang=fr";
+        paramsDofus << "--update-server-port=" + QString::number(port);
+        paramsDofus << "--updater_version=v2";
+        paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
-        paramsReg << "--reg-engine-port=" + QString::number(port + 2);
+        dofus->startDetached("../app/Dofus.exe", paramsDofus);
+    }
 
-        reg->start("../app/reg/Reg.exe", paramsReg);
-#else
-        QFile::setPermissions(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app/Contents/MacOs/Reg",
+    if (os == MAC)
+    {
+        QFile::setPermissions(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/MacOs/Dofus",
                                 QFile::ReadOwner  |
                                 QFile::WriteOwner |
                                 QFile::ExeOwner   |
@@ -99,9 +81,37 @@ void Launcher::onClickPlayButton()
                                 QFile::ReadOther  |
                                 QFile::ExeOther);
 
-        reg->start(QString("open -a %1 --args --reg-engine-port=%2").arg(QCoreApplication::applicationDirPath()
-                                                   + "/../Dofus.app/Contents/Resources/Reg.app", QString::number(port + 2)));
-#endif
+        dofus->startDetached(QString("open -a %1 -n --args --lang=fr --update-server-port=%2 --updater_version=v2 --reg-client-port=%3")
+                             .arg(QCoreApplication::applicationDirPath() + "/../Dofus.app", QString::number(port), QString::number(port + 1)));
+    }
+
+    if (!isRegStarted)
+    {
+        reg = new QProcess(this);
+
+        if (os == WINDOWS)
+        {
+            QStringList paramsReg;
+
+            paramsReg << "--reg-engine-port=" + QString::number(port + 2);
+
+            reg->start("../app/reg/Reg.exe", paramsReg);
+        }
+
+        if (os == MAC)
+        {
+            QFile::setPermissions(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app/Contents/MacOs/Reg",
+                                    QFile::ReadOwner  |
+                                    QFile::WriteOwner |
+                                    QFile::ExeOwner   |
+                                    QFile::ReadGroup  |
+                                    QFile::ExeGroup   |
+                                    QFile::ReadOther  |
+                                    QFile::ExeOther);
+
+            reg->start(QString("open -a %1 --args --reg-engine-port=%2").arg(QCoreApplication::applicationDirPath()
+                                                       + "/../Dofus.app/Contents/Resources/Reg.app", QString::number(port + 2)));
+        }
 
         isRegStarted = true;
     }

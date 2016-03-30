@@ -1,7 +1,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "http://cdn.arkalys.com"
+#define URL "http://cache.arkalys.com"
 
 #include <QThread>
 #include <QElapsedTimer>
@@ -12,6 +12,7 @@
 
 #include "../http/http.h"
 #include "../logger/logger.h"
+#include "../utils/system.h"
 
 class Updater : public QThread
 {
@@ -26,6 +27,7 @@ private:
     int currentLauncherVersion;
     QString updateFileName;
     QSettings* settings;
+    OperatingSystem os;
 
     int filesCount;
     int progressStep;

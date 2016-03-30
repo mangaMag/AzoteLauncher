@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     http/http.cpp \
     gui/console.cpp \
     updater/selfupdater.cpp \
-    others/sound.cpp
+    others/sound.cpp \
+    utils/system.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
@@ -32,7 +33,8 @@ HEADERS  += gui/launcher.h \
     http/http.h \
     gui/console.h \
     updater/selfupdater.h \
-    others/sound.h
+    others/sound.h \
+    utils/system.h
 
 FORMS    += gui/launcher.ui \
     gui/console.ui

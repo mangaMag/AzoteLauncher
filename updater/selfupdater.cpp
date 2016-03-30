@@ -1,5 +1,6 @@
 #include "selfupdater.h"
 //#include "../logger/logger.h"
+#include "../utils/system.h"
 
 #include <QCoreApplication>
 #include <QProcess>
@@ -14,12 +15,14 @@ bool SelfUpdater::update(int argc, char *argv[])
 {
     //Logger* log = &Singleton<Logger>::getInstance();
     //log->showConsole();
+    OperatingSystem os = System::get();
 
     QString launcherName = "ArkalysUpdater";
 
-    #ifdef _WIN32
-        launcherName = "ArkalysUpdater.exe";
-    #endif
+    if (os == WINDOWS)
+    {
+        launcherName.append(".exe");
+    }
 
     for (int i = 1; i < argc; i++)
     {

@@ -9,6 +9,8 @@
 #include <QJsonArray>
 #include <QVector>
 #include <QSettings>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "../http/http.h"
 #include "../logger/logger.h"
@@ -28,6 +30,8 @@ private:
     QString updateFileName;
     QSettings* settings;
     OperatingSystem os;
+    QMutex sync;
+    QWaitCondition pauseCond;
 
     int filesCount;
     int progressStep;
@@ -48,6 +52,8 @@ public:
     explicit Updater(QThread* parent = 0);
     ~Updater();
     void stopProcess();
+    void resume();
+    void pause();
 
 private slots:
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
@@ -58,6 +64,7 @@ signals:
     void updateDownloadSpeed(const QString speed);
     void updateStatus(const QString status);
     void enablePlayButton(bool state);
+    void newUpdaterVersion();
 };
 
 #endif // UPDATER_H

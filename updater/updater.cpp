@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QProcess>
+#include <QMessageBox>
 
 Updater::Updater(QThread* parent) :
     QThread(parent),
@@ -41,11 +42,14 @@ void Updater::run()
         processUpdate(http);
     }
 
-    log->info(QString("Le client est à jour (client: %1 launcher: %2)").arg(currentClientVersion).arg(currentLauncherVersion));
-    emit updateDownloadSpeed("0 o/s");
-    emit updateStatus("Le client est à jour");
-    emit enablePlayButton(true);
-    emit updateProgressBarTotal(100);
+    if (continueUpgrading)
+    {
+        log->info(QString("Le client est à jour (client: %1 launcher: %2)").arg(currentClientVersion).arg(currentLauncherVersion));
+        emit updateDownloadSpeed("0 o/s");
+        emit updateStatus("Le client est à jour");
+        emit enablePlayButton(true);
+        emit updateProgressBarTotal(100);
+    }
 
     http->deleteLater();
     settings->deleteLater();
@@ -93,6 +97,17 @@ bool Updater::selfUpdate(Http* http)
     {
         if (launcherVersion > currentLauncherVersion)
         {
+            emit newUpdaterVersion();
+
+            sync.lock();
+            pauseCond.wait(&sync);
+            sync.unlock();
+
+            if (!continueUpgrading)
+            {
+                return false;
+            }
+
             if(!http->get(url + "/" + updateFileName))
             {
                 log->debug(http->error());
@@ -425,4 +440,19 @@ void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     }
 
     emit updateDownloadSpeed(QString("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
+}
+
+void Updater::resume()
+{
+    /*sync.lock();
+    pause = false;
+    sync.unlock();*/
+    pauseCond.wakeAll();
+}
+
+void Updater::pause()
+{
+    /*sync.lock();
+    pause = true;
+    sync.unlock();*/
 }

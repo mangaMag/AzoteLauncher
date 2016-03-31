@@ -49,6 +49,7 @@ private slots:
     void onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason);
     void onCloseApp();
     void onOpenApp();
+    void onNewUpdaterVersion();
 };
 
 #endif // LAUNCHER_H

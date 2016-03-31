@@ -31,6 +31,7 @@ Launcher::Launcher(QWidget *parent) :
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
     connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
     connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(setEnabled(bool)));
+    connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
     updater->start(QThread::HighestPriority);
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
@@ -218,4 +219,20 @@ void Launcher::onCloseApp()
     log->closeConsole();
     hide();
     close();
+}
+
+void Launcher::onNewUpdaterVersion()
+{
+    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Arkalys Prime", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
+
+    if (reply == QMessageBox::Ok)
+    {
+        updater->resume();
+    }
+    else
+    {
+        updater->stopProcess();
+        updater->resume();
+        onCloseApp();
+    }
 }

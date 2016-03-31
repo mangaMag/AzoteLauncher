@@ -1,14 +1,17 @@
 #include "http.h"
 
 Http::Http(QObject* parent) :
-    QObject(parent)
+    QObject(parent),
+    m_pReply(NULL)
 {
 }
 
 Http::~Http()
 {
-    m_pReply->deleteLater();
-    //delete m_pReply;
+    if (m_pReply != NULL)
+    {
+        m_pReply->deleteLater();
+    }
 }
 
 bool Http::get(const QString& url)

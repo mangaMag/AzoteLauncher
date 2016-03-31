@@ -33,7 +33,6 @@ private:
     QProcess* reg;
     Sound* sound;
     QSystemTrayIcon* trayIcon;
-    bool isTrayIconMessageDisplayed;
 
     void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);

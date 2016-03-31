@@ -11,8 +11,7 @@
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Launcher),
-    isRegStarted(false),
-    isTrayIconMessageDisplayed(false)
+    isRegStarted(false)
 {
     ui->setupUi(this);
 
@@ -150,12 +149,7 @@ void Launcher::onClickCloseButton()
     hide();
 
     //trayIcon->show();
-
-    if (!isTrayIconMessageDisplayed)
-    {
-        trayIcon->showMessage("Arkalys Prime", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
-        isTrayIconMessageDisplayed = true;
-    }
+    trayIcon->showMessage("Arkalys Prime", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
 }
 
 void Launcher::onClickMinimizeButton()
@@ -215,6 +209,7 @@ void Launcher::onOpenApp()
     log->showConsole();
     show();
     setWindowState(Qt::WindowActive);
+    raise();
 }
 
 void Launcher::onCloseApp()

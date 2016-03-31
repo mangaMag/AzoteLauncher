@@ -32,11 +32,13 @@ private:
     bool isRegStarted;
     QProcess* reg;
     Sound* sound;
-    QSystemTrayIcon* sti;
+    QSystemTrayIcon* trayIcon;
+    bool isTrayIconMessageDisplayed;
 
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
+    void changeEvent(QEvent* event);
 
 private slots:
     void onClickPlayButton();
@@ -46,6 +48,8 @@ private slots:
     void onClickMinimizeButton();
     void onClickSettingsButton();
     void onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason);
+    void onCloseApp();
+    void onOpenApp();
 };
 
 #endif // LAUNCHER_H

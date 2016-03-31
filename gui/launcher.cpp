@@ -5,11 +5,14 @@
 
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QMenu>
+#include <QAction>
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Launcher),
-    isRegStarted(false)
+    isRegStarted(false),
+    isTrayIconMessageDisplayed(false)
 {
     ui->setupUi(this);
 
@@ -42,9 +45,19 @@ Launcher::Launcher(QWidget *parent) :
     sound = new Sound();
     port = sound->start();
 
-    sti = new QSystemTrayIcon(this);
-    sti->setIcon(QIcon(":/ressources/Launcher.ico"));
-    connect(sti, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason)));
+    QMenu* trayIconMenu = new QMenu();
+    QAction* actionOpen = trayIconMenu->addAction("Ouvrir");
+    QAction* actionQuit = trayIconMenu->addAction("Quitter");
+    trayIconMenu->setStyleSheet("");
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(QIcon(":/ressources/Launcher.ico"));
+    trayIcon->setContextMenu(trayIconMenu);
+    trayIcon->show();
+
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason)));
+    connect(actionOpen, SIGNAL(triggered()), this, SLOT(onOpenApp()));
+    connect(actionQuit, SIGNAL(triggered()), this, SLOT(onCloseApp()));
 }
 
 Launcher::~Launcher()
@@ -58,8 +71,8 @@ Launcher::~Launcher()
 
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
-    hide();
     log->closeConsole();
+    hide();
 
     updater->stopProcess();
     updater->wait();
@@ -133,23 +146,27 @@ void Launcher::onReleasedPlayButton()
 
 void Launcher::onClickCloseButton()
 {
-    close();
+    log->closeConsole();
+    hide();
+
+    //trayIcon->show();
+
+    if (!isTrayIconMessageDisplayed)
+    {
+        trayIcon->showMessage("Arkalys Prime", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
+        isTrayIconMessageDisplayed = true;
+    }
 }
 
 void Launcher::onClickMinimizeButton()
 {
     setWindowState(Qt::WindowMinimized);
-    log->closeConsole();
-    sti->show();
+    //log->closeConsole();
 }
 
 void Launcher::onClickSettingsButton()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Coming Soon");
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.exec();
+    QMessageBox::information(NULL, "Arkalys Prime", "Disponible prochainement");
 }
 
 void Launcher::mousePressEvent(QMouseEvent* event)
@@ -168,9 +185,42 @@ void Launcher::mouseMoveEvent(QMouseEvent* event)
     }
 }
 
-void Launcher::onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason /*reason*/)
+void Launcher::changeEvent(QEvent* event)
 {
-    sti->hide();
-    setWindowState(Qt::WindowActive);
+    if (event->type() == QEvent::WindowStateChange)
+    {
+        if (windowState() == Qt::WindowMinimized)
+        {
+            log->closeConsole();
+        }
+        else if (windowState() == Qt::WindowNoState || windowState() == Qt::WindowActive)
+        {
+            log->showConsole();
+            raise();
+        }
+    }
+}
+
+void Launcher::onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::DoubleClick || reason == QSystemTrayIcon::Trigger)
+    {
+        onOpenApp();
+    }
+}
+
+void Launcher::onOpenApp()
+{
+    //trayIcon->hide();
     log->showConsole();
+    show();
+    setWindowState(Qt::WindowActive);
+}
+
+void Launcher::onCloseApp()
+{
+    trayIcon->hide();
+    log->closeConsole();
+    hide();
+    close();
 }

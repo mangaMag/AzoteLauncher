@@ -52,7 +52,6 @@ Launcher::Launcher(QWidget *parent) :
     QMenu* trayIconMenu = new QMenu();
     QAction* actionOpen = trayIconMenu->addAction("Ouvrir");
     QAction* actionQuit = trayIconMenu->addAction("Quitter");
-    trayIconMenu->setStyleSheet("");
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/ressources/Launcher.ico"));
@@ -62,6 +61,8 @@ Launcher::Launcher(QWidget *parent) :
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason)));
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(onOpenApp()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(onCloseApp()));
+
+    QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 }
 
 Launcher::~Launcher()

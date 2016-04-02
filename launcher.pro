@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     updater/selfupdater.cpp \
     others/sound.cpp \
     utils/system.cpp \
-    gui/settings.cpp
+    gui/settings.cpp \
+    dep/SingleApplication/singleapplication.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
@@ -37,7 +38,8 @@ HEADERS  += gui/launcher.h \
     others/sound.h \
     utils/system.h \
     logger/loglevel.h \
-    gui/settings.h
+    gui/settings.h \
+    dep/SingleApplication/singleapplication.h
 
 FORMS    += gui/launcher.ui \
     gui/console.ui \

@@ -1,10 +1,14 @@
 #include "gui/launcher.h"
 #include "updater/selfupdater.h"
 #include <QApplication>
+#include "dep/SingleApplication/singleapplication.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication::setApplicationName("Launcher");
+    QApplication::setOrganizationName("Arkalys Prime");
+
+    SingleApplication a(argc, argv);
 
     if (argc > 1)
     {

@@ -79,6 +79,7 @@ void Launcher::closeEvent(QCloseEvent* /*event*/)
     hide();
 
     updater->stopProcess();
+    updater->terminate();
     updater->wait();
 }
 

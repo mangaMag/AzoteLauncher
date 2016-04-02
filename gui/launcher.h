@@ -4,6 +4,8 @@
 #include "../updater/updater.h"
 #include "../logger/logger.h"
 #include "../others/sound.h"
+#include "settings.h"
+#include "console.h"
 
 #include <QMainWindow>
 #include <QPoint>
@@ -33,6 +35,8 @@ private:
     QProcess* reg;
     Sound* sound;
     QSystemTrayIcon* trayIcon;
+    Settings* settings;
+    Console* console;
 
     void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);

@@ -2,9 +2,10 @@
 #include "ui_console.h"
 #include <QDebug>
 
-Console::Console(QWidget* parent, QObject* logger) :
+Console::Console(QWidget* parent, QObject *logger, Settings* _settings) :
     QWidget(parent),
-    ui(new Ui::Console)
+    ui(new Ui::Console),
+    settgins(_settings)
 {
     ui->setupUi(this);
 
@@ -12,11 +13,20 @@ Console::Console(QWidget* parent, QObject* logger) :
     setFixedSize(width(), height());
 
     connect(logger, SIGNAL(message(LogLevel, QString)), this, SLOT(onMessage(LogLevel, QString)));
+    connect(settgins, SIGNAL(consoleStateChange(bool)), this, SLOT(onConsoleStateChange(bool)));
 }
 
 Console::~Console()
 {
     delete ui;
+}
+
+void Console::show()
+{
+    if (settgins->isConsoleActivated())
+    {
+        QWidget::show();
+    }
 }
 
 void Console::onMessage(LogLevel level, QString text)
@@ -55,4 +65,16 @@ void Console::onMessage(LogLevel level, QString text)
     QString logText = QString("<b>[<font color='%1'>%2</font>] %3 </b>").arg(levelColor).arg(levelText).arg(text);
 
     ui->console->append(logText);
+}
+
+void Console::onConsoleStateChange(bool isEnabled)
+{
+    if (isEnabled)
+    {
+        show();
+    }
+    else
+    {
+        close();
+    }
 }

@@ -2,22 +2,10 @@
 
 Logger::Logger()
 {
-    console = new Console(0, this);
 }
 
 Logger::~Logger()
 {
-    delete console;
-}
-
-void Logger::showConsole()
-{
-    console->show();
-}
-
-void Logger::closeConsole()
-{
-    console->close();
 }
 
 void Logger::debug(QString text)

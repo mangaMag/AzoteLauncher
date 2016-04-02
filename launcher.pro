@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     gui/console.cpp \
     updater/selfupdater.cpp \
     others/sound.cpp \
-    utils/system.cpp
+    utils/system.cpp \
+    gui/settings.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
@@ -35,10 +36,12 @@ HEADERS  += gui/launcher.h \
     updater/selfupdater.h \
     others/sound.h \
     utils/system.h \
-    logger/loglevel.h
+    logger/loglevel.h \
+    gui/settings.h
 
 FORMS    += gui/launcher.ui \
-    gui/console.ui
+    gui/console.ui \
+    gui/settings.ui
 
 RESOURCES += \
     ressources.qrc

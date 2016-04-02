@@ -5,7 +5,6 @@
 #include <QString>
 
 #include "../serialization/singleton.h"
-#include "../gui/console.h"
 #include "loglevel.h"
 
 class Logger : public QObject
@@ -15,17 +14,11 @@ class Logger : public QObject
 public:
     Logger();
     ~Logger();
-
-    void showConsole();
-    void closeConsole();
     void debug(QString text);
     void error(QString text);
     void success(QString text);
     void info(QString text);
     void warning(QString text);
-
-private:
-    Console* console;
 
 signals:
     void close();

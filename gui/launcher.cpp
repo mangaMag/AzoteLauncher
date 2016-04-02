@@ -24,7 +24,11 @@ Launcher::Launcher(QWidget *parent) :
     qRegisterMetaType<LogLevel>("LogLevel");
 
     log = &Singleton<Logger>::getInstance();
-    log->showConsole();
+
+    settings = new Settings(NULL);
+
+    console = new Console(NULL, log, settings);
+    console->show();
 
     updater = new Updater();
     connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
@@ -71,7 +75,7 @@ Launcher::~Launcher()
 
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
-    log->closeConsole();
+    console->close();
     hide();
 
     updater->stopProcess();
@@ -146,22 +150,20 @@ void Launcher::onReleasedPlayButton()
 
 void Launcher::onClickCloseButton()
 {
-    log->closeConsole();
+    console->close();
     hide();
 
-    //trayIcon->show();
     trayIcon->showMessage("Arkalys Prime", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
 }
 
 void Launcher::onClickMinimizeButton()
 {
     setWindowState(Qt::WindowMinimized);
-    //log->closeConsole();
 }
 
 void Launcher::onClickSettingsButton()
 {
-    QMessageBox::information(NULL, "Arkalys Prime", "Disponible prochainement");
+    settings->show();
 }
 
 void Launcher::mousePressEvent(QMouseEvent* event)
@@ -186,11 +188,11 @@ void Launcher::changeEvent(QEvent* event)
     {
         if (windowState() == Qt::WindowMinimized)
         {
-            log->closeConsole();
+            console->close();
         }
         else if (windowState() == Qt::WindowNoState || windowState() == Qt::WindowActive)
         {
-            log->showConsole();
+            console->show();
             raise();
         }
     }
@@ -206,8 +208,7 @@ void Launcher::onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason)
 
 void Launcher::onOpenApp()
 {
-    //trayIcon->hide();
-    log->showConsole();
+    console->show();
     show();
     setWindowState(Qt::WindowActive);
     raise();
@@ -216,7 +217,7 @@ void Launcher::onOpenApp()
 void Launcher::onCloseApp()
 {
     trayIcon->hide();
-    log->closeConsole();
+    console->close();
     hide();
     close();
 }

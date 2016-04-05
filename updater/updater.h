@@ -16,6 +16,13 @@
 #include "../logger/logger.h"
 #include "../utils/system.h"
 
+enum SelfUpdateStatus
+{
+    OK_TO_CONTINUE,
+    UPDATE_FAILED,
+    UPDATE_IN_PROGRESS
+};
+
 class Updater : public QThread
 {
     Q_OBJECT
@@ -39,7 +46,7 @@ private:
     int fileCounter;
 
     void run();
-    bool selfUpdate(Http* http);
+    SelfUpdateStatus selfUpdate(Http* http);
     void processUpdate(Http* http);
     void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);

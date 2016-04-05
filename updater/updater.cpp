@@ -37,7 +37,9 @@ void Updater::run()
 
     Http* http = new Http();
 
-    if (selfUpdate(http))
+    SelfUpdateStatus status = selfUpdate(http);
+
+    if (status == OK_TO_CONTINUE)
     {
         processUpdate(http);
     }
@@ -68,7 +70,7 @@ void Updater::getCurrentVersion()
     currentLauncherVersion = LAUNCHER_VERSION;
 }
 
-bool Updater::selfUpdate(Http* http)
+SelfUpdateStatus Updater::selfUpdate(Http* http)
 {
     QString url;
 
@@ -82,12 +84,15 @@ bool Updater::selfUpdate(Http* http)
     }
     else
     {
-        // TODO: error stop
+        log->error("Système d'exploitation inconnu");
+        return OK_TO_CONTINUE;
     }
 
     if(!http->get(url + "/updater.dat"))
     {
         log->debug(http->error());
+        log->error("Impossible de récupérer le fichier d'information de la version du launcher");
+        return OK_TO_CONTINUE;
     }
 
     bool ok;
@@ -105,13 +110,13 @@ bool Updater::selfUpdate(Http* http)
 
             if (!continueUpgrading)
             {
-                return false;
+                return UPDATE_FAILED; // not real fail but...
             }
 
             if(!http->get(url + "/" + updateFileName))
             {
                 log->debug(http->error());
-                return false;
+                return UPDATE_FAILED;
             }
 
             QByteArray data = http->data();
@@ -120,7 +125,7 @@ bool Updater::selfUpdate(Http* http)
             if(!file.open(QIODevice::WriteOnly))
             {
                 log->debug(file.errorString());
-                return false;
+                return UPDATE_FAILED;
             }
 
             QDataStream out(&file);
@@ -136,7 +141,7 @@ bool Updater::selfUpdate(Http* http)
                                      QFile::ExeOther))
             {
                 log->error("Impossible de mettre à jour le launcher (Permissions)");
-                return false;
+                return UPDATE_FAILED;
             }
 
 
@@ -154,18 +159,18 @@ bool Updater::selfUpdate(Http* http)
             {
                 log->error(process->errorString());
                 log->error("Impossible de mettre à jour le launcher (Execution)");
-                return false;
+                return UPDATE_FAILED;
             }
         }
 
-        return true;
+        return OK_TO_CONTINUE;
     }
     else
     {
-        log->error("Impossible de récupérer le fichier d'information de la version du launcher");
+        log->error("Impossible de récupérer le numéro la nouvelle version du launcher");
     }
 
-    return true;
+    return OK_TO_CONTINUE;
 }
 
 void Updater::processUpdate(Http* http)

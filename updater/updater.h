@@ -1,7 +1,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "http://cache.arkalys.com/updater"
+#define URL "http://cdn.azendar.fr/updater"
 
 #include <QThread>
 #include <QElapsedTimer>

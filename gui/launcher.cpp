@@ -99,14 +99,14 @@ void Launcher::onClickPlayButton()
 
     if (os == MAC)
     {
-        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/MacOs/Dofus");
+        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../app/Dofus.app/Contents/MacOs/Flash Player");
 
         if (!dofusBin.isExecutable())
         {
             QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
         }
 
-        dofus->startDetached(QString("open -a %1 -n").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app"));
+        dofus->startDetached(QString("open -a %1 -n").arg(QCoreApplication::applicationDirPath() + "/../app/Dofus.app"));
     }
 }
 

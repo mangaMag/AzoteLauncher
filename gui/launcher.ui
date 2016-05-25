@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>ARKALYS Prime</string>
+   <string>Azendar</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../ressources.qrc">

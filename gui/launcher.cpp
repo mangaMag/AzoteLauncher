@@ -10,8 +10,7 @@
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Launcher),
-    isRegStarted(false)
+    ui(new Ui::Launcher)
 {
     ui->setupUi(this);
 
@@ -88,16 +87,10 @@ void Launcher::onClickPlayButton()
 {
     QProcess* dofus = new QProcess(this);
     OperatingSystem os = System::get();
-    QStringList paramsDofus;
-
-    paramsDofus << "--lang=fr";
-    paramsDofus << "--update-server-port=" + QString::number(port);
-    paramsDofus << "--updater_version=v2";
-    paramsDofus << "--reg-client-port=" + QString::number(port + 1);
 
     if (os == WINDOWS)
     {
-        dofus->startDetached(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe", paramsDofus);
+        dofus->startDetached(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe");
     }
 
     if (os == MAC)
@@ -109,34 +102,7 @@ void Launcher::onClickPlayButton()
             QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
         }
 
-        dofus->startDetached(QString("open -a %1 -n --args %2").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app").arg(paramsDofus.join(" ")));
-    }
-
-    if (!isRegStarted)
-    {
-        reg = new QProcess(this);
-        QStringList paramsReg;
-
-        paramsReg << "--reg-engine-port=" + QString::number(port + 2);
-
-        if (os == WINDOWS)
-        {
-            reg->start(QCoreApplication::applicationDirPath() + "/../app/reg/Reg.exe", paramsReg);
-        }
-
-        if (os == MAC)
-        {
-            QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app/Contents/MacOs/Reg");
-
-            if (!regBin.isExecutable())
-            {
-                QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-            }
-
-            reg->start(QString("open -a %1 --args %2").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app/Contents/Resources/Reg.app").arg(paramsReg.join(" ")));
-        }
-
-        isRegStarted = true;
+        dofus->startDetached(QString("open -a %1 -n").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app"));
     }
 }
 
@@ -155,7 +121,7 @@ void Launcher::onClickCloseButton()
     console->close();
     hide();
 
-    trayIcon->showMessage("Arkalys Prime", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
+    trayIcon->showMessage("Azendar", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
 }
 
 void Launcher::onClickMinimizeButton()
@@ -226,7 +192,7 @@ void Launcher::onCloseApp()
 
 void Launcher::onNewUpdaterVersion()
 {
-    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Arkalys Prime", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
+    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Azendar", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
 
     if (reply == QMessageBox::Ok)
     {

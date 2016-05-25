@@ -31,7 +31,6 @@ private:
     Logger* log;
     QPoint mpos;
     int port;
-    bool isRegStarted;
     QProcess* reg;
     Sound* sound;
     QSystemTrayIcon* trayIcon;

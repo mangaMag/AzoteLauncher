@@ -17,7 +17,7 @@ bool SelfUpdater::update(int argc, char *argv[])
     //log->showConsole();
     OperatingSystem os = System::get();
 
-    QString launcherName = "ArkalysUpdater";
+    QString launcherName = "AzendarUpdater";
 
     if (os == WINDOWS)
     {

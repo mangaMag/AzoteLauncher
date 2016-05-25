@@ -8,7 +8,7 @@ QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ArkalysUpdater
+TARGET = AzendarUpdater
 TEMPLATE = app
 
 DEFINES += LAUNCHER_VERSION=7

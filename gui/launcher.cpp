@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QAction>
+#include <QDesktopServices>
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
@@ -60,6 +61,9 @@ Launcher::Launcher(QWidget *parent) :
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason)));
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(onOpenApp()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(onCloseApp()));
+
+    connect(ui->webButton, SIGNAL(clicked()), this, SLOT(onClickWebButton()));
+    connect(ui->voteButton, SIGNAL(clicked()), this, SLOT(onClickVoteButton()));
 
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 }
@@ -194,4 +198,14 @@ void Launcher::onNewUpdaterVersion()
         updater->resume();
         onCloseApp();
     }
+}
+
+void Launcher::onClickVoteButton()
+{
+    QDesktopServices::openUrl(QUrl("http://www.rpg-paradize.com/?page=vote&vote=105748"));
+}
+
+void Launcher::onClickWebButton()
+{
+    QDesktopServices::openUrl(QUrl("http://www.azendar.fr/"));
 }

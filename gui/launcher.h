@@ -44,6 +44,8 @@ private:
 
 private slots:
     void onClickPlayButton();
+    void onClickVoteButton();
+    void onClickWebButton();
     void onClickCloseButton();
     void onClickMinimizeButton();
     void onClickSettingsButton();

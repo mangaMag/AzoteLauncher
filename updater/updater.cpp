@@ -187,7 +187,7 @@ void Updater::processUpdate(Http* http)
     if (infoFile.isEmpty())
     {
         log->error("Impossible de récupérer le fichier d'information des mises à jour");
-        delete http;
+        http->deleteLater();
         return;
     }
 

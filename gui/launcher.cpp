@@ -26,6 +26,8 @@ Launcher::Launcher(QWidget *parent) :
 
     settings = new Settings(NULL);
 
+    ui->playButton->hide();
+
     console = new Console(NULL, log, settings);
     console->show();
 
@@ -33,13 +35,11 @@ Launcher::Launcher(QWidget *parent) :
     connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
     connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
-    connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(setEnabled(bool)));
+    connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(show()));
     connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
     updater->start(QThread::HighestPriority);
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
-    connect(ui->playButton, SIGNAL(pressed()), this, SLOT(onPressedPlayButton()));
-    connect(ui->playButton, SIGNAL(released()), this, SLOT(onReleasedPlayButton()));
 
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
@@ -53,7 +53,7 @@ Launcher::Launcher(QWidget *parent) :
     QAction* actionQuit = trayIconMenu->addAction("Quitter");
 
     trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon(":/ressources/Launcher.ico"));
+    trayIcon->setIcon(QIcon(":/ressources/azendaricone.ico"));
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 
@@ -104,16 +104,6 @@ void Launcher::onClickPlayButton()
 
         dofus->startDetached(QString("open -a %1 -n").arg(QCoreApplication::applicationDirPath() + "/../Dofus.app"));
     }
-}
-
-void Launcher::onPressedPlayButton()
-{
-    ui->playButton->setIcon(QIcon(":/ressources/bouton_enable_pushed.png"));
-}
-
-void Launcher::onReleasedPlayButton()
-{
-    ui->playButton->setIcon(QIcon(":/ressources/bouton_enable.png"));
 }
 
 void Launcher::onClickCloseButton()

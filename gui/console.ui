@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../ressources.qrc">
-    <normaloff>:/ressources/Launcher.ico</normaloff>:/ressources/Launcher.ico</iconset>
+    <normaloff>:/ressources/azendaricone.ico</normaloff>:/ressources/azendaricone.ico</iconset>
   </property>
   <widget class="QTextEdit" name="console">
    <property name="geometry">

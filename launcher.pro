@@ -13,8 +13,8 @@ TEMPLATE = app
 
 DEFINES += LAUNCHER_VERSION=7
 
-ICON = ressources/Launcher.icns
-RC_ICONS = ressources/Launcher.ico
+#ICON = ressources/Launcher.icns
+RC_ICONS = ressources/azendaricone.ico
 
 SOURCES += main.cpp\
     gui/launcher.cpp \

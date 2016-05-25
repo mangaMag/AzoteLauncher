@@ -44,8 +44,6 @@ private:
 
 private slots:
     void onClickPlayButton();
-    void onPressedPlayButton();
-    void onReleasedPlayButton();
     void onClickCloseButton();
     void onClickMinimizeButton();
     void onClickSettingsButton();

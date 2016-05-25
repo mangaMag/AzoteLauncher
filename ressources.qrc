@@ -1,14 +1,16 @@
 <RCC>
     <qresource prefix="/">
-        <file>ressources/background.png</file>
-        <file>ressources/barre.png</file>
-        <file>ressources/bouton_enable.png</file>
-        <file>ressources/bouton_enable_pushed.png</file>
-        <file>ressources/topbouton_close.png</file>
-        <file>ressources/topbouton_reduce.png</file>
         <file>ressources/topbouton_repair.png</file>
-        <file>ressources/chunk.png</file>
-        <file>ressources/Launcher.ico</file>
         <file>ressources/Launcher.icns</file>
+        <file>ressources/azendar_background.png</file>
+        <file>ressources/azendar_changerdossierjeu.png</file>
+        <file>ressources/azendar_close.png</file>
+        <file>ressources/azendar_jouerready.png</file>
+        <file>ressources/azendar_jouerready_hover.png</file>
+        <file>ressources/azendar_loadbar.png</file>
+        <file>ressources/azendar_moins.png</file>
+        <file>ressources/azendar_siteweb.png</file>
+        <file>ressources/azendar_voter.png</file>
+        <file>ressources/azendaricone.ico</file>
     </qresource>
 </RCC>

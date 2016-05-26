@@ -34,8 +34,8 @@ background-color: rgba(255, 255, 255, 0);</string>
     </property>
     <property name="geometry">
      <rect>
-      <x>506</x>
-      <y>75</y>
+      <x>505</x>
+      <y>76</y>
       <width>125</width>
       <height>127</height>
      </rect>
@@ -237,6 +237,9 @@ QPushButton:hover {
       <height>59</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	border: none;
@@ -250,6 +253,9 @@ QPushButton:hover {
     <property name="text">
      <string/>
     </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="voteButton">
     <property name="geometry">
@@ -259,6 +265,9 @@ QPushButton:hover {
       <width>257</width>
       <height>59</height>
      </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
@@ -272,6 +281,9 @@ QPushButton:hover {
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

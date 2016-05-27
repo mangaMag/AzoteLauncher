@@ -46,9 +46,6 @@ Launcher::Launcher(QWidget *parent) :
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
 
-    sound = new Sound();
-    port = sound->start();
-
     QMenu* trayIconMenu = new QMenu();
     QAction* actionOpen = trayIconMenu->addAction("Ouvrir");
     QAction* actionQuit = trayIconMenu->addAction("Quitter");
@@ -71,7 +68,6 @@ Launcher::Launcher(QWidget *parent) :
 Launcher::~Launcher()
 {
     updater->deleteLater();
-    sound->deleteLater();
     log->deleteLater();
 
     delete ui;
@@ -89,12 +85,11 @@ void Launcher::closeEvent(QCloseEvent* /*event*/)
 
 void Launcher::onClickPlayButton()
 {
-    QProcess* dofus = new QProcess(this);
     OperatingSystem os = System::get();
 
     if (os == WINDOWS)
     {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe"));
+        startGame("/../app/Dofus.exe");
     }
     else if (os == MAC)
     {
@@ -105,12 +100,17 @@ void Launcher::onClickPlayButton()
             QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
         }
 
-        QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../app/Dofus.app"));
+        startGame("/../app/Dofus.app");
     }
     else
     {
         log->error("System OS not found !");
     }
+}
+
+void Launcher::startGame(QString gamePath)
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + gamePath));
 }
 
 void Launcher::onClickCloseButton()

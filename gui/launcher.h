@@ -10,7 +10,6 @@
 #include <QMainWindow>
 #include <QPoint>
 #include <QMouseEvent>
-#include <QProcess>
 #include <QSystemTrayIcon>
 
 namespace Ui {
@@ -31,8 +30,6 @@ private:
     Logger* log;
     QPoint mpos;
     int port;
-    QProcess* reg;
-    Sound* sound;
     QSystemTrayIcon* trayIcon;
     Settings* settings;
     Console* console;
@@ -41,6 +38,8 @@ private:
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void changeEvent(QEvent* event);
+
+    void startGame(QString gamePath);
 
 private slots:
     void onClickPlayButton();

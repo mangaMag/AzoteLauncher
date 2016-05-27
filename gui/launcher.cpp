@@ -94,10 +94,9 @@ void Launcher::onClickPlayButton()
 
     if (os == WINDOWS)
     {
-        dofus->startDetached(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe");
+        QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../app/Dofus.exe"));
     }
-
-    if (os == MAC)
+    else if (os == MAC)
     {
         QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../app/Dofus.app/Contents/MacOs/Flash Player");
 
@@ -106,7 +105,11 @@ void Launcher::onClickPlayButton()
             QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
         }
 
-        dofus->startDetached(QString("open -a %1 -n").arg(QCoreApplication::applicationDirPath() + "/../app/Dofus.app"));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../app/Dofus.app"));
+    }
+    else
+    {
+        log->error("System OS not found !");
     }
 }
 

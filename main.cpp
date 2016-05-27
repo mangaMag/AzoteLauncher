@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication::setApplicationName("Launcher");
-    QApplication::setOrganizationName("Arkalys Prime");
+    QApplication::setOrganizationName("Azendar");
 
     SingleApplication a(argc, argv);
 

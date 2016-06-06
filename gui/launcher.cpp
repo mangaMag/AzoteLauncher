@@ -71,6 +71,7 @@ Launcher::~Launcher()
 
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
+    settings->close();
     console->close();
     hide();
 

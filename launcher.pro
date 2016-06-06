@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = AzendarUpdater
 TEMPLATE = app
 
-DEFINES += LAUNCHER_VERSION=1
+DEFINES += LAUNCHER_VERSION=2
 
 #ICON = ressources/Launcher.icns
 RC_ICONS = ressources/azendaricone.ico

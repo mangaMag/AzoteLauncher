@@ -39,6 +39,7 @@ private:
     void mouseMoveEvent(QMouseEvent* event);
     void changeEvent(QEvent* event);
 
+    void startUpdate();
     void startGame(QString gamePath);
 
 private slots:
@@ -52,6 +53,7 @@ private slots:
     void onCloseApp();
     void onOpenApp();
     void onNewUpdaterVersion();
+    void onRepairStarted();
 };
 
 #endif // LAUNCHER_H

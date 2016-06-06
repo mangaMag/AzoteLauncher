@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QDesktopServices>
+#include <QProcess>
 
 Launcher::Launcher(QWidget *parent) :
     QMainWindow(parent),
@@ -26,19 +27,14 @@ Launcher::Launcher(QWidget *parent) :
     log = &Singleton<Logger>::getInstance();
 
     settings = new Settings(NULL);
+    connect(settings, SIGNAL(repairStarted()), this, SLOT(onRepairStarted()));
 
     ui->playButton->hide();
 
     console = new Console(NULL, log, settings);
     console->show();
 
-    updater = new Updater();
-    connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
-    connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
-    connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
-    connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(show()));
-    connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
-    updater->start(QThread::HighestPriority);
+    startUpdate();
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
 
@@ -110,7 +106,25 @@ void Launcher::onClickPlayButton()
 
 void Launcher::startGame(QString gamePath)
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + gamePath));
+    QFileInfo dofusBin(QCoreApplication::applicationDirPath() + gamePath);
+    QString path = dofusBin.absoluteFilePath();
+
+    switch (settings->getStartMode())
+    {
+        case Process:
+        {
+            QProcess* dofus = new QProcess(this);
+            dofus->start(path);
+            break;
+        }
+        case DetachedProcress:
+            QProcess::startDetached(path);
+            break;
+        case DesktopService:
+        default:
+            QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+            break;
+    }
 }
 
 void Launcher::onClickCloseButton()
@@ -163,6 +177,17 @@ void Launcher::changeEvent(QEvent* event)
     }
 }
 
+void Launcher::startUpdate()
+{
+    updater = new Updater();
+    connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
+    connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
+    connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
+    connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(show()));
+    connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
+    updater->start(QThread::HighestPriority);
+}
+
 void Launcher::onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::DoubleClick || reason == QSystemTrayIcon::Trigger)
@@ -201,6 +226,16 @@ void Launcher::onNewUpdaterVersion()
         updater->resume();
         onCloseApp();
     }
+}
+
+void Launcher::onRepairStarted()
+{
+    updater->stopProcess();
+    updater->terminate();
+    updater->wait();
+    updater->deleteLater();
+
+    startUpdate();
 }
 
 void Launcher::onClickVoteButton()

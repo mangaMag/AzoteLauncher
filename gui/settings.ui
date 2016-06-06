@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>221</width>
-    <height>88</height>
+    <width>233</width>
+    <height>141</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>203</width>
-     <height>71</height>
+     <width>211</width>
+     <height>131</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -59,7 +59,47 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Mode démarrage</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="1">
+     <widget class="QComboBox" name="startModeComboBox">
+      <item>
+       <property name="text">
+        <string>Mode 1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Mode 2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Mode 3</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>Réparation</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QPushButton" name="repairButton">
+      <property name="text">
+       <string>Réparer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
      <widget class="QDialogButtonBox" name="validationButton">
       <property name="standardButtons">
        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>

@@ -7,7 +7,6 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QProcess>
-#include <QMessageBox>
 
 Updater::Updater(QThread* parent) :
     QThread(parent),
@@ -195,8 +194,7 @@ void Updater::processUpdate(Http* http)
 
     int lastVersion = infoFile.value("version").toInt();
     int numberOfUpdates = lastVersion - currentClientVersion;
-    bool isUpdatedCommon = false;
-    bool isUpdatedOS = false;
+    bool isUpdateFailed = false;
 
     if (currentClientVersion < lastVersion)
     {
@@ -266,14 +264,19 @@ void Updater::processUpdate(Http* http)
 
             emit updateStatus("Vérification des fichiers en cours");
 
-            isUpdatedCommon = updateGameFiles(http, url, commonFiles, prefix, "common");
-            isUpdatedOS     = updateGameFiles(http, url, osFiles,     "",     osString);
+            bool isUpdatedCommon = updateGameFiles(http, url, commonFiles, prefix, "common");
+            bool isUpdatedOS     = updateGameFiles(http, url, osFiles,     "",     osString);
+
+            if (!isUpdatedCommon || !isUpdatedOS)
+            {
+                isUpdateFailed = true;
+            }
 
             updateCounter++;
         }
     }
 
-    if (continueUpgrading && isUpdatedCommon && isUpdatedOS)
+    if (continueUpgrading && !isUpdateFailed)
     {
         currentClientVersion = lastVersion;
 

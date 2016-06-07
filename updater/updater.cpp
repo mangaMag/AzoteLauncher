@@ -143,11 +143,9 @@ SelfUpdateStatus Updater::selfUpdate(Http* http)
                 return UPDATE_FAILED;
             }
 
-
             QStringList params;
 
             params << "--selfupdate";
-            params << QString("--path=%1").arg(QCoreApplication::applicationDirPath());
 
             QProcess* process = new QProcess(this);
             if (process->startDetached(file.fileName(), params, QCoreApplication::applicationDirPath()))

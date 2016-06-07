@@ -180,6 +180,8 @@ void Updater::processUpdate(Http* http)
         return;
     }
 
+    emit updateStatus("Téléchargement des informations de mise à jour");
+
     connect(http, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(onDownloadProgress(qint64,qint64)));
 
     QJsonObject infoFile = getInfoFile(http);
@@ -193,6 +195,8 @@ void Updater::processUpdate(Http* http)
 
     int lastVersion = infoFile.value("version").toInt();
     int numberOfUpdates = lastVersion - currentClientVersion;
+    bool isUpdatedCommon = false;
+    bool isUpdatedOS = false;
 
     if (currentClientVersion < lastVersion)
     {
@@ -260,29 +264,38 @@ void Updater::processUpdate(Http* http)
 
             fileCounter = 1;
 
-            updateGameFiles(http, url, commonFiles, prefix, "common");
-            updateGameFiles(http, url, osFiles,     "",     osString);
+            emit updateStatus("Vérification des fichiers en cours");
+
+            isUpdatedCommon = updateGameFiles(http, url, commonFiles, prefix, "common");
+            isUpdatedOS     = updateGameFiles(http, url, osFiles,     "",     osString);
 
             updateCounter++;
         }
     }
 
-    if (continueUpgrading)
+    if (continueUpgrading && isUpdatedCommon && isUpdatedOS)
     {
         currentClientVersion = lastVersion;
 
         settings->setValue("client/version", lastVersion);
         settings->sync();
     }
+    else
+    {
+        emit updateStatus("Echec de la mise à jour, relancez le launcher");
+        log->error("Certains fichiers n'ont pas pu être mis à jour, tentez de relancer le launcher ou d'activier le mode réparation dans les paramètres");
+    }
 }
 
-void Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix)
+bool Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix)
 {
-    foreach(const QJsonValue& file, files)
+    int fails = 0;
+
+    foreach (const QJsonValue& file, files)
     {
-        if(!continueUpgrading)
+        if (!continueUpgrading)
         {
-            return;
+            return false;
         }
 
         QJsonObject fileObject = file.toObject();
@@ -295,13 +308,16 @@ void Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
 
         if (checkIfFileRequireUpdate(nameWithPrefix, md5))
         {
+            emit updateStatus(QString("Mise à jour de %1").arg(nameWithPrefix));
+
             if (updateGameFile(http, url, nameWithPrefix, urlPrefix + "/" + name))
             {
-                emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(nameWithPrefix));
+                //emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(nameWithPrefix));
             }
             else
             {
-                log->error(QString("Impossible d'écrire le fichier %1 sur le disque").arg(nameWithPrefix));
+                log->error(QString("Impossible de télécharger ou d'écrire le fichier %1 sur le disque").arg(nameWithPrefix));
+                fails++;
             }
         }
 
@@ -309,11 +325,13 @@ void Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
 
         fileCounter++;
     }
+
+    return (fails > 0 ? false : true);
 }
 
 QJsonObject Updater::getInfoFile(Http *http)
 {
-    if(!http->get(URL "/info.json"))
+    if (!http->get(URL "/info.json"))
     {
         log->debug(http->error());
         return QJsonObject();
@@ -322,7 +340,7 @@ QJsonObject Updater::getInfoFile(Http *http)
     QByteArray file = http->data();
     QJsonDocument json = QJsonDocument::fromJson(file);
 
-    if(json.isNull())
+    if (json.isNull())
     {
         log->debug("info file json is null");
         return QJsonObject();
@@ -333,7 +351,7 @@ QJsonObject Updater::getInfoFile(Http *http)
 
 QJsonObject Updater::getUpdateFile(Http *http, QString url)
 {
-    if(!http->get(url + "/update.json"))
+    if (!http->get(url + "/update.json"))
     {
         log->debug(http->error());
         return QJsonObject();
@@ -342,7 +360,7 @@ QJsonObject Updater::getUpdateFile(Http *http, QString url)
     QByteArray file = http->data();
     QJsonDocument json = QJsonDocument::fromJson(file);
 
-    if(json.isNull())
+    if (json.isNull())
     {
         log->debug("update file json is null");
         return QJsonObject();
@@ -362,7 +380,7 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
     QCryptographicHash hash(QCryptographicHash::Md5);
     QFile file(QCoreApplication::applicationDirPath() + "/../" + path);
 
-    if(!file.open(QIODevice::ReadOnly))
+    if (!file.open(QIODevice::ReadOnly))
     {
         return true;
     }
@@ -384,7 +402,7 @@ bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlN
 {
     downloadTime.start();
 
-    if(!http->get(url + "/files/" + urlName))
+    if (!http->get(url + "/files/" + urlName))
     {
         log->debug(http->error());
         return false;
@@ -394,7 +412,7 @@ bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlN
     QFile file(QCoreApplication::applicationDirPath() + "/../" + name);
     QFileInfo fileInfo(QCoreApplication::applicationDirPath() + "/../" + name);
 
-    if(!fileInfo.dir().exists())
+    if (!fileInfo.dir().exists())
     {
         if (!fileInfo.dir().mkpath("."))
         {
@@ -421,7 +439,7 @@ bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlN
 
 void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    if(bytesTotal <= 0)
+    if (bytesTotal <= 0)
     {
         return;
     }

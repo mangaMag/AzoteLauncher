@@ -51,7 +51,7 @@ private:
     void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);
     QJsonObject getUpdateFile(Http* http, QString url);
-    void updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix);
+    bool updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix);
     bool checkIfFileRequireUpdate(QString path, QString md5);
     bool updateGameFile(Http* http, QString url, QString name, QString urlName);
 

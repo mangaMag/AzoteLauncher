@@ -9,16 +9,13 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName("Azendar");
 
     SingleApplication a(argc, argv);
+    SelfUpdater selfupdater;
 
-    if (argc > 1)
+    if (selfupdater.isUpdateAsked(argc, argv))
     {
-        SelfUpdater selfupdater;
-
-        if (selfupdater.update(argc, argv))
-        {
-            a.quit();
-            return 0;
-        }
+        selfupdater.update(argv[0]);
+        a.quit();
+        return 0;
     }
 
     Launcher launcher;

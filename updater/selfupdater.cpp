@@ -6,17 +6,35 @@
 #include <QProcess>
 #include <QFile>
 #include <QThread>
+#include <QFileInfo>
+#include <QDir>
+
+#include <QDebug>
 
 SelfUpdater::SelfUpdater(QObject *parent) : QObject(parent)
 {
-}
-
-bool SelfUpdater::update(int argc, char *argv[])
-{
     //Logger* log = &Singleton<Logger>::getInstance();
     //log->showConsole();
-    OperatingSystem os = System::get();
+}
 
+bool SelfUpdater::isUpdateAsked(int argc, char *argv[])
+{
+    for (int i = 1; i < argc; i++)
+    {
+        if (QString::compare("--selfupdate", argv[i]) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void SelfUpdater::update(QString currentPath)
+{
+    QThread::sleep(2); // wait for launcher closed
+
+    OperatingSystem os = System::get();
     QString launcherName = "AzendarUpdater";
 
     if (os == WINDOWS)
@@ -24,40 +42,21 @@ bool SelfUpdater::update(int argc, char *argv[])
         launcherName.append(".exe");
     }
 
-    for (int i = 1; i < argc; i++)
-    {
-        if (QString::compare("--selfupdate", argv[i]) == 0)
-        {
-            QString path(argv[i + 1]);
-            QString tempPath(argv[0]);
+    QFileInfo currentBin(currentPath);
 
-            if (path.contains("--path="))
-            {
-                QThread::sleep(2); // wait for launcher closed
+    QString newPath = currentBin.absoluteDir().path();
+    newPath.append("/" + launcherName);
 
-                path.remove("--path=");
+    QFile::remove(newPath);
+    QFile::copy(currentPath, newPath);
 
-                QString newPath = path;
-                newPath.append("/" + launcherName);
+    QFile(newPath).setPermissions(QFile::ReadOwner |
+                        QFile::WriteOwner |
+                        QFile::ExeOwner |
+                        QFile::ReadGroup |
+                        QFile::ExeGroup |
+                        QFile::ReadOther |
+                        QFile::ExeOther);
 
-                QFile::remove(newPath);
-                QFile::copy(tempPath, newPath);
-
-                QFile(newPath).setPermissions(QFile::ReadOwner |
-                                    QFile::WriteOwner |
-                                    QFile::ExeOwner |
-                                    QFile::ReadGroup |
-                                    QFile::ExeGroup |
-                                    QFile::ReadOther |
-                                    QFile::ExeOther);
-
-                QProcess* process = new QProcess(this);
-                process->startDetached(newPath, QStringList(), path);
-
-                return true;
-            }
-        }
-    }
-
-    return false;
+    QProcess::startDetached(newPath);
 }

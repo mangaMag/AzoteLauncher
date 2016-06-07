@@ -8,7 +8,8 @@ class SelfUpdater : public QObject
     Q_OBJECT
 public:
     explicit SelfUpdater(QObject *parent = 0);
-    bool update(int argc, char *argv[]);
+    bool isUpdateAsked(int argc, char *argv[]);
+    void update(QString currentPath);
 
 signals:
 

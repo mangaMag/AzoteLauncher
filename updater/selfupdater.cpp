@@ -1,6 +1,7 @@
 #include "selfupdater.h"
 //#include "../logger/logger.h"
 #include "../utils/system.h"
+#include "../gui/settings.h"
 
 #include <QCoreApplication>
 #include <QProcess>
@@ -8,8 +9,9 @@
 #include <QThread>
 #include <QFileInfo>
 #include <QDir>
-
-#include <QDebug>
+#include <QSettings>
+#include <QDesktopServices>
+#include <QUrl>
 
 SelfUpdater::SelfUpdater(QObject *parent) : QObject(parent)
 {
@@ -44,7 +46,7 @@ void SelfUpdater::update(QString currentPath)
 
     QFileInfo currentBin(currentPath);
 
-    QString newPath = currentBin.absoluteDir().path();
+    QString newPath = currentBin.absolutePath();
     newPath.append("/" + launcherName);
 
     QFile::remove(newPath);
@@ -58,5 +60,23 @@ void SelfUpdater::update(QString currentPath)
                         QFile::ReadOther |
                         QFile::ExeOther);
 
-    QProcess::startDetached(newPath);
+    QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    StartMode startMode = (StartMode)settings.value("launcher/startMode", DesktopService).toInt();
+
+    switch (startMode)
+    {
+        case Process:
+        {
+            QProcess* launcher = new QProcess(this);
+            launcher->start(newPath);
+            break;
+        }
+        case DetachedProcress:
+            QProcess::startDetached(newPath);
+            break;
+        case DesktopService:
+        default:
+            QDesktopServices::openUrl(QUrl::fromLocalFile(newPath));
+            break;
+    }
 }

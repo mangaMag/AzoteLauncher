@@ -15,7 +15,7 @@ Updater::Updater(QThread* parent) :
     log = &Singleton<Logger>::getInstance();
     os  = System::get();
 
-    updateFileName = "update";
+    updateFileName = "updater";
 
     if (os == WINDOWS)
     {
@@ -66,7 +66,7 @@ void Updater::getCurrentVersion()
     settings = new QSettings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
 
     currentClientVersion   = settings->value("client/version", 0).toInt();
-    currentLauncherVersion = LAUNCHER_VERSION;
+    currentLauncherVersion = settings->value("launcher/version", LAUNCHER_VERSION).toInt(); // LAUNCHER_VERSION;
 }
 
 SelfUpdateStatus Updater::selfUpdate(Http* http)

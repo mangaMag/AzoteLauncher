@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName("Launcher");
     QApplication::setOrganizationName("Azendar");
 
-    SingleApplication a(argc, argv);
+    /*SingleApplication*/ QApplication a(argc, argv);
     SelfUpdater selfupdater;
 
     if (selfupdater.isUpdateAsked(argc, argv))

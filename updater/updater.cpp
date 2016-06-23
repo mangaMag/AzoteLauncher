@@ -30,7 +30,7 @@ Updater::~Updater()
 
 void Updater::run()
 {
-    QFile::remove(updateFileName);
+    QFile::remove(QCoreApplication::applicationDirPath() + "/" + updateFileName);
 
     getCurrentVersion();
 
@@ -95,7 +95,7 @@ SelfUpdateStatus Updater::selfUpdate(Http* http)
     }
 
     bool ok;
-    int launcherVersion = http->data().toInt(&ok);
+    int launcherVersion = http->data().trimmed().toInt(&ok);
 
     if (ok)
     {

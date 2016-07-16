@@ -59,6 +59,9 @@ Launcher::Launcher(QWidget *parent) :
     connect(ui->voteButton, SIGNAL(clicked()), this, SLOT(onClickVoteButton()));
 
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
+
+    ui->homeSelected->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
+
 }
 
 Launcher::~Launcher()

@@ -12,5 +12,48 @@
         <file>ressources/azendar_siteweb.png</file>
         <file>ressources/azendar_voter.png</file>
         <file>ressources/azendaricone.ico</file>
+        <file>ressources/artworks/artwork1.png</file>
+        <file>ressources/controls/close_hover.png</file>
+        <file>ressources/controls/close.png</file>
+        <file>ressources/controls/minimize_hover.png</file>
+        <file>ressources/controls/minimize.png</file>
+        <file>ressources/download_play/bar_empty.png</file>
+        <file>ressources/download_play/bar_full.png</file>
+        <file>ressources/download_play/install_hover.png</file>
+        <file>ressources/download_play/install.png</file>
+        <file>ressources/download_play/pause_hover.png</file>
+        <file>ressources/download_play/pause.png</file>
+        <file>ressources/download_play/play_disabled.png</file>
+        <file>ressources/download_play/play_hover.png</file>
+        <file>ressources/download_play/play.png</file>
+        <file>ressources/download_play/resume_hover.png</file>
+        <file>ressources/download_play/resume.png</file>
+        <file>ressources/download_play/settings_hover.png</file>
+        <file>ressources/download_play/settings_selected.png</file>
+        <file>ressources/download_play/settings.png</file>
+        <file>ressources/links/changelog_hover.png</file>
+        <file>ressources/links/changelog.png</file>
+        <file>ressources/links/forum_hover.png</file>
+        <file>ressources/links/forum.png</file>
+        <file>ressources/links/shop_hover.png</file>
+        <file>ressources/links/shop.png</file>
+        <file>ressources/links/support_hover.png</file>
+        <file>ressources/links/support.png</file>
+        <file>ressources/news/big/news1.png</file>
+        <file>ressources/news/big/panel_hover.png</file>
+        <file>ressources/news/big/panel.png</file>
+        <file>ressources/news/standard/news2.png</file>
+        <file>ressources/news/standard/news3.png</file>
+        <file>ressources/news/standard/panel_hover.png</file>
+        <file>ressources/news/standard/panel.png</file>
+        <file>ressources/servers/epsilon.png</file>
+        <file>ressources/servers/home.png</file>
+        <file>ressources/servers/online.png</file>
+        <file>ressources/servers/server_hover.png</file>
+        <file>ressources/servers/server_selected.png</file>
+        <file>ressources/servers/sigma.png</file>
+        <file>ressources/azote.png</file>
+        <file>ressources/background.png</file>
+        <file>ressources/sigma_title_plus_description.png</file>
     </qresource>
 </RCC>

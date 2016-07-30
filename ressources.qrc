@@ -1,16 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>ressources/topbouton_repair.png</file>
         <file>ressources/Launcher.icns</file>
-        <file>ressources/azendar_background.png</file>
-        <file>ressources/azendar_changerdossierjeu.png</file>
-        <file>ressources/azendar_close.png</file>
-        <file>ressources/azendar_jouerready.png</file>
-        <file>ressources/azendar_jouerready_hover.png</file>
-        <file>ressources/azendar_loadbar.png</file>
-        <file>ressources/azendar_moins.png</file>
-        <file>ressources/azendar_siteweb.png</file>
-        <file>ressources/azendar_voter.png</file>
         <file>ressources/azendaricone.ico</file>
         <file>ressources/artworks/artwork1.png</file>
         <file>ressources/controls/close_hover.png</file>
@@ -54,6 +44,6 @@
         <file>ressources/servers/sigma.png</file>
         <file>ressources/azote.png</file>
         <file>ressources/background.png</file>
-        <file>ressources/sigma_title_plus_description.png</file>
+        <file>ressources/servers/sigma_description.png</file>
     </qresource>
 </RCC>

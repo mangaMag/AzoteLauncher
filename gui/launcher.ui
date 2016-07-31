@@ -53,7 +53,7 @@ background-color: rgba(255, 255, 255, 0);
 	background:  url(:/ressources/download_play/install.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/download_play/install_hover.png) no-repeat;
 }</string>
     </property>
@@ -146,7 +146,7 @@ QProgressBar::chunk {
 	background:  url(:/ressources/controls/close.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/controls/close_hover.png) no-repeat;
 }</string>
     </property>
@@ -175,7 +175,7 @@ QPushButton:hover {
 	background:  url(:/ressources/controls/minimize.png) bottom no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background-image:  url(:/ressources/controls/minimize_hover.png) bottom no-repeat;
 }</string>
     </property>
@@ -204,7 +204,7 @@ QPushButton:hover {
 	background:  url(:/ressources/download_play/settings.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/download_play/settings_hover.png) no-repeat;
 }</string>
     </property>
@@ -253,7 +253,7 @@ color:#00bae2;</string>
 	background:  url(:/ressources/links/forum.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/links/forum_hover.png) no-repeat;
 }</string>
     </property>
@@ -282,7 +282,7 @@ QPushButton:hover {
 	background:  url(:/ressources/links/changelog.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/links/changelog_hover.png) no-repeat;
 }</string>
     </property>
@@ -315,7 +315,7 @@ QPushButton:hover {
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="home">
+   <widget class="QWidget" name="home" native="true">
     <property name="geometry">
      <rect>
       <x>6</x>
@@ -325,16 +325,15 @@ QPushButton:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton {
-	border: none;
+     <string notr="true">QWidget {
 	background:  url(:/ressources/servers/home.png) no-repeat center;
 }</string>
     </property>
-    <property name="text">
+    <property name="text" stdset="0">
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="sigma">
+   <widget class="QWidget" name="sigma" native="true">
     <property name="geometry">
      <rect>
       <x>6</x>
@@ -344,16 +343,15 @@ QPushButton:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton {
-	border: none;
+     <string notr="true">QWidget {
 	background:  url(:/ressources/servers/sigma.png) no-repeat center;
 }</string>
     </property>
-    <property name="text">
+    <property name="text" stdset="0">
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="epsilon">
+   <widget class="QWidget" name="epsilon" native="true">
     <property name="geometry">
      <rect>
       <x>6</x>
@@ -363,12 +361,11 @@ QPushButton:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton {
-	border: none;
+     <string notr="true">QWidget {
 	background:  url(:/ressources/servers/epsilon.png) no-repeat center;
 }</string>
     </property>
-    <property name="text">
+    <property name="text" stdset="0">
      <string/>
     </property>
    </widget>
@@ -557,7 +554,7 @@ QPushButton:hover {
 	background:  url(:/ressources/links/support.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/links/support_hover.png) no-repeat;
 }</string>
     </property>
@@ -586,7 +583,7 @@ QPushButton:hover {
 	background:  url(:/ressources/links/shop.png) no-repeat;
 }
 
-QPushButton:hover { 
+QPushButton:hover {
 	background:  url(:/ressources/links/shop_hover.png) no-repeat;
 }</string>
     </property>
@@ -595,6 +592,144 @@ QPushButton:hover {
     </property>
     <property name="flat">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QWidget" name="newBigImage" native="true">
+    <property name="geometry">
+     <rect>
+      <x>114</x>
+      <y>204</y>
+      <width>357</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget {
+	background:   no-repeat;
+	background-image: url(:/ressources/news/big/news1.png);
+}
+</string>
+    </property>
+    <property name="text" stdset="0">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newBigFront">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>200</y>
+      <width>368</width>
+      <height>212</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border: none;
+	background: url(:/ressources/news/big/panel.png) no-repeat;
+}
+
+QPushButton:hover {
+	background: url(:/ressources/news/big/panel_hover.png) no-repeat;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newSmallFront1">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>200</y>
+      <width>187</width>
+      <height>212</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border: none;
+	background: url(:/ressources/news/standard/panel.png) no-repeat;
+}
+
+QPushButton:hover {
+	background: url(:/ressources/news/standard/panel_hover.png) no-repeat;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newSmallFront2">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>200</y>
+      <width>187</width>
+      <height>212</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border: none;
+	background: url(:/ressources/news/standard/panel.png) no-repeat;
+}
+
+QPushButton:hover {
+	background: url(:/ressources/news/standard/panel_hover.png) no-repeat;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="newSmallImage1" native="true">
+    <property name="geometry">
+     <rect>
+      <x>501</x>
+      <y>204</y>
+      <width>178</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget {
+	background:   no-repeat;
+	background-image: url(:/ressources/news/standard/news2.png)
+}
+</string>
+    </property>
+    <property name="text" stdset="0">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="newSmallImage2" native="true">
+    <property name="geometry">
+     <rect>
+      <x>711</x>
+      <y>204</y>
+      <width>178</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget {
+	background:   no-repeat;
+	background-image: url(:/ressources/news/standard/news3.png)
+}
+</string>
+    </property>
+    <property name="text" stdset="0">
+     <string/>
     </property>
    </widget>
    <zorder>voteButton</zorder>
@@ -620,6 +755,12 @@ QPushButton:hover {
    <zorder>serverDescription</zorder>
    <zorder>supportButton</zorder>
    <zorder>shopButton</zorder>
+   <zorder>newBigImage</zorder>
+   <zorder>newBigFront</zorder>
+   <zorder>newSmallImage1</zorder>
+   <zorder>newSmallFront1</zorder>
+   <zorder>newSmallImage2</zorder>
+   <zorder>newSmallFront2</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

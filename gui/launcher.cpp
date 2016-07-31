@@ -60,7 +60,7 @@ Launcher::Launcher(QWidget *parent) :
 
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 
-    ui->homeSelected->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
+    ui->sigmaSelected->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
 
 }
 

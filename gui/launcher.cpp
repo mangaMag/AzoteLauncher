@@ -20,8 +20,6 @@ Launcher::Launcher(QWidget *parent) :
     setWindowFlags(Qt::FramelessWindowHint);
     setFixedSize(width(), height());
 
-    ui->labelDownloadSpeed->setAttribute(Qt::WA_TranslucentBackground);
-
     qRegisterMetaType<LogLevel>("LogLevel");
 
     log = &Singleton<Logger>::getInstance();
@@ -29,15 +27,12 @@ Launcher::Launcher(QWidget *parent) :
     settings = new Settings(NULL);
     connect(settings, SIGNAL(repairStarted()), this, SLOT(onRepairStarted()));
 
-    ui->playButton->hide();
-
     console = new Console(NULL, log, settings);
     console->show();
 
     startUpdate();
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
-
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
@@ -148,7 +143,7 @@ void Launcher::onClickCloseButton()
     console->close();
     hide();
 
-    trayIcon->showMessage("Azendar", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
+    trayIcon->showMessage("Aote", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
 }
 
 void Launcher::onClickMinimizeButton()
@@ -199,7 +194,7 @@ void Launcher::startUpdate()
     connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
     connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
     connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
-    connect(updater, SIGNAL(enablePlayButton(bool)), ui->playButton, SLOT(show()));
+    connect(updater, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
     connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
     updater->start(QThread::HighestPriority);
 }
@@ -230,7 +225,7 @@ void Launcher::onCloseApp()
 
 void Launcher::onNewUpdaterVersion()
 {
-    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Azendar", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
+    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Azote", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
 
     if (reply == QMessageBox::Ok)
     {
@@ -252,6 +247,11 @@ void Launcher::onRepairStarted()
     updater->deleteLater();
 
     startUpdate();
+}
+
+void Launcher::onUpdateFinished()
+{
+    ui->playButton->setStyleSheet(ui->playButton->styleSheet().replace("install", "play"));
 }
 
 void Launcher::onClickLinkButton()

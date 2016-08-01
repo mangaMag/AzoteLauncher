@@ -70,7 +70,7 @@ signals:
     void updateProgressPercent(const QString value);
     void updateDownloadSpeed(const QString speed);
     void updateStatus(const QString status);
-    void enablePlayButton(bool state);
+    void updateFinished();
     void newUpdaterVersion();
 };
 

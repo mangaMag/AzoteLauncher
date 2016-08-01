@@ -56,6 +56,7 @@ private slots:
     void onOpenApp();
     void onNewUpdaterVersion();
     void onRepairStarted();
+    void onUpdateFinished();
 };
 
 #endif // LAUNCHER_H

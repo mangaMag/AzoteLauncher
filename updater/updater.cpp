@@ -48,7 +48,7 @@ void Updater::run()
         log->info(QString("Le client est à jour (client: %1 launcher: %2)").arg(currentClientVersion).arg(currentLauncherVersion));
         emit updateDownloadSpeed("0 o/s");
         emit updateStatus("Le client est à jour");
-        emit enablePlayButton(true);
+        emit updateFinished();
         emit updateProgressBarTotal(100);
     }
 

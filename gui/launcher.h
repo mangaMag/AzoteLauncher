@@ -11,6 +11,8 @@
 #include <QPoint>
 #include <QMouseEvent>
 #include <QSystemTrayIcon>
+#include <QMap>
+#include <QUrl>
 
 namespace Ui {
 class Launcher;
@@ -33,6 +35,7 @@ private:
     QSystemTrayIcon* trayIcon;
     Settings* settings;
     Console* console;
+    QMap<QObject*, QUrl> urls;
 
     void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);
@@ -44,8 +47,7 @@ private:
 
 private slots:
     void onClickPlayButton();
-    void onClickVoteButton();
-    void onClickWebButton();
+    void onClickLinkButton();
     void onClickCloseButton();
     void onClickMinimizeButton();
     void onClickSettingsButton();

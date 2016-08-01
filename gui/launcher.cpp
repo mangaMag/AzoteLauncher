@@ -55,13 +55,25 @@ Launcher::Launcher(QWidget *parent) :
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(onOpenApp()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(onCloseApp()));
 
-    connect(ui->webButton, SIGNAL(clicked()), this, SLOT(onClickWebButton()));
-    connect(ui->voteButton, SIGNAL(clicked()), this, SLOT(onClickVoteButton()));
-
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 
-    ui->sigmaSelected->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
+    urls.insert(ui->supportButton,   QUrl("https://azote.us/support"));
+    urls.insert(ui->forumButton,     QUrl("https://forum.azote.us/"));
+    urls.insert(ui->shopButton,      QUrl("https://azote.us/shop"));
+    urls.insert(ui->changelogButton, QUrl("https://azote.us/changelog"));
+    urls.insert(ui->newBigFront,     QUrl("https://azote.us/news/1"));
+    urls.insert(ui->newSmallFront1,  QUrl("https://azote.us/news/2"));
+    urls.insert(ui->newSmallFront2,  QUrl("https://azote.us/news/3"));
 
+    connect(ui->supportButton,   SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+    connect(ui->forumButton,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+    connect(ui->shopButton,      SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+    connect(ui->changelogButton, SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+    connect(ui->newBigFront,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+    connect(ui->newSmallFront1,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+    connect(ui->newSmallFront2,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+
+    ui->sigmaSelected->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
 }
 
 Launcher::~Launcher()
@@ -242,12 +254,14 @@ void Launcher::onRepairStarted()
     startUpdate();
 }
 
-void Launcher::onClickVoteButton()
+void Launcher::onClickLinkButton()
 {
-    QDesktopServices::openUrl(QUrl("http://www.rpg-paradize.com/?page=vote&vote=105748"));
-}
+    QObject* sender = QObject::sender();
+    auto url = urls.find(sender);
 
-void Launcher::onClickWebButton()
-{
-    QDesktopServices::openUrl(QUrl("http://www.azendar.fr/"));
+    if (url != urls.end())
+    {
+        QDesktopServices::openUrl(url.value());
+    }
+
 }

@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>ressources/Launcher.icns</file>
-        <file>ressources/azendaricone.ico</file>
         <file>ressources/artworks/artwork1.png</file>
         <file>ressources/controls/close_hover.png</file>
         <file>ressources/controls/close.png</file>
@@ -45,5 +43,8 @@
         <file>ressources/azote.png</file>
         <file>ressources/background.png</file>
         <file>ressources/servers/sigma_description.png</file>
+        <file>ressources/icon.icns</file>
+        <file>ressources/icon.ico</file>
+        <file>ressources/Logo.png</file>
     </qresource>
 </RCC>

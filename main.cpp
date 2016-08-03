@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication::setApplicationName("Launcher");
-    QApplication::setOrganizationName("Azendar");
+    QApplication::setOrganizationName("Azote");
 
     /*SingleApplication*/ QApplication a(argc, argv);
     SelfUpdater selfupdater;

@@ -8,13 +8,13 @@ QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = AzendarUpdater
+TARGET = AzoteUpdater
 TEMPLATE = app
 
 DEFINES += LAUNCHER_VERSION=4
 
-ICON = ressources/Launcher.icns
-RC_ICONS = ressources/azendaricone.ico
+ICON = ressources/icon.icns
+RC_ICONS = ressources/icon.ico
 
 SOURCES += main.cpp\
     gui/launcher.cpp \

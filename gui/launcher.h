@@ -14,6 +14,18 @@
 #include <QMap>
 #include <QUrl>
 
+enum TabType {
+    HOME,
+    SERVER
+};
+
+struct tab {
+    TabType type;
+    QString name;
+    Updater* updater;
+    QWidget* selector;
+};
+
 namespace Ui {
 class Launcher;
 }
@@ -36,6 +48,8 @@ private:
     Settings* settings;
     Console* console;
     QMap<QObject*, QUrl> urls;
+    QMap<QObject*, tab> tabs;
+    tab previousTab;
 
     void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);
@@ -44,6 +58,8 @@ private:
 
     void startUpdate();
     void startGame(QString gamePath);
+
+    void switchSelectedTab(tab selectedTab);
 
 private slots:
     void onClickPlayButton();
@@ -57,6 +73,7 @@ private slots:
     void onNewUpdaterVersion();
     void onRepairStarted();
     void onUpdateFinished();
+    void onChangeTab();
 };
 
 #endif // LAUNCHER_H

@@ -52,6 +52,21 @@ Launcher::Launcher(QWidget *parent) :
 
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 
+    tab home    = { HOME,   "Home",    nullptr, ui->homeSelected };
+    tab sigma   = { SERVER, "Sigma",   nullptr, ui->sigmaSelected };
+    tab epsilon = { SERVER, "Epsilon", nullptr, ui->epsilonSelected };
+
+    tabs.insert(ui->homeButton,    home);
+    tabs.insert(ui->sigmaButton,   sigma);
+    tabs.insert(ui->epsilonButton, epsilon);
+
+    connect(ui->homeButton,    SIGNAL(clicked()), this, SLOT(onChangeTab()));
+    connect(ui->sigmaButton,   SIGNAL(clicked()), this, SLOT(onChangeTab()));
+    connect(ui->epsilonButton, SIGNAL(clicked()), this, SLOT(onChangeTab()));
+
+    previousTab = home;
+    switchSelectedTab(sigma);
+
     urls.insert(ui->supportButton,   QUrl("https://azote.us/support"));
     urls.insert(ui->forumButton,     QUrl("https://forum.azote.us/"));
     urls.insert(ui->shopButton,      QUrl("https://azote.us/shop"));
@@ -67,8 +82,6 @@ Launcher::Launcher(QWidget *parent) :
     connect(ui->newBigFront,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->newSmallFront1,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->newSmallFront2,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
-
-    ui->sigmaSelected->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
 }
 
 Launcher::~Launcher()
@@ -138,12 +151,19 @@ void Launcher::startGame(QString gamePath)
     }
 }
 
+void Launcher::switchSelectedTab(tab selectedTab)
+{
+    previousTab.selector->setStyleSheet("QPushButton{border:none;background:transparent;}");
+    selectedTab.selector->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
+    previousTab = selectedTab;
+}
+
 void Launcher::onClickCloseButton()
 {
     console->close();
     hide();
 
-    trayIcon->showMessage("Aote", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
+    trayIcon->showMessage("Azote", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
 }
 
 void Launcher::onClickMinimizeButton()
@@ -252,6 +272,18 @@ void Launcher::onRepairStarted()
 void Launcher::onUpdateFinished()
 {
     ui->playButton->setStyleSheet(ui->playButton->styleSheet().replace("install", "play"));
+}
+
+void Launcher::onChangeTab()
+{
+    QObject* sender = QObject::sender();
+    auto tabIterator = tabs.find(sender);
+
+    if (tabIterator != tabs.end())
+    {
+        tab selectedTab = tabIterator.value();
+        switchSelectedTab(selectedTab);
+    }
 }
 
 void Launcher::onClickLinkButton()

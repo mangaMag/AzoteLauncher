@@ -282,7 +282,11 @@ void Launcher::onChangeTab()
     if (tabIterator != tabs.end())
     {
         tab selectedTab = tabIterator.value();
+        QString style = ui->serverDescription->styleSheet().replace(previousTab.name.toLower(), selectedTab.name.toLower());
+
         switchSelectedTab(selectedTab);
+
+        ui->serverDescription->setStyleSheet(style);
     }
 }
 

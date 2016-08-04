@@ -21,11 +21,19 @@ enum TabType {
     CONSOLE
 };
 
-struct tab {
+class Tab
+{
+public:
+    Tab(TabType _type, QString _name, QWidget* _selector) :
+        type(_type),
+        name(_name),
+        selector(_selector),
+        window(NULL) { }
+
     TabType type;
     QString name;
-    Updater* updater;
     QWidget* selector;
+    QWidget* window;
 };
 
 namespace Ui {
@@ -37,7 +45,7 @@ class Launcher : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Launcher(QWidget *parent = 0);
+    explicit Launcher(QWidget* parent = 0);
     ~Launcher();
 
     Settings* settings;
@@ -51,8 +59,8 @@ private:
     QSystemTrayIcon* trayIcon;
     Console* console;
     QMap<QObject*, QUrl> urls;
-    QMap<QObject*, tab> tabs;
-    tab previousTab;
+    QMap<QObject*, Tab*> tabs;
+    Tab* previousTab;
     QWidget* currentWindows;
 
     void closeEvent(QCloseEvent* event);
@@ -63,7 +71,7 @@ private:
     void startUpdate();
     void startGame(QString gamePath);
 
-    void switchSelectedTab(tab selectedTab);
+    void switchSelectedTab(Tab* selectedTab);
 
 public slots:
     void onCloseApp();

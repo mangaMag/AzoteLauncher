@@ -9,7 +9,7 @@
 #include <QProcess>
 #include <QDesktopServices>
 
-Server::Server(Launcher* _launcher, QWidget* parent) :
+Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
     QWidget(parent),
     launcher(_launcher),
     ui(new Ui::Server)
@@ -20,8 +20,8 @@ Server::Server(Launcher* _launcher, QWidget* parent) :
 
     //startUpdate();
 
-    /*QString style = ui->serverDescription->styleSheet().replace(previousTab.name.toLower(), selectedTab.name.toLower());
-    ui->serverDescription->setStyleSheet(style);*/
+    QString style = ui->serverDescription->styleSheet().replace("_SERVER_", name.toLower());
+    ui->serverDescription->setStyleSheet(style);
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));

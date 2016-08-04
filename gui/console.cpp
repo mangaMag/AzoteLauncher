@@ -9,9 +9,6 @@ Console::Console(QWidget* parent, QObject *logger, Settings* _settings) :
 {
     ui->setupUi(this);
 
-    setGeometry(100, 100, width(), height());
-    setFixedSize(width(), height());
-
     connect(logger, SIGNAL(message(LogLevel, QString)), this, SLOT(onMessage(LogLevel, QString)));
     connect(settgins, SIGNAL(consoleStateChange(bool)), this, SLOT(onConsoleStateChange(bool)));
 }

@@ -107,7 +107,7 @@ QPushButton:hover {
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:  url(:/ressources/servers/sigma_description.png) no-repeat;</string>
+    <string notr="true">background:  url(:/ressources/servers/_SERVER__description.png) no-repeat;</string>
    </property>
   </widget>
   <widget class="QWidget" name="backgroundArtwork" native="true">

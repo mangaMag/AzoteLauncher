@@ -6,37 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>758</width>
-    <height>289</height>
+    <width>875</width>
+    <height>487</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Console</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../ressources.qrc">
+   <iconset>
     <normaloff>:/ressources/azendaricone.ico</normaloff>:/ressources/azendaricone.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background:transparent;</string>
   </property>
   <widget class="QTextEdit" name="console">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>761</width>
-     <height>291</height>
+     <x>10</x>
+     <y>60</y>
+     <width>801</width>
+     <height>361</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+border: 1px solid rgb(22, 183, 255);</string>
    </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="../ressources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

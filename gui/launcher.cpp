@@ -3,12 +3,14 @@
 #include "../logger/logger.h"
 #include "../utils/system.h"
 #include "server.h"
+#include "console.h"
 
 #include <QMessageBox>
 #include <QMenu>
 #include <QAction>
+#include <QDesktopServices>
 
-Launcher::Launcher(QWidget *parent) :
+Launcher::Launcher(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::Launcher)
 {
@@ -24,9 +26,6 @@ Launcher::Launcher(QWidget *parent) :
 
     settings = new Settings(NULL);
     connect(settings, SIGNAL(repairStarted()), this, SLOT(onRepairStarted()));
-
-    console = new Console(NULL, log, settings);
-    console->show();
 
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
@@ -46,15 +45,39 @@ Launcher::Launcher(QWidget *parent) :
 
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 
-    tab home    = { HOME,    "Home",    nullptr, ui->homeSelected };
-    tab sigma   = { SERVER,  "Sigma",   nullptr, ui->sigmaSelected };
-    tab epsilon = { SERVER,  "Epsilon", nullptr, ui->epsilonSelected };
-    tab console = { CONSOLE, "Console", nullptr, ui->consoleSelected };
+    Tab* home    = new Tab(HOME,    "Home",    ui->homeSelected);
+    Tab* sigma   = new Tab(SERVER,  "Sigma",   ui->sigmaSelected);
+    Tab* epsilon = new Tab(SERVER,  "Epsilon", ui->epsilonSelected);
+    Tab* console = new Tab(CONSOLE, "Console", ui->consoleSelected);
 
     tabs.insert(ui->homeButton,    home);
     tabs.insert(ui->sigmaButton,   sigma);
     tabs.insert(ui->epsilonButton, epsilon);
     tabs.insert(ui->consoleButton, console);
+
+    foreach (Tab* tab, tabs)
+    {
+        if (tab->window == NULL)
+        {
+            switch (tab->type)
+            {
+                case HOME:
+                    tab->window = NULL;
+                    break;
+                case SERVER:
+                    tab->window = new Server(ui->mainWidget, this, tab->name);
+                    break;
+                case CONSOLE:
+                    tab->window = new Console(ui->mainWidget, log, settings);
+                    break;
+                case SETTINGS:
+                    tab->window = NULL;
+                    break;
+            }
+        }
+
+        if (tab->window != NULL) tab->window->hide();
+    }
 
     connect(ui->homeButton,    SIGNAL(clicked()), this, SLOT(onChangeTab()));
     connect(ui->sigmaButton,   SIGNAL(clicked()), this, SLOT(onChangeTab()));
@@ -63,8 +86,6 @@ Launcher::Launcher(QWidget *parent) :
 
     previousTab = home;
     switchSelectedTab(sigma);
-
-    currentWindows = new Server(this, ui->mainWidget);
 
     urls.insert(ui->supportButton,   QUrl("https://azote.us/support"));
     urls.insert(ui->forumButton,     QUrl("https://forum.azote.us/"));
@@ -97,11 +118,21 @@ void Launcher::closeEvent(QCloseEvent* /*event*/)
 }
 
 
-void Launcher::switchSelectedTab(tab selectedTab)
+void Launcher::switchSelectedTab(Tab* selectedTab)
 {
-    previousTab.selector->setStyleSheet("QPushButton{border:none;background:transparent;}");
-    selectedTab.selector->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
+    if (previousTab->window != NULL)
+    {
+        previousTab->window->hide();
+    }
+
+    previousTab->selector->setStyleSheet("QPushButton{border:none;background:transparent;}");
+    selectedTab->selector->setStyleSheet("QPushButton{border:none;background:url(:/ressources/servers/server_selected.png) no-repeat center;}");
     previousTab = selectedTab;
+
+    if (selectedTab->window != NULL)
+    {
+        selectedTab->window->show();
+    }
 }
 
 void Launcher::onClickCloseButton()
@@ -190,7 +221,7 @@ void Launcher::onChangeTab()
 
     if (tabIterator != tabs.end())
     {
-        tab selectedTab = tabIterator.value();
+        Tab* selectedTab = tabIterator.value();
         switchSelectedTab(selectedTab);
     }
 }

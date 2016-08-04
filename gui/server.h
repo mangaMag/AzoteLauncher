@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMap>
+#include <QString>
 
 class Launcher;
 class Updater;
@@ -17,7 +18,7 @@ class Server : public QWidget
     Q_OBJECT
 
 public:
-    explicit Server(Launcher* _launcher, QWidget* parent = 0);
+    explicit Server(QWidget* parent, Launcher* _launcher, QString name);
     ~Server();
 
 private:

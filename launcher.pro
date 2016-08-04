@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     others/sound.cpp \
     utils/system.cpp \
     gui/settings.cpp \
-    dep/SingleApplication/singleapplication.cpp
+    dep/SingleApplication/singleapplication.cpp \
+    gui/server.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
@@ -39,11 +40,13 @@ HEADERS  += gui/launcher.h \
     utils/system.h \
     logger/loglevel.h \
     gui/settings.h \
-    dep/SingleApplication/singleapplication.h
+    dep/SingleApplication/singleapplication.h \
+    gui/server.h
 
 FORMS    += gui/launcher.ui \
     gui/console.ui \
-    gui/settings.ui
+    gui/settings.ui \
+    gui/server.ui
 
 RESOURCES += \
     ressources.qrc

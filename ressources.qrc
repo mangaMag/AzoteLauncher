@@ -47,5 +47,6 @@
         <file>ressources/icon.ico</file>
         <file>ressources/Logo.png</file>
         <file>ressources/servers/epsilon_description.png</file>
+        <file>ressources/servers/console.png</file>
     </qresource>
 </RCC>

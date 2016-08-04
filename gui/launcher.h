@@ -16,7 +16,9 @@
 
 enum TabType {
     HOME,
-    SERVER
+    SERVER,
+    SETTINGS,
+    CONSOLE
 };
 
 struct tab {
@@ -38,6 +40,8 @@ public:
     explicit Launcher(QWidget *parent = 0);
     ~Launcher();
 
+    Settings* settings;
+
 private:
     Ui::Launcher* ui;
     Updater* updater;
@@ -45,11 +49,11 @@ private:
     QPoint mpos;
     int port;
     QSystemTrayIcon* trayIcon;
-    Settings* settings;
     Console* console;
     QMap<QObject*, QUrl> urls;
     QMap<QObject*, tab> tabs;
     tab previousTab;
+    QWidget* currentWindows;
 
     void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);
@@ -61,18 +65,16 @@ private:
 
     void switchSelectedTab(tab selectedTab);
 
+public slots:
+    void onCloseApp();
+
 private slots:
-    void onClickPlayButton();
     void onClickLinkButton();
     void onClickCloseButton();
     void onClickMinimizeButton();
-    void onClickSettingsButton();
     void onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason);
-    void onCloseApp();
     void onOpenApp();
-    void onNewUpdaterVersion();
     void onRepairStarted();
-    void onUpdateFinished();
     void onChangeTab();
 };
 

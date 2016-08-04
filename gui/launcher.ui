@@ -513,8 +513,6 @@ QPushButton:hover {
      <string notr="true">background:transparent;</string>
     </property>
    </widget>
-   <zorder>closeButton</zorder>
-   <zorder>minimizeButton</zorder>
    <zorder>serversStatus</zorder>
    <zorder>homeSelected</zorder>
    <zorder>home</zorder>
@@ -530,6 +528,8 @@ QPushButton:hover {
    <zorder>consoleButton</zorder>
    <zorder>mainWidget</zorder>
    <zorder>LinksWidget</zorder>
+   <zorder>closeButton</zorder>
+   <zorder>minimizeButton</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

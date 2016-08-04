@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QDesktopServices>
+#include <QVector>
 
 Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
     QWidget(parent),
@@ -21,8 +22,15 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
 
     //startUpdate();
 
-    QString style = ui->serverDescription->styleSheet().replace("_SERVER_", name.toLower());
-    ui->serverDescription->setStyleSheet(style);
+    QVector<QWidget*> images;
+    images.push_back(ui->serverDescription);
+    images.push_back(ui->backgroundArtwork);
+
+    foreach(QWidget* image, images)
+    {
+        QString style = image->styleSheet().replace("_SERVER_", name.toLower());
+        image->setStyleSheet(style);
+    }
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));

@@ -120,7 +120,7 @@ QPushButton:hover {
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:  url(:/ressources/artworks/artwork1.png) no-repeat;</string>
+    <string notr="true">background:  url(:/ressources/artworks/_SERVER_.png) no-repeat;</string>
    </property>
   </widget>
   <widget class="QPushButton" name="newBigFront">

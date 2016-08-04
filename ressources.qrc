@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>ressources/artworks/artwork1.png</file>
         <file>ressources/controls/close_hover.png</file>
         <file>ressources/controls/close.png</file>
         <file>ressources/controls/minimize_hover.png</file>
@@ -48,5 +47,7 @@
         <file>ressources/Logo.png</file>
         <file>ressources/servers/epsilon_description.png</file>
         <file>ressources/servers/console.png</file>
+        <file>ressources/artworks/epsilon.png</file>
+        <file>ressources/artworks/sigma.png</file>
     </qresource>
 </RCC>

@@ -16,6 +16,8 @@ DEFINES += LAUNCHER_VERSION=4
 ICON = ressources/icon.icns
 RC_ICONS = ressources/icon.ico
 
+QMAKE_INFO_PLIST=Info.plist
+
 SOURCES += main.cpp\
     gui/launcher.cpp \
     updater/updater.cpp \

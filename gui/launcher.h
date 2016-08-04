@@ -1,11 +1,9 @@
 #ifndef LAUNCHER_H
 #define LAUNCHER_H
 
-#include "../updater/updater.h"
-#include "../logger/logger.h"
-#include "../others/sound.h"
+#include "logger/logger.h"
+#include "others/sound.h"
 #include "settings.h"
-#include "console.h"
 
 #include <QMainWindow>
 #include <QPoint>
@@ -52,12 +50,10 @@ public:
 
 private:
     Ui::Launcher* ui;
-    Updater* updater;
     Logger* log;
     QPoint mpos;
     int port;
     QSystemTrayIcon* trayIcon;
-    Console* console;
     QMap<QObject*, QUrl> urls;
     QMap<QObject*, Tab*> tabs;
     Tab* previousTab;

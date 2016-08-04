@@ -100,7 +100,6 @@ Launcher::Launcher(QWidget* parent) :
 
 Launcher::~Launcher()
 {
-    updater->deleteLater();
     log->deleteLater();
 
     delete ui;
@@ -109,12 +108,9 @@ Launcher::~Launcher()
 void Launcher::closeEvent(QCloseEvent* /*event*/)
 {
     settings->close();
-    console->close();
     hide();
 
-    updater->stopProcess();
-    updater->terminate();
-    updater->wait();
+    // TODO: close all windows
 }
 
 
@@ -137,7 +133,6 @@ void Launcher::switchSelectedTab(Tab* selectedTab)
 
 void Launcher::onClickCloseButton()
 {
-    console->close();
     hide();
 
     trayIcon->showMessage("Azote", "Le launcher a été réduit dans la barre des tâches, cliquez sur l'icon pour l'ouvrir.");
@@ -170,11 +165,10 @@ void Launcher::changeEvent(QEvent* event)
     {
         if (windowState() == Qt::WindowMinimized)
         {
-            console->close();
+            //
         }
         else if (windowState() == Qt::WindowNoState || windowState() == Qt::WindowActive)
         {
-            console->show();
             raise();
         }
     }
@@ -190,7 +184,6 @@ void Launcher::onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason)
 
 void Launcher::onOpenApp()
 {
-    console->show();
     show();
     setWindowState(Qt::WindowActive);
     raise();
@@ -199,17 +192,18 @@ void Launcher::onOpenApp()
 void Launcher::onCloseApp()
 {
     trayIcon->hide();
-    console->close();
     hide();
     close();
 }
 
 void Launcher::onRepairStarted()
 {
-    updater->stopProcess();
+    // TODO: manage repair process
+
+    /*updater->stopProcess();
     updater->terminate();
     updater->wait();
-    updater->deleteLater();
+    updater->deleteLater();*/
 
     //startUpdate();
 }

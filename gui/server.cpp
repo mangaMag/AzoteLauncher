@@ -12,7 +12,8 @@
 Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
     QWidget(parent),
     launcher(_launcher),
-    ui(new Ui::Server)
+    ui(new Ui::Server),
+    updater(NULL)
 {
     ui->setupUi(this);
 
@@ -37,6 +38,14 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
 
 Server::~Server()
 {
+    if (updater != NULL)
+    {
+        updater->stopProcess();
+        updater->terminate();
+        updater->wait();
+        updater->deleteLater();
+    }
+
     delete ui;
 }
 

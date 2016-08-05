@@ -8,9 +8,11 @@
 #include <QCoreApplication>
 #include <QProcess>
 
-Updater::Updater(QThread* parent) :
+Updater::Updater(QString _serverName, QThread* parent) :
     QThread(parent),
-    continueUpgrading(true)
+    continueUpgrading(true),
+    bPause(false),
+    serverName(_serverName)
 {
     log = &Singleton<Logger>::getInstance();
     os  = System::get();
@@ -209,7 +211,14 @@ void Updater::processUpdate(Http* http)
 
         for (int tempVersion = lastVersion; tempVersion > currentClientVersion; tempVersion--)
         {
-            if(!continueUpgrading)
+            sync.lock();
+            if (bPause)
+            {
+                pauseCond.wait(&sync);
+            }
+            sync.unlock();
+
+            if (!continueUpgrading)
             {
                 return;
             }
@@ -262,8 +271,8 @@ void Updater::processUpdate(Http* http)
 
             emit updateStatus("Vérification des fichiers en cours");
 
-            bool isUpdatedCommon = updateGameFiles(http, url, commonFiles, prefix, "common");
-            bool isUpdatedOS     = updateGameFiles(http, url, osFiles,     "",     osString);
+            bool isUpdatedCommon = updateGameFiles(http, url, commonFiles, serverName + "_" + prefix, "common");
+            bool isUpdatedOS     = updateGameFiles(http, url, osFiles,     serverName + "_",           osString);
 
             if (!isUpdatedCommon || !isUpdatedOS)
             {
@@ -273,6 +282,13 @@ void Updater::processUpdate(Http* http)
             updateCounter++;
         }
     }
+
+    sync.lock();
+    if (bPause)
+    {
+        pauseCond.wait(&sync);
+    }
+    sync.unlock();
 
     if (continueUpgrading && !isUpdateFailed)
     {
@@ -294,6 +310,13 @@ bool Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
 
     foreach (const QJsonValue& file, files)
     {
+        sync.lock();
+        if (bPause)
+        {
+            pauseCond.wait(&sync);
+        }
+        sync.unlock();
+
         if (!continueUpgrading)
         {
             return false;
@@ -440,6 +463,12 @@ bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlN
 
 void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
+    if (bPause)
+    {
+        emit updateDownloadSpeed(QString("0 o/s"));
+        return;
+    }
+
     if (bytesTotal <= 0)
     {
         return;
@@ -468,15 +497,16 @@ void Updater::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void Updater::resume()
 {
-    /*sync.lock();
-    pause = false;
-    sync.unlock();*/
+    sync.lock();
+    bPause = false;
+    sync.unlock();
     pauseCond.wakeAll();
 }
 
 void Updater::pause()
 {
-    /*sync.lock();
-    pause = true;
-    sync.unlock();*/
+    sync.lock();
+    emit updateStatus("Téléchargement mis en pause");
+    bPause = true;
+    sync.unlock();
 }

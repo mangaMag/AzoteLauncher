@@ -37,8 +37,10 @@ private:
     QString updateFileName;
     QSettings* settings;
     OperatingSystem os;
+    bool bPause;
     QMutex sync;
     QWaitCondition pauseCond;
+    QString serverName;
 
     int filesCount;
     int progressStep;
@@ -56,7 +58,7 @@ private:
     bool updateGameFile(Http* http, QString url, QString name, QString urlName);
 
 public:
-    explicit Updater(QThread* parent = 0);
+    explicit Updater(QString _serverName, QThread* parent = 0);
     ~Updater();
     void stopProcess();
     void resume();

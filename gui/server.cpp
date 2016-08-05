@@ -10,11 +10,13 @@
 #include <QDesktopServices>
 #include <QVector>
 
-Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
+Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     QWidget(parent),
     launcher(_launcher),
     ui(new Ui::Server),
-    updater(NULL)
+    updater(NULL),
+    state(PAUSE),
+    name(_name)
 {
     ui->setupUi(this);
 
@@ -34,6 +36,7 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString name) :
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
+    connect(ui->resumePauseButton, SIGNAL(clicked()), this, SLOT(onClickResumePauseButton()));
 
     urls.insert(ui->newBigFront,     QUrl("https://azote.us/news/1"));
     urls.insert(ui->newSmallFront1,  QUrl("https://azote.us/news/2"));
@@ -82,18 +85,45 @@ void Server::startGame(QString gamePath)
 
 void Server::startUpdate()
 {
-    updater = new Updater();
-    connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
-    connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
-    connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
-    connect(updater, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
-    connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
-    updater->start(QThread::HighestPriority);
+    ui->resumePauseButton->setStyleSheet(ui->resumePauseButton->styleSheet().replace("resume", "pause"));
+    stylePlay = ui->playButton->styleSheet().replace("install", "play");
+    ui->playButton->setStyleSheet("QPushButton{border:none;background:url(:/ressources/download_play/play_disabled.png) no-repeat;}");
+    state = RESUME;
+
+    if (updater != NULL)
+    {
+        updater->resume();
+    }
+    else
+    {
+        updater = new Updater(name);
+        connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
+        connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
+        connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
+        connect(updater, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
+        connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
+        updater->start(QThread::HighestPriority);
+    }
+}
+
+void Server::pauseUpdater()
+{
+    if (updater == NULL)
+    {
+        return;
+    }
+
+    state = PAUSE;
+    ui->resumePauseButton->setStyleSheet(ui->resumePauseButton->styleSheet().replace("pause", "resume"));
+    updater->pause();
 }
 
 void Server::onUpdateFinished()
 {
-    ui->playButton->setStyleSheet(ui->playButton->styleSheet().replace("install", "play"));
+    ui->playButton->setStyleSheet(stylePlay);
+    ui->resumePauseButton->hide();
+    ui->playButton->setEnabled(true);
+    state = FINISHED;
 }
 
 void Server::onNewUpdaterVersion()
@@ -114,22 +144,33 @@ void Server::onNewUpdaterVersion()
 
 void Server::onClickPlayButton()
 {
+    if (state == PAUSE)
+    {
+        startUpdate();
+        ui->playButton->setEnabled(false);
+    }
+
+    if (state != FINISHED)
+    {
+        return;
+    }
+
     OperatingSystem os = System::get();
 
     if (os == WINDOWS)
     {
-        startGame("/../app/Dofus.exe");
+        startGame("/../" + name + "_app/Dofus.exe");
     }
     else if (os == MAC)
     {
-        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../app/Dofus.app/Contents/MacOs/Flash Player");
+        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + name + "_app/Dofus.app/Contents/MacOs/Flash Player");
 
         if (!dofusBin.isExecutable())
         {
             QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
         }
 
-        startGame("/../app/Dofus.app");
+        startGame("/../" + name + "_app/Dofus.app");
     }
     else
     {
@@ -151,5 +192,22 @@ void Server::onClickLinkButton()
     {
         QDesktopServices::openUrl(url.value());
     }
+}
 
+void Server::onClickResumePauseButton()
+{
+    switch (state)
+    {
+        case PAUSE:
+            startUpdate();
+            break;
+        case RESUME:
+            pauseUpdater();
+            break;
+        case FINISHED:
+        default:
+            ui->resumePauseButton->hide();
+            break;
+
+    }
 }

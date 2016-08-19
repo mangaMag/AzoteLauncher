@@ -34,14 +34,14 @@ void Settings::onClickValidationButton(QAbstractButton* button)
     {
         switch(ui->startModeComboBox->currentIndex())
         {
+            default:
+            case 0:
+                m_startMode = DetachedProcress;
+                break;
             case 1:
                 m_startMode = Process;
                 break;
             case 2:
-                m_startMode = DetachedProcress;
-                break;
-            case 0:
-            default:
                 m_startMode = DesktopService;
                 break;
         }
@@ -60,10 +60,12 @@ void Settings::onClickValidationButton(QAbstractButton* button)
 
 void Settings::onClickRepairButton()
 {
-    settings->setValue("client/version", 0);
+    // TODO: change repair mod process
+
+    /*settings->setValue("client/version", 0);
     settings->sync();
 
-    emit repairStarted();
+    emit repairStarted();*/
 }
 
 bool Settings::isConsoleActivated()

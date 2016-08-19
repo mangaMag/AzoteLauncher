@@ -5,9 +5,12 @@
 #include <QMap>
 #include <QString>
 
+#include "utils/system.h"
+
 class Launcher;
 class Updater;
 class Logger;
+class Sound;
 
 enum State {
     PAUSE,
@@ -36,8 +39,14 @@ private:
     State state;
     QString name;
     QString stylePlay;
+    Sound* sound;
+    int port;
+    bool isRegStarted;
+    OperatingSystem os;
 
-    void startGame(QString gamePath);
+    void startProcess(QString processName, QStringList args);
+    void startGame();
+    void startSound();
     void startUpdate();
     void pauseUpdater();
 

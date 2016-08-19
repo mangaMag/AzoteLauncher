@@ -64,14 +64,14 @@ void Console::onMessage(LogLevel level, QString text)
     ui->console->append(logText);
 }
 
-void Console::onConsoleStateChange(bool isEnabled)
+void Console::onConsoleStateChange(bool /*isEnabled*/)
 {
-    if (isEnabled)
+    /*if (isEnabled)
     {
         show();
     }
     else
     {
         close();
-    }
+    }*/
 }

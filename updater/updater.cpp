@@ -51,7 +51,7 @@ void Updater::stopProcess()
 void Updater::getCurrentVersion()
 {
     settings = new QSettings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
-    currentClientVersion   = settings->value("client/version", 0).toInt();
+    currentClientVersion   = settings->value(serverName + "/version", 0).toInt();
 }
 
 void Updater::processUpdate(Http* http)
@@ -153,8 +153,10 @@ void Updater::processUpdate(Http* http)
 
             emit updateStatus("Vérification des fichiers en cours");
 
-            bool isUpdatedCommon = updateGameFiles(http, url, commonFiles, serverName + "_" + prefix, "common");
-            bool isUpdatedOS     = updateGameFiles(http, url, osFiles,     serverName + "_",           osString);
+            bool isUpdatedCommon = updateGameFiles(http, url, commonFiles, prefix, "common");
+            bool isUpdatedOS     = updateGameFiles(http, url, osFiles,     "",      osString);
+
+            // TODO: if os == MAC set Dofus and Reg executable
 
             if (!isUpdatedCommon || !isUpdatedOS)
             {
@@ -176,7 +178,7 @@ void Updater::processUpdate(Http* http)
     {
         currentClientVersion = lastVersion;
 
-        settings->setValue("client/version", lastVersion);
+        settings->setValue(serverName + "/version", lastVersion);
         settings->sync();
     }
     else

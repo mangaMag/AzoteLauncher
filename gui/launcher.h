@@ -54,7 +54,6 @@ private:
     Ui::Launcher* ui;
     Logger* log;
     QPoint mpos;
-    int port;
     QSystemTrayIcon* trayIcon;
     QMap<QObject*, QUrl> urls;
     QMap<QObject*, Tab*> tabs;

@@ -1,6 +1,8 @@
 #include "sound.h"
 
-Sound::Sound(QObject *parent) : QObject(parent)
+Sound::Sound(QObject *parent) :
+    QObject(parent),
+    regSoundSocket(NULL)
 {
 }
 
@@ -75,11 +77,18 @@ void Sound::onClientSoundData()
     QTcpSocket* client = clientSoundSockets.at(index);
     QByteArray data = client->readAll();
 
-    regSoundSocket->write(data);
+    if (regSoundSocket)
+    {
+        regSoundSocket->write(data);
+    }
 }
 
 void Sound::onRegSoundData()
 {
     QByteArray data = regSoundSocket->readAll();
-    regSoundSocket->write("0=>pong()");
+
+    if (regSoundSocket)
+    {
+        regSoundSocket->write("0=>pong()");
+    }
 }

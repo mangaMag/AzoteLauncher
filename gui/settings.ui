@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>233</width>
-    <height>141</height>
+    <width>270</width>
+    <height>150</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>211</width>
-     <height>131</height>
+     <x>0</x>
+     <y>0</y>
+     <width>266</width>
+     <height>146</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -80,7 +80,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Mode 3</string>
+        <string>Mode 3 (No sound)</string>
        </property>
       </item>
      </widget>

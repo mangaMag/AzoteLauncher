@@ -3,6 +3,7 @@
 #include "launcher.h"
 #include "updater/updater.h"
 #include "logger/logger.h"
+#include "others/sound.h"
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -16,11 +17,14 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     ui(new Ui::Server),
     updater(NULL),
     state(PAUSE),
-    name(_name)
+    name(_name),
+    port(1337),
+    isRegStarted(false)
 {
     ui->setupUi(this);
 
     log = &Singleton<Logger>::getInstance();
+    os = System::get();
 
     QVector<QWidget*> images;
     images.push_back(ui->serverDescription);
@@ -58,26 +62,72 @@ Server::~Server()
     delete ui;
 }
 
-void Server::startGame(QString gamePath)
+void Server::startProcess(QString processName, QStringList args)
 {
-    QFileInfo dofusBin(QCoreApplication::applicationDirPath() + gamePath);
-    QString path = dofusBin.absoluteFilePath();
+    QFileInfo processBin(QCoreApplication::applicationDirPath() + "/../" + processName);
+    QString path = processBin.absoluteFilePath();
+
+    /* if MAC
+
+    QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + name + "_app/Dofus.app/Contents/MacOs/Flash Player");
+
+    if (!dofusBin.isExecutable())
+    {
+        QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+    }*/
 
     switch (launcher->settings->getStartMode())
-    {
+    {   
         case Process:
         {
-            QProcess* dofus = new QProcess(this);
-            dofus->start(path);
+            QProcess* process = new QProcess(this);
+            process->start(path, args);
             break;
         }
+        default:
         case DetachedProcress:
-            QProcess::startDetached(path);
+            if (os == WINDOWS)
+            {
+                QProcess::startDetached(path, args);
+            }
+            else if (os == MAC)
+            {
+                QProcess::startDetached(QString("open -a %1 -n --args %2").arg(path).arg(args.join(" ")));
+            }
+
             break;
         case DesktopService:
-        default:
             QDesktopServices::openUrl(QUrl::fromLocalFile(path));
             break;
+    }
+}
+
+void Server::startGame()
+{
+    QStringList args;
+
+    args << "--lang=fr";
+    args << "--update-server-port=" + QString::number(port);
+    args << "--updater_version=v2";
+    args << "--reg-client-port=" + QString::number(port + 1);
+
+    if (os == WINDOWS) startProcess(name + "_app/Dofus.exe", args);
+    if (os == MAC)     startProcess(name + ".app", args);
+}
+
+void Server::startSound()
+{
+    if (!isRegStarted)
+    {
+        sound = new Sound();
+        port = sound->start();
+
+        QStringList args;
+
+        args << "--reg-engine-port=" + QString::number(port + 2);
+
+        if (os == WINDOWS) startProcess(name + "_app/reg/Reg.exe", args);
+        if (os == MAC)     startProcess(name + ".app/Contents/Resources/Reg.app", args);
     }
 }
 
@@ -136,27 +186,8 @@ void Server::onClickPlayButton()
         return;
     }
 
-    OperatingSystem os = System::get();
-
-    if (os == WINDOWS)
-    {
-        startGame("/../" + name + "_app/Dofus.exe");
-    }
-    else if (os == MAC)
-    {
-        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + name + "_app/Dofus.app/Contents/MacOs/Flash Player");
-
-        if (!dofusBin.isExecutable())
-        {
-            QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-        }
-
-        startGame("/../" + name + "_app/Dofus.app");
-    }
-    else
-    {
-        log->error("System OS not found !");
-    }
+    startSound();
+    startGame();
 }
 
 void Server::onClickSettingsButton()

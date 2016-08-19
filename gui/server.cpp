@@ -22,8 +22,6 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
 
     log = &Singleton<Logger>::getInstance();
 
-    //startUpdate();
-
     QVector<QWidget*> images;
     images.push_back(ui->serverDescription);
     images.push_back(ui->backgroundArtwork);
@@ -101,7 +99,6 @@ void Server::startUpdate()
         connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
         connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
         connect(updater, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
-        connect(updater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
         updater->start(QThread::HighestPriority);
     }
 }
@@ -124,22 +121,6 @@ void Server::onUpdateFinished()
     ui->resumePauseButton->hide();
     ui->playButton->setEnabled(true);
     state = FINISHED;
-}
-
-void Server::onNewUpdaterVersion()
-{
-    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Azote", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
-
-    if (reply == QMessageBox::Ok)
-    {
-        updater->resume();
-    }
-    else
-    {
-        updater->stopProcess();
-        updater->resume();
-        launcher->onCloseApp();
-    }
 }
 
 void Server::onClickPlayButton()

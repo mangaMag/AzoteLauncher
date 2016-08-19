@@ -38,6 +38,8 @@ namespace Ui {
 class Launcher;
 }
 
+class SelfUpdater;
+
 class Launcher : public QMainWindow
 {
     Q_OBJECT
@@ -58,6 +60,7 @@ private:
     QMap<QObject*, Tab*> tabs;
     Tab* previousTab;
     QWidget* currentWindows;
+    SelfUpdater* selfUpdater;
 
     void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent* event);
@@ -80,6 +83,7 @@ private slots:
     void onOpenApp();
     void onRepairStarted();
     void onChangeTab();
+    void onNewUpdaterVersion();
 };
 
 #endif // LAUNCHER_H

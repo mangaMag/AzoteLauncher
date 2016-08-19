@@ -1,7 +1,8 @@
 #include "launcher.h"
 #include "ui_launcher.h"
-#include "../logger/logger.h"
-#include "../utils/system.h"
+#include "logger/logger.h"
+#include "utils/system.h"
+#include "updater/selfupdater.h"
 #include "server.h"
 #include "console.h"
 
@@ -96,11 +97,16 @@ Launcher::Launcher(QWidget* parent) :
     connect(ui->forumButton,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->shopButton,      SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->changelogButton, SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+
+    selfUpdater = new SelfUpdater();
+    connect(selfUpdater, SIGNAL(newUpdaterVersion()), this, SLOT(onNewUpdaterVersion()));
+    selfUpdater->start(QThread::HighestPriority);
 }
 
 Launcher::~Launcher()
 {
     log->deleteLater();
+    selfUpdater->deleteLater();
 
     delete ui;
 }
@@ -230,4 +236,20 @@ void Launcher::onClickLinkButton()
         QDesktopServices::openUrl(url.value());
     }
 
+}
+
+void Launcher::onNewUpdaterVersion()
+{
+    QMessageBox::StandardButton reply = QMessageBox::information(NULL, "Azote", "Une nouvelle version du launcher est disponible. Cliquez sur Ok pour continuer.", QMessageBox::Ok | QMessageBox::Cancel);
+
+    if (reply == QMessageBox::Ok)
+    {
+        selfUpdater->resume();
+    }
+    else
+    {
+        selfUpdater->stopProcess();
+        selfUpdater->resume();
+        onCloseApp();
+    }
 }

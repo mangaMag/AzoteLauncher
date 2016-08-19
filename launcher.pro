@@ -12,6 +12,7 @@ TARGET = Azote
 TEMPLATE = app
 
 DEFINES += LAUNCHER_VERSION=4
+DEFINES += URL=\\\"http://cdn.azote.us/updater\\\"
 
 ICON = ressources/icon.icns
 RC_ICONS = ressources/icon.ico

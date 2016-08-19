@@ -1,8 +1,6 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#define URL "http://cdn.azendar.fr/updater"
-
 #include <QThread>
 #include <QElapsedTimer>
 #include <QJsonObject>
@@ -33,7 +31,6 @@ private:
     QElapsedTimer downloadTime;
     QVector<QString> updatedFiles;
     int currentClientVersion;
-    int currentLauncherVersion;
     QString updateFileName;
     QSettings* settings;
     OperatingSystem os;
@@ -48,7 +45,6 @@ private:
     int fileCounter;
 
     void run();
-    SelfUpdateStatus selfUpdate(Http* http);
     void processUpdate(Http* http);
     void getCurrentVersion();
     QJsonObject getInfoFile(Http* http);
@@ -73,7 +69,6 @@ signals:
     void updateDownloadSpeed(const QString speed);
     void updateStatus(const QString status);
     void updateFinished();
-    void newUpdaterVersion();
 };
 
 #endif // UPDATER_H

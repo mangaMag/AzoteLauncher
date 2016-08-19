@@ -16,14 +16,6 @@ Updater::Updater(QString _serverName, QThread* parent) :
 {
     log = &Singleton<Logger>::getInstance();
     os  = System::get();
-
-    updateFileName = "updater";
-
-    if (os == WINDOWS)
-    {
-        updateFileName.append(".exe");
-    }
-
 }
 
 Updater::~Updater()
@@ -32,22 +24,15 @@ Updater::~Updater()
 
 void Updater::run()
 {
-    QFile::remove(QCoreApplication::applicationDirPath() + "/" + updateFileName);
-
     getCurrentVersion();
 
     Http* http = new Http();
 
-    SelfUpdateStatus status = selfUpdate(http);
-
-    if (status == OK_TO_CONTINUE)
-    {
-        processUpdate(http);
-    }
+    processUpdate(http);
 
     if (continueUpgrading)
     {
-        log->info(QString("Le client est à jour (client: %1 launcher: %2)").arg(currentClientVersion).arg(currentLauncherVersion));
+        log->info(QString("Le client est à jour (version: %1)").arg(currentClientVersion));
         emit updateDownloadSpeed("0 o/s");
         emit updateStatus("Le client est à jour");
         emit updateFinished();
@@ -66,110 +51,7 @@ void Updater::stopProcess()
 void Updater::getCurrentVersion()
 {
     settings = new QSettings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
-
     currentClientVersion   = settings->value("client/version", 0).toInt();
-    currentLauncherVersion = settings->value("launcher/version", LAUNCHER_VERSION).toInt(); // LAUNCHER_VERSION;
-}
-
-SelfUpdateStatus Updater::selfUpdate(Http* http)
-{
-    QString url;
-
-    if (os == WINDOWS)
-    {
-        url = URL "/win";
-    }
-    else if (os == MAC)
-    {
-        url = URL "/mac";
-    }
-    else
-    {
-        log->error("Système d'exploitation inconnu");
-        return OK_TO_CONTINUE;
-    }
-
-    if(!http->get(url + "/updater.dat"))
-    {
-        log->debug(http->error());
-        log->error("Impossible de récupérer le fichier d'information de la version du launcher");
-        return OK_TO_CONTINUE;
-    }
-
-    bool ok;
-    int launcherVersion = http->data().trimmed().toInt(&ok);
-
-    if (ok)
-    {
-        if (launcherVersion > currentLauncherVersion)
-        {
-            emit newUpdaterVersion();
-
-            sync.lock();
-            pauseCond.wait(&sync);
-            sync.unlock();
-
-            if (!continueUpgrading)
-            {
-                return UPDATE_FAILED; // not real fail but...
-            }
-
-            if(!http->get(url + "/" + updateFileName))
-            {
-                log->debug(http->error());
-                return UPDATE_FAILED;
-            }
-
-            QByteArray data = http->data();
-            QFile file(QCoreApplication::applicationDirPath() + "/" + updateFileName);
-
-            if(!file.open(QIODevice::WriteOnly))
-            {
-                log->debug(file.errorString());
-                return UPDATE_FAILED;
-            }
-
-            QDataStream out(&file);
-            out.writeRawData(data.data(), data.length());
-            file.close();
-
-            if (!file.setPermissions(QFile::ReadOwner  |
-                                     QFile::WriteOwner |
-                                     QFile::ExeOwner   |
-                                     QFile::ReadGroup  |
-                                     QFile::ExeGroup   |
-                                     QFile::ReadOther  |
-                                     QFile::ExeOther))
-            {
-                log->error("Impossible de mettre à jour le launcher (Permissions)");
-                return UPDATE_FAILED;
-            }
-
-            QStringList params;
-
-            params << "--selfupdate";
-
-            QProcess* process = new QProcess(this);
-            if (process->startDetached(file.fileName(), params, QCoreApplication::applicationDirPath()))
-            {
-                QCoreApplication::quit();
-            }
-            else
-            {
-                log->error(process->errorString());
-                log->error("Impossible de mettre à jour le launcher (Execution)");
-                return UPDATE_FAILED;
-            }
-        }
-
-        return OK_TO_CONTINUE;
-    }
-    else
-    {
-        log->error("Impossible de récupérer le numéro la nouvelle version du launcher");
-    }
-
-    return OK_TO_CONTINUE;
 }
 
 void Updater::processUpdate(Http* http)
@@ -223,7 +105,7 @@ void Updater::processUpdate(Http* http)
                 return;
             }
 
-            QString url = QString("%1/%2").arg(URL).arg(tempVersion);
+            QString url = QString("%1/%2/%3").arg(URL).arg(serverName).arg(tempVersion);
             QJsonObject updateFile = getUpdateFile(http, url);
 
             if (updateFile.isEmpty())
@@ -355,7 +237,9 @@ bool Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
 
 QJsonObject Updater::getInfoFile(Http *http)
 {
-    if (!http->get(URL "/info.json"))
+    QString url = QString("%1/%2/%3").arg(URL).arg(serverName).arg("info.json");
+
+    if (!http->get(url))
     {
         log->debug(http->error());
         return QJsonObject();

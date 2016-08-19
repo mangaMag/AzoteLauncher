@@ -43,7 +43,6 @@ private:
 
 private slots:
     void onUpdateFinished();
-    void onNewUpdaterVersion();
     void onClickPlayButton();
     void onClickSettingsButton();
     void onClickLinkButton();

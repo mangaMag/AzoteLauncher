@@ -12,11 +12,136 @@
 #include <QSettings>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QSettings>
 
-SelfUpdater::SelfUpdater(QObject *parent) : QObject(parent)
+#include "http/http.h"
+#include "utils/system.h"
+#include "logger/logger.h"
+
+SelfUpdater::SelfUpdater(QThread *parent) :
+    QThread(parent),
+    continueUpgrading(true)
 {
-    //Logger* log = &Singleton<Logger>::getInstance();
-    //log->showConsole();
+    log = &Singleton<Logger>::getInstance();
+}
+
+void SelfUpdater::getCurrentVersion()
+{
+    settings = new QSettings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    currentLauncherVersion = settings->value("launcher/version", LAUNCHER_VERSION).toInt(); // LAUNCHER_VERSION;
+}
+
+void SelfUpdater::checkUpdate()
+{
+    Http* http = new Http();
+    OperatingSystem os  = System::get();
+    QString url;
+    QString updateFileName = "updater";
+
+    getCurrentVersion();
+
+    if (os == WINDOWS)
+    {
+        updateFileName.append(".exe");
+    }
+
+    QFile::remove(QCoreApplication::applicationDirPath() + "/" + updateFileName);
+
+    if (os == WINDOWS)
+    {
+        url = URL "/win";
+    }
+    else if (os == MAC)
+    {
+        url = URL "/mac";
+    }
+    else
+    {
+        log->error("Système d'exploitation inconnu");
+        return;
+    }
+
+    if(!http->get(url + "/updater.dat"))
+    {
+        log->debug(http->error());
+        log->error("Impossible de récupérer le fichier d'information de la version du launcher");
+        return;
+    }
+
+    bool ok;
+    int launcherVersion = http->data().trimmed().toInt(&ok);
+
+    if (ok)
+    {
+        if (launcherVersion > currentLauncherVersion)
+        {
+            emit newUpdaterVersion();
+
+            sync.lock();
+            pauseCond.wait(&sync);
+            sync.unlock();
+
+            if (!continueUpgrading)
+            {
+                return;
+            }
+
+            if(!http->get(url + "/" + updateFileName))
+            {
+                log->debug(http->error());
+                return;
+            }
+
+            QByteArray data = http->data();
+            QFile file(QCoreApplication::applicationDirPath() + "/" + updateFileName);
+
+            if(!file.open(QIODevice::WriteOnly))
+            {
+                log->debug(file.errorString());
+                return;
+            }
+
+            QDataStream out(&file);
+            out.writeRawData(data.data(), data.length());
+            file.close();
+
+            if (!file.setPermissions(QFile::ReadOwner  |
+                                     QFile::WriteOwner |
+                                     QFile::ExeOwner   |
+                                     QFile::ReadGroup  |
+                                     QFile::ExeGroup   |
+                                     QFile::ReadOther  |
+                                     QFile::ExeOther))
+            {
+                log->error("Impossible de mettre à jour le launcher (Permissions)");
+                return;
+            }
+
+            QStringList params;
+
+            params << "--selfupdate";
+
+            QProcess* process = new QProcess(this);
+            if (process->startDetached(file.fileName(), params, QCoreApplication::applicationDirPath()))
+            {
+                QCoreApplication::quit();
+            }
+            else
+            {
+                log->error(process->errorString());
+                log->error("Impossible de mettre à jour le launcher (Execution)");
+                return;
+            }
+        }
+
+        return;
+    }
+    else
+    {
+        log->error("Impossible de récupérer le numéro la nouvelle version du launcher");
+    }
+
+    log->info(QString("Le launcher est à jour (version: %1)").arg(currentLauncherVersion));
 }
 
 bool SelfUpdater::isUpdateAsked(int argc, char *argv[])
@@ -79,4 +204,19 @@ void SelfUpdater::update(QString currentPath)
             QDesktopServices::openUrl(QUrl::fromLocalFile(newPath));
             break;
     }
+}
+
+void SelfUpdater::stopProcess()
+{
+    continueUpgrading = false;
+}
+
+void SelfUpdater::resume()
+{
+    pauseCond.wakeAll();
+}
+
+void SelfUpdater::run()
+{
+    checkUpdate();
 }

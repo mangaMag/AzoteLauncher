@@ -67,15 +67,6 @@ void Server::startProcess(QString processName, QStringList args)
     QFileInfo processBin(QCoreApplication::applicationDirPath() + "/../" + processName);
     QString path = processBin.absoluteFilePath();
 
-    /* if MAC
-
-    QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + name + "_app/Dofus.app/Contents/MacOs/Flash Player");
-
-    if (!dofusBin.isExecutable())
-    {
-        QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-    }*/
-
     switch (launcher->settings->getStartMode())
     {   
         case Process:

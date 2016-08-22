@@ -156,23 +156,6 @@ void Updater::processUpdate(Http* http)
             bool isUpdatedCommon = updateGameFiles(http, url, commonFiles, prefix, "common");
             bool isUpdatedOS     = updateGameFiles(http, url, osFiles,     "",      osString);
 
-            if (os == MAC)
-            {
-                QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + serverName + ".app/Contents/MacOS/Dofus");
-
-                if (!dofusBin.isExecutable())
-                {
-                    QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-                }
-
-                QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../" + serverName + ".app/Contents/Resources/Reg.app/Contents/MacOS/Reg");
-
-                if (!regBin.isExecutable())
-                {
-                    QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
-                }
-            }
-
             if (!isUpdatedCommon || !isUpdatedOS)
             {
                 isUpdateFailed = true;

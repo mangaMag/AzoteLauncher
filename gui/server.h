@@ -44,7 +44,7 @@ private:
     bool isRegStarted;
     OperatingSystem os;
 
-    void startProcess(QString processName, QStringList args);
+    void startProcess(QString processName, QStringList args, bool forceDetached);
     void startGame();
     void startSound();
     void startUpdate();

@@ -62,34 +62,26 @@ Server::~Server()
     delete ui;
 }
 
-void Server::startProcess(QString processName, QStringList args)
+void Server::startProcess(QString processName, QStringList args, bool forceDetached = false)
 {
     QFileInfo processBin(QCoreApplication::applicationDirPath() + "/../" + processName);
     QString path = processBin.absoluteFilePath();
 
-    switch (launcher->settings->getStartMode())
-    {   
-        case Process:
+    if (forceDetached)
+    {
+        if (os == WINDOWS)
         {
-            QProcess* process = new QProcess(this);
-            process->start(path, args);
-            break;
+            QProcess::startDetached(path, args);
         }
-        default:
-        case DetachedProcress:
-            if (os == WINDOWS)
-            {
-                QProcess::startDetached(path, args);
-            }
-            else if (os == MAC)
-            {
-                QProcess::startDetached(QString("open -a %1 -n --args %2").arg(path).arg(args.join(" ")));
-            }
-
-            break;
-        case DesktopService:
-            QDesktopServices::openUrl(QUrl::fromLocalFile(path));
-            break;
+        else if (os == MAC)
+        {
+            QProcess::startDetached(QString("open -a %1 -n --args %2").arg(path).arg(args.join(" ")));
+        }
+    }
+    else
+    {
+        QProcess* process = new QProcess(this);
+        process->start(path, args);
     }
 }
 
@@ -97,13 +89,13 @@ void Server::startGame()
 {
     QStringList args;
 
-    args << "--lang=fr";
-    args << "--update-server-port=" + QString::number(port);
-    args << "--updater_version=v2";
+    //args << "--lang=fr";
+    //args << "--update-server-port=" + QString::number(port);
+    //args << "--updater_version=v2";
     args << "--reg-client-port=" + QString::number(port + 1);
 
-    if (os == WINDOWS) startProcess(name + "_app/Dofus.exe", args);
-    if (os == MAC)     startProcess(name + ".app", args);
+    if (os == WINDOWS) startProcess(name + "_app/Dofus.exe", args, true);
+    if (os == MAC)     startProcess(name + ".app", args, true);
 }
 
 void Server::startSound()
@@ -175,6 +167,15 @@ void Server::onClickPlayButton()
     if (state != FINISHED)
     {
         return;
+    }
+
+    if (os == MAC)
+    {
+        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + name + ".app/Contents/MacOS/Dofus");
+        QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
+
+        QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../" + name + ".app/Contents/Resources/Reg.app/Contents/MacOS/Reg");
+        QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
     }
 
     startSound();

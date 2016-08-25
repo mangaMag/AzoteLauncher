@@ -40,9 +40,9 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
     connect(ui->resumePauseButton, SIGNAL(clicked()), this, SLOT(onClickResumePauseButton()));
 
-    urls.insert(ui->newBigFront,     QUrl("https://azote.us/news/1"));
-    urls.insert(ui->newSmallFront1,  QUrl("https://azote.us/news/2"));
-    urls.insert(ui->newSmallFront2,  QUrl("https://azote.us/news/3"));
+    urls.insert(ui->newBigFront,     QUrl("http://azote.us/news/1"));
+    urls.insert(ui->newSmallFront1,  QUrl("http://azote.us/news/2"));
+    urls.insert(ui->newSmallFront2,  QUrl("http://azote.us/news/3"));
 
     connect(ui->newBigFront,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->newSmallFront1,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));

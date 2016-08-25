@@ -88,10 +88,10 @@ Launcher::Launcher(QWidget* parent) :
     previousTab = home;
     switchSelectedTab(sigma);
 
-    urls.insert(ui->supportButton,   QUrl("https://azote.us/support"));
-    urls.insert(ui->forumButton,     QUrl("https://forum.azote.us/"));
-    urls.insert(ui->shopButton,      QUrl("https://azote.us/shop"));
-    urls.insert(ui->changelogButton, QUrl("https://azote.us/changelog"));
+    urls.insert(ui->supportButton,   QUrl("http://azote.us/support"));
+    urls.insert(ui->forumButton,     QUrl("http://forum.azote.us/"));
+    urls.insert(ui->shopButton,      QUrl("http://azote.us/shop"));
+    urls.insert(ui->changelogButton, QUrl("http://azote.us/changelog"));
 
     connect(ui->supportButton,   SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->forumButton,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));

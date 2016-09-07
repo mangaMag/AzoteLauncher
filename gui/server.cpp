@@ -16,7 +16,7 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     launcher(_launcher),
     ui(new Ui::Server),
     updater(NULL),
-    state(PAUSE),
+    state(NO_STARTED),
     name(_name),
     port(1337),
     isRegStarted(false)
@@ -47,6 +47,10 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     connect(ui->newBigFront,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->newSmallFront1,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->newSmallFront2,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
+
+    stylePlay = ui->playButton->styleSheet().replace("install", "play");
+
+    checkUpdate();
 }
 
 Server::~Server()
@@ -117,23 +121,26 @@ void Server::startSound()
 void Server::startUpdate()
 {
     ui->resumePauseButton->setStyleSheet(ui->resumePauseButton->styleSheet().replace("resume", "pause"));
-    stylePlay = ui->playButton->styleSheet().replace("install", "play");
     ui->playButton->setStyleSheet("QPushButton{border:none;background:url(:/ressources/download_play/play_disabled.png) no-repeat;}");
-    state = RESUME;
 
     if (updater != NULL)
     {
-        updater->resume();
+        if (state == NO_STARTED)
+        {
+            updater->start(QThread::HighestPriority);
+        }
+        else if (state == PAUSE)
+        {
+            updater->resume();
+        }
     }
     else
     {
-        updater = new Updater(name);
-        connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
-        connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
-        connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
-        connect(updater, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
+        createUpdater();
         updater->start(QThread::HighestPriority);
     }
+
+    state = RESUME;
 }
 
 void Server::pauseUpdater()
@@ -148,6 +155,27 @@ void Server::pauseUpdater()
     updater->pause();
 }
 
+void Server::createUpdater()
+{
+    if (updater == NULL)
+    {
+        updater = new Updater(name);
+        connect(updater, SIGNAL(updateProgressBarTotal(int)), ui->progressBarTotal, SLOT(setValue(int)));
+        connect(updater, SIGNAL(updateDownloadSpeed(QString)), ui->labelDownloadSpeed, SLOT(setText(QString)));
+        connect(updater, SIGNAL(updateStatus(QString)), ui->labelStatus, SLOT(setText(QString)));
+        connect(updater, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
+    }
+}
+
+void Server::checkUpdate()
+{
+    createUpdater();
+    if (!updater->isNeedUpdate())
+    {
+        onUpdateFinished();
+    }
+}
+
 void Server::onUpdateFinished()
 {
     ui->playButton->setStyleSheet(stylePlay);
@@ -158,7 +186,7 @@ void Server::onUpdateFinished()
 
 void Server::onClickPlayButton()
 {
-    if (state == PAUSE)
+    if (state == PAUSE || state == NO_STARTED)
     {
         startUpdate();
         ui->playButton->setEnabled(false);

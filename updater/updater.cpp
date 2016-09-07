@@ -222,8 +222,16 @@ bool Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
             }
             else
             {
-                log->error(QString("Impossible de télécharger ou d'écrire le fichier %1 sur le disque").arg(nameWithPrefix));
-                fails++;
+                if (nameWithPrefix == QString("%1.app/Contents/MacOS/Dofus").arg(serverName) ||
+                    nameWithPrefix == QString("%1.app/Contents/Resources/Reg.app/Contents/MacOS/Reg").arg(serverName))
+                {
+                    log->warning(QString("Fichier binaire %1 non mis à jour").arg(nameWithPrefix));
+                }
+                else
+                {
+                    log->error(QString("Impossible de télécharger ou d'écrire le fichier %1 sur le disque").arg(nameWithPrefix));
+                    fails++;
+                }
             }
         }
 
@@ -393,4 +401,30 @@ void Updater::pause()
     emit updateStatus("Téléchargement mis en pause");
     bPause = true;
     sync.unlock();
+}
+
+bool Updater::isNeedUpdate()
+{
+    bool isNeedUpdate = true;
+    getCurrentVersion();
+    Http* http = new Http();
+
+    QJsonObject infoFile = getInfoFile(http);
+
+    if (infoFile.isEmpty())
+    {
+        log->error("Impossible de récupérer le fichier d'information des mises à jour");
+        http->deleteLater();
+        return true;
+    }
+
+    int lastVersion = infoFile.value("version").toInt();
+
+    if (currentClientVersion >= lastVersion)
+    {
+        isNeedUpdate = false;
+    }
+
+    http->deleteLater();
+    return isNeedUpdate;
 }

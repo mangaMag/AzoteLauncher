@@ -33,7 +33,7 @@
 color:#00bae2;</string>
    </property>
    <property name="text">
-    <string>Lancement...</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

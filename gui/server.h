@@ -13,6 +13,7 @@ class Logger;
 class Sound;
 
 enum State {
+    NO_STARTED,
     PAUSE,
     RESUME,
     FINISHED
@@ -49,6 +50,8 @@ private:
     void startSound();
     void startUpdate();
     void pauseUpdater();
+    void createUpdater();
+    void checkUpdate();
 
 private slots:
     void onUpdateFinished();

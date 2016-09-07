@@ -59,6 +59,7 @@ public:
     void stopProcess();
     void resume();
     void pause();
+    bool isNeedUpdate();
 
 private slots:
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);

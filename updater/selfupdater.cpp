@@ -162,7 +162,7 @@ void SelfUpdater::update(QString currentPath)
     QThread::sleep(2); // wait for launcher closed
 
     OperatingSystem os = System::get();
-    QString launcherName = "AzendarUpdater";
+    QString launcherName = "Azote";
 
     if (os == WINDOWS)
     {

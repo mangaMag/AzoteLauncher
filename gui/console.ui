@@ -14,8 +14,8 @@
    <string>Console</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/ressources/azendaricone.ico</normaloff>:/ressources/azendaricone.ico</iconset>
+   <iconset resource="../ressources.qrc">
+    <normaloff>:/ressources/icon.ico</normaloff>:/ressources/icon.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background:transparent;</string>
@@ -39,6 +39,8 @@ border: 1px solid #00b4df;</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>

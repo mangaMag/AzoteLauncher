@@ -16,11 +16,11 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Azendar</string>
+   <string>Azote</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/ressources/azendaricone.ico</normaloff>:/ressources/azendaricone.ico</iconset>
+   <iconset resource="../ressources.qrc">
+    <normaloff>:/ressources/icon.ico</normaloff>:/ressources/icon.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/ressources/background.png);
@@ -533,6 +533,8 @@ QPushButton:hover {
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>

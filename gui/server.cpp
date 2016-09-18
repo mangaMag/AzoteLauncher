@@ -68,7 +68,7 @@ Server::~Server()
 
 void Server::startProcess(QString processName, QStringList args, bool forceDetached = false)
 {
-    QFileInfo processBin(QCoreApplication::applicationDirPath() + "/../" + processName);
+    QFileInfo processBin(QCoreApplication::applicationDirPath() + "/" + processName);
     QString path = processBin.absoluteFilePath();
 
     if (forceDetached)

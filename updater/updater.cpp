@@ -294,7 +294,7 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
     }
 
     QCryptographicHash hash(QCryptographicHash::Md5);
-    QFile file(QCoreApplication::applicationDirPath() + "/../" + path);
+    QFile file(QCoreApplication::applicationDirPath() + "/" + path);
 
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -325,8 +325,8 @@ bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlN
     }
 
     QByteArray data = http->data();
-    QFile file(QCoreApplication::applicationDirPath() + "/../" + name);
-    QFileInfo fileInfo(QCoreApplication::applicationDirPath() + "/../" + name);
+    QFile file(QCoreApplication::applicationDirPath() + "/" + name);
+    QFileInfo fileInfo(QCoreApplication::applicationDirPath() + "/" + name);
 
     if (!fileInfo.dir().exists())
     {

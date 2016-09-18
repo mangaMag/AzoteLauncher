@@ -216,9 +216,6 @@ QPushButton:hover {
     </property>
    </widget>
    <widget class="QPushButton" name="epsilonButton">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
     <property name="geometry">
      <rect>
       <x>6</x>
@@ -308,7 +305,7 @@ QPushButton:hover {
     <property name="geometry">
      <rect>
       <x>6</x>
-      <y>360</y>
+      <y>270</y>
       <width>89</width>
       <height>83</height>
      </rect>
@@ -326,7 +323,7 @@ QPushButton:hover {
     <property name="geometry">
      <rect>
       <x>6</x>
-      <y>360</y>
+      <y>270</y>
       <width>89</width>
       <height>83</height>
      </rect>
@@ -349,7 +346,7 @@ QPushButton:hover {
     <property name="geometry">
      <rect>
       <x>6</x>
-      <y>360</y>
+      <y>270</y>
       <width>89</width>
       <height>83</height>
      </rect>

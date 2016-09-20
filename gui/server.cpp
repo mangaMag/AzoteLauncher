@@ -173,6 +173,12 @@ void Server::checkUpdate()
     if (!updater->isNeedUpdate())
     {
         onUpdateFinished();
+        return;
+    }
+
+    if (updater->getCurrentVersion() > 0)
+    {
+        onClickPlayButton();
     }
 }
 

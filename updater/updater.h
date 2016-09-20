@@ -46,7 +46,7 @@ private:
 
     void run();
     void processUpdate(Http* http);
-    void getCurrentVersion();
+    void getCurrentVersionFromConfig();
     QJsonObject getInfoFile(Http* http);
     QJsonObject getUpdateFile(Http* http, QString url);
     bool updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix);
@@ -60,6 +60,7 @@ public:
     void resume();
     void pause();
     bool isNeedUpdate();
+    int getCurrentVersion();
 
 private slots:
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);

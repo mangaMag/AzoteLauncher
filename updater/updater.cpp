@@ -11,6 +11,7 @@
 Updater::Updater(QString _serverName, QThread* parent) :
     QThread(parent),
     continueUpgrading(true),
+    currentClientVersion(0),
     bPause(false),
     serverName(_serverName)
 {
@@ -24,7 +25,7 @@ Updater::~Updater()
 
 void Updater::run()
 {
-    getCurrentVersion();
+    getCurrentVersionFromConfig();
 
     Http* http = new Http();
 
@@ -48,7 +49,7 @@ void Updater::stopProcess()
     continueUpgrading = false;
 }
 
-void Updater::getCurrentVersion()
+void Updater::getCurrentVersionFromConfig()
 {
     settings = new QSettings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
     currentClientVersion = settings->value(serverName + "/version", 0).toInt();
@@ -406,7 +407,7 @@ void Updater::pause()
 bool Updater::isNeedUpdate()
 {
     bool isNeedUpdate = true;
-    getCurrentVersion();
+    getCurrentVersionFromConfig();
     Http* http = new Http();
 
     QJsonObject infoFile = getInfoFile(http);
@@ -427,4 +428,9 @@ bool Updater::isNeedUpdate()
 
     http->deleteLater();
     return isNeedUpdate;
+}
+
+int Updater::getCurrentVersion()
+{
+    return currentClientVersion;
 }

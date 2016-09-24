@@ -186,6 +186,8 @@ void Server::onUpdateFinished()
 {
     ui->playButton->setStyleSheet(stylePlay);
     ui->resumePauseButton->hide();
+    ui->progressBarTotal->hide();
+    ui->labelDownloadSpeed->hide();
     ui->playButton->setEnabled(true);
     state = FINISHED;
 }

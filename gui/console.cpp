@@ -20,10 +20,10 @@ Console::~Console()
 
 void Console::show()
 {
-    if (settgins->isConsoleActivated())
-    {
+    //if (settgins->isConsoleActivated())
+    //{
         QWidget::show();
-    }
+    //}
 }
 
 void Console::onMessage(LogLevel level, QString text)

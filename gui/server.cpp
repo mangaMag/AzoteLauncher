@@ -36,6 +36,8 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
         image->setStyleSheet(style);
     }
 
+    connect(launcher->settings, SIGNAL(repairStarted()), this, SLOT(onRepairStarted()));
+
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
     connect(ui->resumePauseButton, SIGNAL(clicked()), this, SLOT(onClickResumePauseButton()));
@@ -250,4 +252,22 @@ void Server::onClickResumePauseButton()
             break;
 
     }
+}
+
+void Server::onRepairStarted()
+{
+    updater->stopProcess();
+    updater->terminate();
+    updater->wait();
+    updater->deleteLater();
+    updater = NULL;
+
+    ui->resumePauseButton->show();
+    ui->progressBarTotal->show();
+    ui->labelDownloadSpeed->show();
+    ui->playButton->setEnabled(false);
+
+    state = NO_STARTED;
+
+    startUpdate();
 }

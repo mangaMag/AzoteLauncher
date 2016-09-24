@@ -80,7 +80,6 @@ private slots:
     void onClickMinimizeButton();
     void onClickSystemTrayIcon(QSystemTrayIcon::ActivationReason reason);
     void onOpenApp();
-    void onRepairStarted();
     void onChangeTab();
     void onNewUpdaterVersion();
 };

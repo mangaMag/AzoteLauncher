@@ -24,13 +24,13 @@ public:
     explicit Settings(QWidget *parent = 0);
     ~Settings();
 
-    bool isConsoleActivated();
-    StartMode getStartMode();
+    /*bool isConsoleActivated();
+    StartMode getStartMode();*/
 
 private:
     Ui::Settings *ui;
-    bool m_isConsoleActivated;
-    StartMode m_startMode;
+    /*bool m_isConsoleActivated;
+    StartMode m_startMode;*/
     QSettings* settings;
 
 private slots:
@@ -38,7 +38,7 @@ private slots:
     void onClickRepairButton();
 
 signals:
-    void consoleStateChange(bool isEnabled);
+    //void consoleStateChange(bool isEnabled);
     void repairStarted();
 };
 

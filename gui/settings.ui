@@ -6,107 +6,51 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
-    <height>150</height>
+    <width>198</width>
+    <height>51</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Paramètres</string>
   </property>
-  <widget class="QWidget" name="formLayoutWidget">
+  <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>266</width>
-     <height>146</height>
+     <x>22</x>
+     <y>14</y>
+     <width>66</width>
+     <height>16</height>
     </rect>
    </property>
-   <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Channel</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="channelComboBox">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <item>
-       <property name="text">
-        <string>release</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Console</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QCheckBox" name="consoleCheckBox">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Mode démarrage</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QComboBox" name="startModeComboBox">
-      <item>
-       <property name="text">
-        <string>Mode 1</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Mode 2</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Mode 3 (No sound)</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Réparation</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QPushButton" name="repairButton">
-      <property name="text">
-       <string>Réparer</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QDialogButtonBox" name="validationButton">
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="text">
+    <string>Réparation</string>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="validationButton">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>80</y>
+     <width>164</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="repairButton">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>10</y>
+     <width>90</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Réparer</string>
+   </property>
   </widget>
  </widget>
  <resources/>

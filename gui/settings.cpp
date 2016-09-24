@@ -3,9 +3,9 @@
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Settings),
-    m_isConsoleActivated(true),
-    m_startMode(DesktopService)
+    ui(new Ui::Settings)
+    //m_isConsoleActivated(true),
+    //m_startMode(DesktopService)
 {
     ui->setupUi(this);
 
@@ -13,11 +13,11 @@ Settings::Settings(QWidget *parent) :
 
     settings = new QSettings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
 
-    m_startMode = (StartMode)settings->value("launcher/startMode", m_startMode).toInt();
+    /*m_startMode = (StartMode)settings->value("launcher/startMode", m_startMode).toInt();
     m_isConsoleActivated = settings->value("launcher/console", m_isConsoleActivated).toBool();
 
     ui->startModeComboBox->setCurrentIndex(m_startMode);
-    ui->consoleCheckBox->setChecked(m_isConsoleActivated);
+    ui->consoleCheckBox->setChecked(m_isConsoleActivated);*/
 
     connect(ui->validationButton, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onClickValidationButton(QAbstractButton*)));
     connect(ui->repairButton, SIGNAL(clicked()), this, SLOT(onClickRepairButton()));
@@ -32,7 +32,7 @@ void Settings::onClickValidationButton(QAbstractButton* button)
 {
     if ((QPushButton*)button == ui->validationButton->button(QDialogButtonBox::Ok))
     {
-        switch(ui->startModeComboBox->currentIndex())
+        /*switch(ui->startModeComboBox->currentIndex())
         {
             default:
             case 0:
@@ -52,7 +52,7 @@ void Settings::onClickValidationButton(QAbstractButton* button)
         settings->setValue("launcher/console", m_isConsoleActivated);
         settings->sync();
 
-        emit consoleStateChange(m_isConsoleActivated);
+        emit consoleStateChange(m_isConsoleActivated);*/
     }
 
     hide();
@@ -60,15 +60,15 @@ void Settings::onClickValidationButton(QAbstractButton* button)
 
 void Settings::onClickRepairButton()
 {
-    // TODO: change repair mod process
-
-    /*settings->setValue("client/version", 0);
+    settings->setValue("Sigma/version", 0);
     settings->sync();
 
-    emit repairStarted();*/
+    emit repairStarted();
+
+    hide();
 }
 
-bool Settings::isConsoleActivated()
+/*bool Settings::isConsoleActivated()
 {
     return m_isConsoleActivated;
 }
@@ -76,4 +76,4 @@ bool Settings::isConsoleActivated()
 StartMode Settings::getStartMode()
 {
     return m_startMode;
-}
+}*/

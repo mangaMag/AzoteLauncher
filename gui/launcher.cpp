@@ -26,7 +26,6 @@ Launcher::Launcher(QWidget* parent) :
     log = &Singleton<Logger>::getInstance();
 
     settings = new Settings(NULL);
-    connect(settings, SIGNAL(repairStarted()), this, SLOT(onRepairStarted()));
 
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(onClickCloseButton()));
     connect(ui->minimizeButton, SIGNAL(clicked()), this, SLOT(onClickMinimizeButton()));
@@ -204,18 +203,6 @@ void Launcher::onCloseApp()
     trayIcon->hide();
     hide();
     close();
-}
-
-void Launcher::onRepairStarted()
-{
-    // TODO: manage repair process
-
-    /*updater->stopProcess();
-    updater->terminate();
-    updater->wait();
-    updater->deleteLater();*/
-
-    //startUpdate();
 }
 
 void Launcher::onChangeTab()

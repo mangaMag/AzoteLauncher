@@ -59,6 +59,7 @@ private slots:
     void onClickSettingsButton();
     void onClickLinkButton();
     void onClickResumePauseButton();
+    void onRepairStarted();
 };
 
 #endif // SERVER_H

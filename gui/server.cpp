@@ -209,10 +209,10 @@ void Server::onClickPlayButton()
 
     if (os == MAC)
     {
-        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/../" + name + ".app/Contents/MacOS/Dofus");
+        QFileInfo dofusBin(QCoreApplication::applicationDirPath() + "/" + name + ".app/Contents/MacOS/Dofus");
         QFile::setPermissions(dofusBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
 
-        QFileInfo regBin(QCoreApplication::applicationDirPath() + "/../" + name + ".app/Contents/Resources/Reg.app/Contents/MacOS/Reg");
+        QFileInfo regBin(QCoreApplication::applicationDirPath() + "/" + name + ".app/Contents/Resources/Reg.app/Contents/MacOS/Reg");
         QFile::setPermissions(regBin.absoluteFilePath(), QFile::ExeOwner | QFile::ExeGroup | QFile::ExeOther);
     }
 

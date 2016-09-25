@@ -200,10 +200,18 @@ void Server::onClickPlayButton()
     {
         startUpdate();
         ui->playButton->setEnabled(false);
+        return;
     }
 
     if (state != FINISHED)
     {
+        return;
+    }
+
+    if (updater->isNeedUpdate())
+    {
+        startUpdate();
+        ui->playButton->setEnabled(false);
         return;
     }
 

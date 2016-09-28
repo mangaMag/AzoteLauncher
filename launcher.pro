@@ -19,6 +19,10 @@ RC_ICONS = ressources/icon.ico
 
 QMAKE_INFO_PLIST=Info.plist
 
+win32 {
+    QMAKE_LFLAGS += /MANIFESTUAC:"level='requireAdministrator' uiAccess='false'"
+}
+
 SOURCES += main.cpp\
     gui/launcher.cpp \
     updater/updater.cpp \

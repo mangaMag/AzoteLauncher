@@ -11,6 +11,10 @@
 #include <QDesktopServices>
 #include <QVector>
 
+#ifdef Q_WS_WIN
+#include <windows.h>
+#endif
+
 Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     QWidget(parent),
     launcher(_launcher),
@@ -77,11 +81,28 @@ void Server::startProcess(QString processName, QStringList args, bool forceDetac
     {
         if (os == WINDOWS)
         {
-            QProcess::startDetached(path, args);
+#ifdef Q_WS_WIN
+            int result = (int)::ShellExecuteA(0, "open", path.toUtf8().constData(), args.join(" ").toUtf8().constData(), 0, SW_SHOWNORMAL);
+
+            if (SE_ERR_ACCESSDENIED == result)
+            {
+                result = (int)::ShellExecuteA(0, "runas", path.toUtf8().constData(), args.join(" ").toUtf8().constData(), 0, SW_SHOWNORMAL);
+            }
+
+            if (result <= 32)
+            {
+                ui->labelStatus->setText("Relancez le launcher en Administateur");
+            }
+#endif
+
+            // QProcess::startDetached(path, args);
         }
         else if (os == MAC)
         {
-            QProcess::startDetached(QString("open -a %1 -n --args %2").arg(path).arg(args.join(" ")));
+            if (!QProcess::startDetached(QString("open -a %1 -n --args %2").arg(path).arg(args.join(" "))))
+            {
+                QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+            }
         }
     }
     else

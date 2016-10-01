@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Azote
 TEMPLATE = app
 
-DEFINES += LAUNCHER_VERSION=2
+DEFINES += LAUNCHER_VERSION=4
 DEFINES += URL=\\\"http://updates.azote.us\\\"
 
 ICON = ressources/icon.icns

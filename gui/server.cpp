@@ -46,7 +46,7 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
     connect(ui->resumePauseButton, SIGNAL(clicked()), this, SLOT(onClickResumePauseButton()));
 
-    urls.insert(ui->newBigFront,     QUrl("http://azote.us/news/1"));
+    urls.insert(ui->newBigFront,     QUrl("http://voice.azote.us"));
     urls.insert(ui->newSmallFront1,  QUrl("http://azote.us/news/2"));
     urls.insert(ui->newSmallFront2,  QUrl("http://azote.us/news/3"));
 
@@ -55,6 +55,14 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
     connect(ui->newSmallFront2,  SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
 
     stylePlay = ui->playButton->styleSheet().replace("install", "play");
+
+    ui->newSmallFront1->hide();
+    ui->newSmallImage1->hide();
+    ui->newSmallText1->hide();
+
+    ui->newSmallFront2->hide();
+    ui->newSmallImage2->hide();
+    ui->newSmallText2->hide();
 
     checkUpdate();
 }

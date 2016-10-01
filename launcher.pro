@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     utils/system.cpp \
     gui/settings.cpp \
     dep/SingleApplication/singleapplication.cpp \
-    gui/server.cpp
+    gui/server.cpp \
+    gui/home.cpp
 
 HEADERS  += gui/launcher.h \
     updater/updater.h \
@@ -44,12 +45,14 @@ HEADERS  += gui/launcher.h \
     logger/loglevel.h \
     gui/settings.h \
     dep/SingleApplication/singleapplication.h \
-    gui/server.h
+    gui/server.h \
+    gui/home.h
 
 FORMS    += gui/launcher.ui \
     gui/console.ui \
     gui/settings.ui \
-    gui/server.ui
+    gui/server.ui \
+    gui/home.ui
 
 RESOURCES += \
     ressources.qrc

@@ -5,6 +5,7 @@
 #include "updater/selfupdater.h"
 #include "server.h"
 #include "console.h"
+#include "home.h"
 
 #include <QMessageBox>
 #include <QMenu>
@@ -66,7 +67,7 @@ Launcher::Launcher(QWidget* parent) :
             switch (tab->type)
             {
                 case HOME:
-                    tab->window = NULL;
+                    tab->window = new Home(ui->mainWidget);
                     break;
                 case SERVER:
                     tab->window = new Server(ui->mainWidget, this, tab->name);
@@ -93,7 +94,7 @@ Launcher::Launcher(QWidget* parent) :
 
     urls.insert(ui->supportButton,   QUrl("http://azote.us/support"));
     urls.insert(ui->forumButton,     QUrl("http://forum.azote.us/"));
-    urls.insert(ui->shopButton,      QUrl("http://azote.us/paiement/choix-pays"));
+    urls.insert(ui->shopButton,      QUrl("http://azote.us/boutique/paiement/choix-pays"));
     urls.insert(ui->changelogButton, QUrl("http://azote.us"));
 
     connect(ui->supportButton,   SIGNAL(clicked()), this, SLOT(onClickLinkButton()));

@@ -81,6 +81,7 @@ void Server::startProcess(QString processName, QStringList args, bool forceDetac
     {
         if (os == WINDOWS)
         {
+            /*
 #ifdef Q_WS_WIN
             int result = (int)::ShellExecuteA(0, "open", path.toUtf8().constData(), args.join(" ").toUtf8().constData(), 0, SW_SHOWNORMAL);
 
@@ -94,8 +95,8 @@ void Server::startProcess(QString processName, QStringList args, bool forceDetac
                 ui->labelStatus->setText("Relancez le launcher en Administateur");
             }
 #endif
-
-            // QProcess::startDetached(path, args);
+            */
+            QProcess::startDetached(path, args);
         }
         else if (os == MAC)
         {
@@ -231,8 +232,9 @@ void Server::onClickPlayButton()
 
     if (updater->isNeedUpdate())
     {
-        startUpdate();
+        state = NO_STARTED;
         ui->playButton->setEnabled(false);
+        startUpdate();
         return;
     }
 

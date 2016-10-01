@@ -93,8 +93,8 @@ Launcher::Launcher(QWidget* parent) :
 
     urls.insert(ui->supportButton,   QUrl("http://azote.us/support"));
     urls.insert(ui->forumButton,     QUrl("http://forum.azote.us/"));
-    urls.insert(ui->shopButton,      QUrl("http://azote.us/shop"));
-    urls.insert(ui->changelogButton, QUrl("http://azote.us/changelog"));
+    urls.insert(ui->shopButton,      QUrl("http://azote.us/paiement/choix-pays"));
+    urls.insert(ui->changelogButton, QUrl("http://azote.us"));
 
     connect(ui->supportButton,   SIGNAL(clicked()), this, SLOT(onClickLinkButton()));
     connect(ui->forumButton,     SIGNAL(clicked()), this, SLOT(onClickLinkButton()));

@@ -28,7 +28,7 @@ class Server : public QWidget
     Q_OBJECT
 
 public:
-    explicit Server(QWidget* parent, Launcher* _launcher, QString _name);
+    explicit Server(QWidget* parent, Launcher* _launcher, QString _name, float _version);
     ~Server();
 
 private:
@@ -39,6 +39,7 @@ private:
     QMap<QObject*, QUrl> urls;
     State state;
     QString name;
+    float version;
     QString stylePlay;
     Sound* sound;
     int port;

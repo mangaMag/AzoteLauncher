@@ -22,16 +22,18 @@ enum TabType {
 class Tab
 {
 public:
-    Tab(TabType _type, QString _name, QWidget* _selector) :
+    Tab(TabType _type, QString _name, QWidget* _selector, float _version = 0.0) :
         type(_type),
         name(_name),
         selector(_selector),
+        version(_version),
         window(NULL) { }
 
     TabType type;
     QString name;
     QWidget* selector;
     QWidget* window;
+    float version;
 };
 
 namespace Ui {

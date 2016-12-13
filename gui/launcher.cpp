@@ -46,18 +46,14 @@ Launcher::Launcher(QWidget* parent) :
 
     QObject::connect(QApplication::instance(), SIGNAL(showUp()), this, SLOT(onOpenApp()));
 
-    ui->epsilon->hide();
-    ui->epsilonButton->hide();
-    ui->epsilonSelected->hide();
-
     Tab* home    = new Tab(HOME,    "Home",    ui->homeSelected);
-    Tab* sigma   = new Tab(SERVER,  "Sigma",   ui->sigmaSelected);
-    //Tab* epsilon = new Tab(SERVER,  "Epsilon", ui->epsilonSelected);
+    Tab* sigma   = new Tab(SERVER,  "Sigma",   ui->sigmaSelected, 2.10);
+    Tab* epsilon = new Tab(SERVER,  "Epsilon", ui->epsilonSelected, 2.38);
     Tab* console = new Tab(CONSOLE, "Console", ui->consoleSelected);
 
     tabs.insert(ui->homeButton,    home);
     tabs.insert(ui->sigmaButton,   sigma);
-    //tabs.insert(ui->epsilonButton, epsilon);
+    tabs.insert(ui->epsilonButton, epsilon);
     tabs.insert(ui->consoleButton, console);
 
     foreach (Tab* tab, tabs)
@@ -70,7 +66,7 @@ Launcher::Launcher(QWidget* parent) :
                     tab->window = new Home(ui->mainWidget);
                     break;
                 case SERVER:
-                    tab->window = new Server(ui->mainWidget, this, tab->name);
+                    tab->window = new Server(ui->mainWidget, this, tab->name, tab->version);
                     break;
                 case CONSOLE:
                     tab->window = new Console(ui->mainWidget, log, settings);

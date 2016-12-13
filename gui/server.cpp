@@ -15,13 +15,14 @@
 #include <windows.h>
 #endif
 
-Server::Server(QWidget* parent, Launcher* _launcher, QString _name) :
+Server::Server(QWidget* parent, Launcher* _launcher, QString _name, float _version) :
     QWidget(parent),
     launcher(_launcher),
     ui(new Ui::Server),
     updater(NULL),
     state(NO_STARTED),
     name(_name),
+    version(_version),
     port(1337),
     isRegStarted(false)
 {
@@ -125,9 +126,13 @@ void Server::startGame()
 {
     QStringList args;
 
-    //args << "--lang=fr";
-    //args << "--update-server-port=" + QString::number(port);
-    //args << "--updater_version=v2";
+    if (version >= 2.30)
+    {
+        args << "--lang=fr";
+        args << "--update-server-port=" + QString::number(port);
+        args << "--updater_version=v2";
+    }
+
     args << "--reg-client-port=" + QString::number(port + 1);
 
     if (os == WINDOWS) startProcess(name + "_app/Dofus.exe", args, true);

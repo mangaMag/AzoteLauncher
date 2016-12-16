@@ -51,7 +51,7 @@ private:
     QJsonObject getUpdateFile(Http* http, QString url);
     bool updateGameFiles(Http* http, QString url, QJsonArray files, QString pathPrefix, QString urlPrefix);
     bool checkIfFileRequireUpdate(QString path, QString md5);
-    bool updateGameFile(Http* http, QString url, QString name, QString urlName);
+    bool updateGameFile(Http* http, QString url, QString name, QString urlName, bool deleteRequested);
 
 public:
     explicit Updater(QString _serverName, QThread* parent = 0);

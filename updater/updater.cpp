@@ -209,6 +209,7 @@ bool Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
 
         QString name = fileObject.value("name").toString();
         QString md5  = fileObject.value("md5").toString();
+        bool deleteRequested = fileObject.value("delete").toBool(false);
         QString nameWithPrefix = pathPrefix + name;
 
         //log->debug(QString("%1 %2").arg(nameWithPrefix).arg(md5));
@@ -217,7 +218,7 @@ bool Updater::updateGameFiles(Http* http, QString url, QJsonArray files, QString
         {
             emit updateStatus(QString("Mise à jour de %1").arg(nameWithPrefix));
 
-            if (updateGameFile(http, url, nameWithPrefix, urlPrefix + "/" + name))
+            if (updateGameFile(http, url, nameWithPrefix, urlPrefix + "/" + name, deleteRequested))
             {
                 //emit updateStatus(QString("Le fichier %1 a été mis à jour").arg(nameWithPrefix));
             }
@@ -315,7 +316,7 @@ bool Updater::checkIfFileRequireUpdate(QString path, QString md5)
     return true;
 }
 
-bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlName)
+bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlName, bool deleteRequested)
 {
     downloadTime.start();
 
@@ -337,6 +338,13 @@ bool Updater::updateGameFile(Http* http, QString url, QString name, QString urlN
             log->error("Vous ne disposez pas des droits d'écriture, relancez en Administrateur ou déplacez le dossier du jeu");
             return false;
         }
+    }
+
+    if (deleteRequested)
+    {
+        file.remove();
+        updatedFiles.append(name);
+        return true;
     }
 
     if(!file.open(QIODevice::WriteOnly))

@@ -60,7 +60,7 @@ private slots:
     void onClickSettingsButton();
     void onClickLinkButton();
     void onClickResumePauseButton();
-    void onRepairStarted();
+    void onRepairStarted(QString server);
 };
 
 #endif // SERVER_H

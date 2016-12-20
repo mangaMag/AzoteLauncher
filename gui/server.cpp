@@ -41,7 +41,7 @@ Server::Server(QWidget* parent, Launcher* _launcher, QString _name, float _versi
         image->setStyleSheet(style);
     }
 
-    connect(launcher->settings, SIGNAL(repairStarted()), this, SLOT(onRepairStarted()));
+    connect(launcher->settings, SIGNAL(repairStarted(QString)), this, SLOT(onRepairStarted(QString)));
 
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onClickPlayButton()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(onClickSettingsButton()));
@@ -275,7 +275,7 @@ void Server::onClickPlayButton()
 
 void Server::onClickSettingsButton()
 {
-    launcher->settings->show();
+    launcher->settings->show(name);
 }
 
 void Server::onClickLinkButton()
@@ -307,8 +307,13 @@ void Server::onClickResumePauseButton()
     }
 }
 
-void Server::onRepairStarted()
+void Server::onRepairStarted(QString server)
 {
+    if (name.compare(server, Qt::CaseInsensitive) != 0)
+    {
+        return;
+    }
+
     updater->stopProcess();
     updater->terminate();
     updater->wait();

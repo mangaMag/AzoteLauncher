@@ -28,6 +28,12 @@ Settings::~Settings()
     delete ui;
 }
 
+void Settings::show(QString server)
+{
+    lastServer = server;
+    QWidget::show();
+}
+
 void Settings::onClickValidationButton(QAbstractButton* button)
 {
     if ((QPushButton*)button == ui->validationButton->button(QDialogButtonBox::Ok))
@@ -60,10 +66,19 @@ void Settings::onClickValidationButton(QAbstractButton* button)
 
 void Settings::onClickRepairButton()
 {
-    settings->setValue("Sigma/version", 0);
+    if (lastServer.length() > 0)
+    {
+        settings->setValue(QString("%1/version").arg(lastServer), 0);
+    }
+    else
+    {
+        settings->setValue("Sigma/version", 0);
+        settings->setValue("Epsilon/version", 0);
+    }
+
     settings->sync();
 
-    emit repairStarted();
+    emit repairStarted(lastServer);
 
     hide();
 }

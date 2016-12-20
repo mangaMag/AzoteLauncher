@@ -27,11 +27,14 @@ public:
     /*bool isConsoleActivated();
     StartMode getStartMode();*/
 
+    void show(QString server);
+
 private:
     Ui::Settings *ui;
     /*bool m_isConsoleActivated;
     StartMode m_startMode;*/
     QSettings* settings;
+    QString lastServer;
 
 private slots:
     void onClickValidationButton(QAbstractButton* button);
@@ -39,7 +42,7 @@ private slots:
 
 signals:
     //void consoleStateChange(bool isEnabled);
-    void repairStarted();
+    void repairStarted(QString server);
 };
 
 #endif // SETTINGS_H

@@ -186,7 +186,7 @@ void SelfUpdater::update(QString currentPath)
                         QFile::ExeOther);
 
     QSettings settings(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
-    StartMode startMode = (StartMode)settings.value("launcher/startMode", DesktopService).toInt();
+    StartMode startMode = (StartMode)settings.value("launcher/startMode", DetachedProcress).toInt();
 
     switch (startMode)
     {

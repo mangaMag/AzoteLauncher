@@ -8,15 +8,15 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName("Launcher");
     QApplication::setOrganizationName("Azote");
 
-    SingleApplication a(argc, argv);
     SelfUpdater selfupdater;
 
     if (selfupdater.isUpdateAsked(argc, argv))
     {
         selfupdater.update(argv[0]);
-        a.quit();
         return 0;
     }
+
+    SingleApplication a(argc, argv);
 
     Launcher launcher;
     launcher.show();
